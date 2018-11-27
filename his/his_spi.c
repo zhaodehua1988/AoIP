@@ -591,11 +591,11 @@ WV_S32 HIS_SPI_CMDRead(WV_S32 argc, WV_S8 **argv, WV_S8 * prfBuff)
 {
   
   WV_U16 data,addr;
-  WV_U32  temp;
-   WV_S32 ret = 0;;
-   if(argc < 1)
+  WV_U32  temp,dataNum;
+   WV_S32 ret = 0,i=0;
+   if(argc < 2)
 	{
-         prfBuff += sprintf(prfBuff,"get spi1  <u16Addr>  \r\n");
+         prfBuff += sprintf(prfBuff,"get spi1  <u16Addr> <dataNum> \r\n");
         return WV_SOK;  
 	}
  //
@@ -605,13 +605,22 @@ WV_S32 HIS_SPI_CMDRead(WV_S32 argc, WV_S8 **argv, WV_S8 * prfBuff)
     prfBuff += sprintf(prfBuff,"input erro !\r\n"); 
      return WV_SOK; 
   }
-  addr = temp & 0xffff; 
-   
-  //
-   //WV_ASSERT_RET(HIS_SPI_SpiWrit(addr,data));
-    
-    HIS_SPI_FpgaRd(addr, &data);
-   prfBuff += sprintf(prfBuff,"spi read fpga1   0x%x = 0x%x \r\n",addr,data);
+    ret =  WV_STR_S2v(argv[1],&dataNum);
+  if(ret != WV_SOK)
+  {
+    prfBuff += sprintf(prfBuff,"input erro !\r\n"); 
+     return WV_SOK; 
+  }
+
+	for(i=0;i<dataNum;i++){
+		//temp=temp+i;
+		addr = (temp+i) & 0xffff; 
+		HIS_SPI_FpgaRd(addr, &data);
+		prfBuff += sprintf(prfBuff,"spi read fpga1   0x%x = 0x%x \r\n",addr,data);		
+	}
+  	//addr = temp & 0xffff; 
+   //HIS_SPI_FpgaRd(addr, &data);
+  // prfBuff += sprintf(prfBuff,"spi read fpga1   0x%x = 0x%x \r\n",addr,data);
   return WV_SOK;
 }
 
@@ -776,17 +785,11 @@ WV_S32  HIS_SPI_Init()
   WV_CMD_Register("set","fpga","spi bus write fpga",HIS_SPI_SetFpga);
   WV_CMD_Register("test","fpga","spi bus test fpga",HIS_SPI_TestFpga);
   WV_CMD_Register("set","fpga_param","spi bus set fpga parameter",HIS_SPI_SetParameter);  
- 
-  WV_CMD_Register("get","fpga2","spi bus read fpga 2",HIS_SPI_GetFpga2);
-  WV_CMD_Register("set","fpga2","spi bus write fpga 2",HIS_SPI_SetFpga2);
-  WV_CMD_Register("test","fpga2","spi bus test fpga 2",HIS_SPI_TestFpga2);  
 
 //
- WV_CMD_Register("set","spi1","spi bus write fpga1 sigle",HIS_SPI_CMDWrite);
- WV_CMD_Register("set","spi2","spi bus write fpga2 sigle",HIS_SPI_CMDWrite2);
-  
- WV_CMD_Register("get","spi1","spi bus read fpga1 sigle",HIS_SPI_CMDRead);
- WV_CMD_Register("get","spi2","spi bus read fpga1 sigle",HIS_SPI_CMDRead2);
+ WV_CMD_Register("set","spi","spi bus write fpga1 sigle",HIS_SPI_CMDWrite);
+
+ WV_CMD_Register("get","spi","spi bus read fpga1 sigle",HIS_SPI_CMDRead);
  
   return WV_SOK;
       
