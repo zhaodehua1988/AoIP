@@ -1962,6 +1962,12 @@ void iTE6805_Identify_Chip()
 
 	}while(Result==0);
 
+		HDMIRX_DEBUG_PRINT(("This is  iTE6805 chip !!!\n"));
+		HDMIRX_DEBUG_PRINT(("REG00 = %X !!!\n",(int)REG00));
+		HDMIRX_DEBUG_PRINT(("REG01 = %X !!!\n",(int)REG01));
+		HDMIRX_DEBUG_PRINT(("REG02 = %X !!!\n",(int)REG02));
+		HDMIRX_DEBUG_PRINT(("REG03 = %X !!!\n",(int)REG03));
+
 	//iTE6805_DATA.ChipID = 0xA0; // kuro test
 	iTE6805_DATA.ChipID = hdmirxrd(0x04);
 	HDMIRX_DEBUG_PRINT(("iTE6805_DATA.ChipID = %X !!!\n",(int) iTE6805_DATA.ChipID ));
@@ -1980,4 +1986,17 @@ void iTE6805_HDCP_Detect()
 	iTE6805_Set_HPD_Ctrl(iTE6805_DATA.CurrentPort, HPD_HIGH);
 	iTE6805_DATA.STATE_HDCP_FINAL = iTE6805_DATA.STATE_HDCP;
 }
+/*
+void iTE6805_HDCP_Detect()
+{
+	if(iTE6805_DATA.STATE_HDCP == iTE6805_DATA.STATE_HDCP_FINAL)
+	{
+		return;
+	}
+	iTE6805_Set_HPD_Ctrl(iTE6805_DATA.CurrentPort, HPD_LOW);
+	iTE6805_Set_HDCP(iTE6805_DATA.STATE_HDCP);
+	delay1ms(100); //HPD OFF spec need at least 100ms
+	iTE6805_Set_HPD_Ctrl(iTE6805_DATA.CurrentPort, HPD_HIGH);
+	iTE6805_DATA.STATE_HDCP_FINAL = iTE6805_DATA.STATE_HDCP;
+}*/
 #endif

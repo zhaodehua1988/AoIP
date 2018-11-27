@@ -30,14 +30,14 @@
     #define HDMIRX_AUDIO_PRINTF(x)  printf x //kuro
     #define HDMIRX_DEBUG_PRINT(x) printf x //kuro
     #define CEC_DEBUG_PRINTF(x) printf x
-    #define EDID_DEBUG_PRINTF(x) //printf  x // kuro
+    #define EDID_DEBUG_PRINTF(x) printf  x // kuro
     #define RCP_DEBUG_PRINTF(x)  //printf  x
     #define MHL3D_DEBUG_PRINTF(x) //printf  x
     #define MHL_MSC_DEBUG_PRINTF(x) printf x
     #define HDCP_DEBUG_PRINTF(x) //printf x
     #define HDCP_DEBUG_PRINTF1(x) //printf x
     #define HDCP_DEBUG_PRINTF2(x) //printf x
-	#define REG_PRINTF(x) //printf x
+	#define REG_PRINTF(x)  printf x
 	#define REG_MHL_PRINTF(x) //printf x
 #else
     #define MHLRX_DEBUG_PRINTF(x)

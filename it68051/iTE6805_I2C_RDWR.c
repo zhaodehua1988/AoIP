@@ -21,17 +21,17 @@ iTE_u1 i2c_write_byte(iTE_u8 address, iTE_u8 offset, iTE_u8 byteno, iTE_u8 *p_da
 {
     
     int i;
-    iTE_u1 flag;
+    int flag;
+    iTE_u1 ret = 0;
     for(i=0;i<byteno;i++){
         
         flag = HIS_IIC_Write(2, address,offset+i, p_data[i]);
-        if(flag != 0) {
-            //printf("file:%s;;line:%d\n",__FILE__,__LINE__);
+        if(flag != 0) { 
+            ret =1 ;
             break;
         }   
     }
-
-    return flag;
+    return ret;
 }
 /************************************************************
 *
@@ -41,7 +41,6 @@ iTE_u1 i2c_read_byte(iTE_u8 address, iTE_u8 offset, iTE_u8 byteno, iTE_u8 *p_dat
     int i;
     iTE_u1 flag;
     for(i=0;i<byteno;i++){
-        //WV_S32 HIS_IIC_Read(WV_U32 port, WV_U8 devAddr, WV_U8 regAddr, WV_U8 *pData);
         flag = HIS_IIC_Read(2, address,offset+i, &p_data[i]);
         if(flag != 0 ) break;    
     }
@@ -106,9 +105,9 @@ iTE_u8 hdmirxrd( iTE_u8 RegAddr)
 
     FLAG = i2c_read_byte(ADDR_HDMI, RegAddr, 1, &mDataIn, HDMI_DEV);
 
-    if(FLAG==0)
+    if(FLAG!=0)
     {
-	    REG_PRINTF(("=====HDMI Read ERROR Read Reg0x%X=\n",(int) RegAddr));
+	    REG_PRINTF(("=====HDMI Read ERROR Read Reg0x%X\n",(int) RegAddr));
     }
     return mDataIn;
 }
@@ -119,29 +118,35 @@ iTE_u8 hdmirxbrd( iTE_u8 RegAddr, iTE_u8 RegBytes, iTE_u8 *buffer)
 
     FLAG = i2c_read_byte(ADDR_HDMI, RegAddr, RegBytes, buffer, HDMI_DEV);
 
-    if(FLAG==0)
+    if(FLAG!=0)
     {
 	    REG_PRINTF(("HDMI Read ERROR !!!"));
-	    REG_PRINTF(("=====  Read Reg0x%X=\n",(int) RegAddr));
+
     }
+	    REG_PRINTF(("=====  Read Reg0x%X=\n",(int) RegAddr));
     return FLAG;
 }
 
 iTE_u8 hdmirxwr( iTE_u8 RegAddr,iTE_u8 DataIn)
 {
 
-    iTE_u8 flag;
+
+    iTE_u1 flag;
+   
     flag= i2c_write_byte(ADDR_HDMI, RegAddr, 1, &DataIn, HDMI_DEV);
+/*
 	if(iTE6805_DATA.DumpREG == TRUE)
 	{
 		REG_PRINTF(("i2c_single_write(0x90, 0x%02X, 1, 0x%02X);\n",(int)RegAddr,(int)DataIn));
 	}
-
-    if(flag==0)
+*/  
+    if(flag != 0)
     {
 	    REG_PRINTF(("=====HDMI I2C ERROR Write Reg0x%X=%X =====\n",(int)RegAddr,(int)DataIn));
+    }else{
+        REG_PRINTF(("=====HDMI I2C  Write Reg0x%X=%X =====\n",(int)RegAddr,(int)DataIn));
     }
-    return !flag;
+    return flag;
 }
 
 iTE_u8  hdmirxset( iTE_u8  offset, iTE_u8  mask, iTE_u8  ucdata )
@@ -176,14 +181,16 @@ void hdmirxbwr( iTE_u8 offset, iTE_u8 byteno, iTE_u8 *rddata )
 
 void hdimrx_write_init(iTE6805_INI_REG _CODE *tdata)
 {
-    REG_PRINTF("hdimrx_write_init start \n");
+    //REG_PRINTF("hdimrx_write_init start \n");
+    printf("hdmi init start..\n");
     iTE_u16 cnt = 0;
     while(tdata[cnt].ucAddr != 0xFF)
     {
         hdmirxset(tdata[cnt].ucAddr,tdata[cnt].andmask,tdata[cnt].ucValue);
         cnt++;
     }
-     REG_PRINTF("hdimrx_write_init end \n");
+    printf("hdmi init end..\n");
+    // REG_PRINTF("hdimrx_write_init end \n");
 }
 
 #ifdef _ENABLE_IT6805_MHL_I2C_

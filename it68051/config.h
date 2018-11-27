@@ -46,7 +46,8 @@
 // this define for dynamic HDCP enable/disable by using variable iTE6805_DATA.STATE_HDCP = HDCP_ENABLE/HDCP_DISABLE
 // for customer can change HDCP state in upper code level, default HDCP is enable
 // default disable this define
-//#define DYNAMIC_HDCP_ENABLE_DISABLE
+
+#define DYNAMIC_HDCP_ENABLE_DISABLE
 
 
 // DownScale Filter : DownScale Quality setting
@@ -168,7 +169,7 @@
 #define _ENABLE_IT6805_CEC_I2C_
 #define CEC_VENDOR_ID 0x0000
 #define iTE6805CECGPIOid		0	// for identife iTE6805_CEC use Pin 1.0 & 1.1
-//#define DISABLE_CEC_REPLY
+#define DISABLE_CEC_REPLY
 
 
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -185,8 +186,8 @@
 //////////////////////////////////////////////////////////////////////////////////////////
 // MHL Config
 //////////////////////////////////////////////////////////////////////////////////////////
-#define _ENABLE_IT6805_MHL_FUNCTION_
-#define _ENABLE_MHL_SUPPORT_3D_
+//#define _ENABLE_IT6805_MHL_FUNCTION_
+//#define _ENABLE_MHL_SUPPORT_3D_
 #define _ENABLE_IT6805_MHL_I2C_
 
 

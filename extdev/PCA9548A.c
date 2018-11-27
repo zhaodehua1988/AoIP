@@ -143,7 +143,7 @@ WV_S32 PCA9548_IIC_GetReg(WV_S32 argc, WV_S8 **argv, WV_S8 *prfBuff)
     //prfBuff += sprintf("\nbusid:%d,devAddr:%02x,regAddr:%02x,dataLen:%d\n", busId, (WV_U8)devAddr, regAddr, dataLen);
     for (i = 0; i < dataLen; i++)
     {
-        ret = PCA9548_IIC_Read((WV_U8)busId, (WV_U8)devAddr, (WV_U8)regAddr, &buf[i]);
+        ret = PCA9548_IIC_Read((WV_U8)busId, (WV_U8)devAddr, (WV_U8)(regAddr+i), &buf[i]);
         if (ret != 0)
         {
             prfBuff += sprintf(prfBuff, "get %02x err\r\n", regAddr+i);

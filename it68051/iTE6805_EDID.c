@@ -26,6 +26,7 @@ iTE_u8  rxphyadr[2][2];	// for EDID RAM function
 
 void iTE6805_EDID_Init()
 {
+	printf("edid init start ...\n");
 	// init EDID
 #ifdef _ENABLE_EDID_RAM_
 	chgbank(0);
@@ -33,19 +34,22 @@ void iTE6805_EDID_Init()
 	iTE6805_EDID_RAMInitial();
 	iTE6805_EDID_ParseVSDB_3Dblock();
 	hdmirxset(0xC5, 0x01, 0x00);	// enable PORT0 internal EDID
+	/*
 	chgbank(4);
 	hdmirxset(0xC5, 0x01, 0x00);	// enable PORT1 internal EDID
+	*/
 	chgbank(0);
 
 	//come from 6802 for reset EDID start
     hdmirxset(0xC5, 0x10, 0x10);	// reset PORT0
     delay1ms(1);
     hdmirxset(0xC5, 0x10, 0x00);
-
+/*
 	chgbank(4);
     hdmirxset(0xC5, 0x10, 0x10);	// reset PORT1
     delay1ms(1);
     hdmirxset(0xC5, 0x10, 0x00);
+*/
 	chgbank(0);
 
 	//come from 6802 for reset EDID start
@@ -61,6 +65,8 @@ void iTE6805_EDID_Init()
 	iTE6805_EDID_Parse3D.ucVicCnt = 0;
 	iTE6805_EDID_Parse3D.ucDtdCnt = 0;
 #endif
+
+	printf("set edid end ..\n");
 }
 
 

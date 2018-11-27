@@ -255,7 +255,7 @@ HI_UNF_SPI_DEV_E   dev;
 WV_U16  buf[20];
 WV_S32 ret;
 dev = HIS_SPI_DEV_SEL;
-buf[0] = (addr<<6) | 0x8000; 
+buf[0] = (addr<<4) | 0x8000; 
 buf[1] = data; 
 
 	ret  = HI_UNF_SPI_Write(dev,(HI_U8 *)buf,4);  
@@ -327,7 +327,7 @@ HI_UNF_SPI_DEV_E   dev;
 WV_U16  rBuf[20],wBuf[20];
 WV_S32 ret;
 dev = HIS_SPI_DEV_SEL;
-wBuf[0] =  (addr<<6) & 0x7fff; 
+wBuf[0] =  (addr<<4) & 0x7fff; 
 ret  = HI_UNF_SPI_ReadExt (dev,(HI_U8 *)wBuf,2,(HI_U8 *)rBuf,2);   
 *pData =rBuf[0];
 	if(ret != 0 )
@@ -756,7 +756,8 @@ WV_S32  HIS_SPI_Init()
   // u32Baud = 100 /(cpsdvr * (1+ scr)); 
  
   scr = 0; 
-  cpsdvr =4;// 4 :25M  2 : 50M
+  //cpsdvr =4;// 4 :25M  2 : 50M
+  cpsdvr = 10;
   regAddr = HIS_SPI_ADDR_SPICR0; 
   WV_ASSERT_RET(HI_SYS_ReadRegister(regAddr,&regData)); 
   regData = (regData & 0xFF) | (scr << 8);

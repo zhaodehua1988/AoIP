@@ -11,6 +11,9 @@
 #include "sys_env.h"
 #include "wv_file.h"
 #include "iTE6805_Init.h"
+#include "PCA9548A.h"
+#include "PCA9555.h"
+//#include "iTE6615_Init.h"
 WV_S32 main()
 {
 	WV_S32 ret;
@@ -24,10 +27,12 @@ WV_S32 main()
 	WV_TTY_Create();
 	HIS_SYS_Init();
 	SYS_IP_Init();
+	PCA9548_Init();
+	PCA9555_Init();
 	//ADV_7619_Init();
-	FPGA_Init();
+	//FPGA_Init();
 	ITE6805_Init();
-
+	//iTE6615_Init();
 	rowNum = 0;
 	while (1)
 	{
@@ -36,8 +41,9 @@ WV_S32 main()
 			break;
 		usleep(100000);
 	}
-
-	FPGA_DeInit();
+	PCA9555_DeInit();
+	PCA9548_DeInit();
+	//FPGA_DeInit();
 	SYS_IP_DeInit();
 	HIS_SYS_DeInit();
 	WV_TTY_Destroy();

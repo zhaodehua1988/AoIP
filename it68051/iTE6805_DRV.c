@@ -170,7 +170,7 @@ void iTE6805_Set_TTL_Video_Path()
         case eTTL_SDR:
 			hdmirxset(0xC1, BIT1, 0x00);
             break;
-        case eTTL_HalfPCLKDDR:
+        case eTTL_HalfPCLKDDR: //use this
             hdmirxset(0xC1, BIT1, BIT1);
             break;
         case eTTL_HalfBusDDR:
@@ -187,8 +187,8 @@ void iTE6805_Set_TTL_Video_Path()
 
     switch(iTE6805_DATA.US_Video_Sync_Mode)
 	{
-        case eTTL_SepSync:
-			hdmirxset(0xC1, BIT5, 0x00);
+        case eTTL_SepSync:  //use this
+			hdmirxset(0xC1, BIT5, 0x00); 
             break;
         case eTTL_EmbSync:
             hdmirxset(0xC1, BIT5, BIT5);
@@ -706,19 +706,6 @@ void iTE6805_Set_HPD_Ctrl(iTE_u16 PORT_NUM, iTE_u16 HPD_State){
 		chgbank(3);
 		hdmirxset(0xAB, 0xC0, 0x00); //SET PORT0 Tri-State
 		chgbank(0);
-		return;
-	}
-	// PORT1 is using gpio for HPD low/high
-	if (PORT_NUM == PORT1)
-	{
-		if(HPD_State == HPD_LOW)
-		{
-			//gpHPD1 = PORT1_HPD_OFF;
-		}
-		else
-		{
-			//gpHPD1 = PORT1_HPD_ON;
-		}
 		return;
 	}
 
@@ -1564,8 +1551,8 @@ iTE_u16 iTE6805_OCLK_Load()
 void iTE6805_Init_fsm()
 {
 	#ifdef DYNAMIC_HDCP_ENABLE_DISABLE
-	iTE6805_DATA.STATE_HDCP = HDCP_ENABLE;
-	iTE6805_DATA.STATE_HDCP_FINAL = HDCP_ENABLE;
+	//iTE6805_DATA.STATE_HDCP = HDCP_ENABLE;
+	//iTE6805_DATA.STATE_HDCP_FINAL = HDCP_ENABLE;
 	#endif
 	iTE6805_DATA.STATEV = STATEV_Unplug;
 	iTE6805_DATA.STATEA = STATEA_AudioOff;
@@ -1576,17 +1563,18 @@ void iTE6805_Init_fsm()
 	iTE6805_Identify_Chip();
 	hdimrx_write_init(iTE6805_INIT_HDMI_TABLE);;
 
-	iTE6805_Init_CAOF();
+	iTE6805_Init_CAOF();  //ok
+#if 1
 	chgbank(0);
 	hdmirxwr(0x28, 0x88); // 0714 MHL CTS need set 0x28 to 0x88
-	iTE6805_Set_Video_Tristate(TRISTATE_ON);
-	iTE6805_OCLK_Cal();
+	iTE6805_Set_Video_Tristate(TRISTATE_ON);//ok
+	//iTE6805_OCLK_Cal();
 
 	// init EDID
 	iTE6805_EDID_Init();
 
-	iTE6805_Init_TTL_VideoOutputConfigure();
-	iTE6805_Set_TTL_Video_Path();
+	iTE6805_Init_TTL_VideoOutputConfigure(); //ok
+	iTE6805_Set_TTL_Video_Path(); //ok
 
 	#ifdef _ENABLE_IT6805_MHL_FUNCTION_
 	//iTE6805_DATA.DumpREG = TRUE;
@@ -1597,12 +1585,13 @@ void iTE6805_Init_fsm()
 	#endif
 
 	#ifdef _ENABLE_IT6805_CEC_
-	iTE6805_CEC_INIT();
+	//iTE6805_CEC_INIT();
 	#endif
 
 	// set MCU pin to low or can't detect iTE6805A0 port1 5V
 	//gpPORT1_5V_STATE = 0 ;
 
+	iTE6805_Port_Select(PORT0); //add zdh
 	#ifndef EVB_AUTO_DETECT_PORT_BY_PIN
 	// main port select
 	// check if port 5v on, then that port will be main port
@@ -1620,19 +1609,22 @@ void iTE6805_Init_fsm()
 	#else
 
 	// port select by pin
-	iTE6805_Port_Detect();
+	//iTE6805_Port_Detect();
 	#endif
 
 	#ifdef DYNAMIC_HDCP_ENABLE_DISABLE
-	iTE6805_HDCP_Detect();
+	//iTE6805_HDCP_Detect();
 	#endif
 
 	// add for checking power saving mode
 	iTE6805_INT_5VPWR_Chg(iTE6805_DATA.CurrentPort);
+	
+	#endif
 }
 
 void iTE6805_Init_TTL_VideoOutputConfigure()
 {
+		//eVidOutConfig =eTTL_SepSync_FullBusHalfPCLKDDR_RGB444
 	switch (eVidOutConfig)
 	{
 		case eTTL_SepSync_FullBusSDR_RGB444:
@@ -1713,9 +1705,9 @@ void iTE6805_Init_CAOF()
 {
 	iTE_u8 Reg08h, Reg0Dh;
 	iTE_u8 Port0_Status;
-	iTE_u8 Port1_Status;
+	//iTE_u8 Port1_Status;
 	iTE_u8 Port0_Int;
-	iTE_u8 Port1_Int;
+	//iTE_u8 Port1_Int;
 	iTE_u8 waitcnt;
 	chgbank(3);
 	hdmirxset(0x3A, 0x80, 0x00); // Reg_CAOFTrg low
@@ -1741,6 +1733,7 @@ void iTE6805_Init_CAOF()
 	hdmirxset(0x3C, 0x10, 0x00); //disable PLLBufRst
 	//----------------------------------------
 	// Port 1
+	/*
 	chgbank(7);
 	hdmirxset(0x3A, 0x80, 0x00); // Reg_CAOFTrg low
 	hdmirxset(0xA0, 0x80, 0x80);
@@ -1762,25 +1755,27 @@ void iTE6805_Init_CAOF()
 	hdmirxwr(0x30, 0x00);
 	chgbank(4);
 	hdmirxset(0x3C, 0x10, 0x00); //disable PLLBufRst
+	*/
 	//----------------------------------------
 	// Port 0
 	chgbank(3);
 	hdmirxset(0x3A, 0x80, 0x80); // Reg_CAOFTrg high
+	/*
 	// Port 1
 	chgbank(7);
 	hdmirxset(0x3A, 0x80, 0x80); // Reg_CAOFTrg high
-
+	*/
 
 	// wait for INT Done
 	chgbank(0);
 	Reg08h = hdmirxrd(0x08) & 0x30;
-	Reg0Dh = hdmirxrd(0x0D) & 0x30;
+	//Reg0Dh = hdmirxrd(0x0D) & 0x30; 0x0d 是port1
 	waitcnt = 0;
-	while (Reg08h==0x00 || Reg0Dh==0x00){
+	while (Reg08h==0x00 ){//|| Reg0Dh==0x00){
         Reg08h= hdmirxrd(0x08)&0x30;
-	    Reg0Dh= hdmirxrd(0x0D)&0x30;
+	    //Reg0Dh= hdmirxrd(0x0D)&0x30;
 		HDMIRX_DEBUG_PRINT(("Wait for CAOF Done!!!!!!\n"));
-		HDMIRX_DEBUG_PRINT((" Reg08h= %x,  Reg0Dh=%x .......................\n",(int) hdmirxrd(0x08),(int) hdmirxrd(0x0D)));
+		HDMIRX_DEBUG_PRINT((" Reg08h= %x .......................\n",(int) hdmirxrd(0x08)));//(int) hdmirxrd(0x0D)));
 		if(waitcnt>4) {
 			HDMIRX_DEBUG_PRINT(("\n"));
 			HDMIRX_DEBUG_PRINT(("CAOF Fail to Finish!! \n"));
@@ -1788,11 +1783,6 @@ void iTE6805_Init_CAOF()
 				hdmirxset(0x2A, 0x40, 0x40);
 				delay1ms(10);
 				hdmirxset(0x2A, 0x40, 0x00);
-			}
-			if(Reg0Dh==0x00) {
-				hdmirxset(0x32, 0x40, 0x40);
-				delay1ms(10);
-				hdmirxset(0x32, 0x40, 0x00);
 			}
 			waitcnt=0;
 		}
@@ -1802,35 +1792,39 @@ void iTE6805_Init_CAOF()
 	chgbank(3);
 	Port0_Status = (hdmirxrd(0x5A) << 4) + (hdmirxrd(0x59) & 0x0F);
 	Port0_Int = hdmirxrd(0x59) & 0xC0;
+	/*
 	chgbank(7);
 	Port1_Status = (hdmirxrd(0x5A) << 4) + (hdmirxrd(0x59) & 0x0F);
 	Port1_Int = hdmirxrd(0x59) & 0xC0;
+	*/
 	printf("CAOF     CAOF    CAOF     CAOF    CAOF     CAOF\n");
 	printf("Port 0 CAOF Int =%x , CAOF Status=%3x\n", Port0_Int, Port0_Status);
-	printf("Port 1 CAOF Int =%x , CAOF Status=%3x\n", Port1_Int, Port1_Status);
+	//printf("Port 1 CAOF Int =%x , CAOF Status=%3x\n", Port1_Int, Port1_Status);
 	// De-assert Port 0
 	chgbank(0);
-
 	hdmirxset(0x08, 0x30, 0x30);
 	hdmirxset(0x0D, 0x30, 0x30);
 	hdmirxset(0x29, 0x01, 0x00); // Enable MHL AutoPWD
 	hdmirxset(0x24, 0x04, 0x00); // IPLL RST low
 	hdmirxset(0x3C, 0x10, 0x10); //Enable PLLBufRst
+	/*
 	// De-assert Port 1
 	hdmirxset(0x2C, 0x04, 0x00); // Port 1 IPLL RST low
 	chgbank(4);
 	hdmirxset(0x3C, 0x10, 0x10); // Port 1 Enable PLLBufRst
-
+	*/
 	chgbank(3);
 	hdmirxset(0x3A, 0x80, 0x00); // Reg_CAOFTrg low
 	hdmirxset(0xA0, 0x80, 0x00);
 	hdmirxset(0xA1, 0x80, 0x00);
 	hdmirxset(0xA2, 0x80, 0x00);
+	/*
 	chgbank(7);
 	hdmirxset(0x3A, 0x80, 0x00); // Reg_CAOFTrg low
 	hdmirxset(0xA0, 0x80, 0x00);
 	hdmirxset(0xA1, 0x80, 0x00);
 	hdmirxset(0xA2, 0x80, 0x00);
+	*/
 	chgbank(0);
 
 }
