@@ -11,7 +11,7 @@
 #ifndef _ITE6805_CEC_FETURE_H_
 #define _ITE6805_CEC_FETURE_H_
 
-#include "typedef.h"
+#include "iTE6805_typedef.h"
 #include "iTE6805_CEC_DEFINE.h"
 void iTE6805_CEC_CMD_Feature_decode(pCEC_FRAME CEC_FRAME);
 

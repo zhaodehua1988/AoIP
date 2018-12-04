@@ -1,5 +1,6 @@
 #include"fpga_conf.h"
 #include"his_spi.h"
+#include "tsk_player.h" 
 
 /*******************************************************************
  WV_S32 FPGA_CONF_ResetA()
@@ -241,38 +242,20 @@ WV_S32 FPGA_CONF_ResetA()
 		WV_RET_ADD(	HIS_SPI_FpgaWd(0x9d,pInfo->actVsize),ret);//  
 		WV_RET_ADD(	HIS_SPI_FpgaWd(0x93,1),ret);// 
 		WV_RET_ADD(	HIS_SPI_FpgaWd(0x93,0),ret);// 
-
-		//set output	
-		//HIS_SPI_FpgaWd(0x8f,0x33);
-		//HIS_SPI_FpgaWd2(0xf,0xff);
+		FPGA_CONF_SetOutput(0xffff);
 		
     return WV_SOK;
   }  
  
 
-/*******************************************************************
- WV_S32 FPGA_Init();
+ /*******************************************************************
+ WV_S32 FPGA_CONF_SetOutput(WV_U16  ena);
 *******************************************************************/
-WV_S32 FPGA_Init()
+WV_S32 FPGA_CONF_SetOutput(WV_U16  ena)
 {
-	FPGA_CONF_ResetA();
-    //设置分辨率
-    FPGA_CONF_SetResolution();
-     //关闭融合带
-    HIS_SPI_FpgaWd(0x26,0x3);
-     //配置分割参数
-    FPGA_CONF_SetSplit();
-    
-    HIS_FB_ClrFpga();
-    FPGA_CONF_ClrBuf();
-    HIS_SPI_FpgaWd(0x9,0);// stop win number
-	HIS_SPI_FpgaWd(0xb,0);
+
 	HIS_SPI_FpgaWd(0x8f,0x33);
 	HIS_SPI_FpgaWd2(0xf,0xff);
-    return WV_SOK;
-}
 
-WV_S32 FPGA_DeInit()
-{
 	return WV_SOK;
-}
+}       

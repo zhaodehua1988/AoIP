@@ -122,13 +122,15 @@ WV_S32  ADV_7619_SetConf();
 ****************************************************************************************************/
 WV_S32 ADV_7619_SetConf()
 {
+//WV_S32 PCA9548_IIC_Read(WV_U8 id,WV_U8 devAddr,WV_U8 regAddr,WV_U8 *data);
+//WV_S32 PCA9548_IIC_Write(WV_U8 id,WV_U8 devAddr,WV_U8 regAddr,WV_U8 data);
+
 	WV_S32 i, num;
 	WV_U8 devAddr, regAddr, data;
 
 	num = sizeof(adv7619_default) / sizeof(adv7619_default[0]);
-
-	PCA9548_SwitchToBus(PCA9548A_IIC_SWID_7619);
-
+	WV_printf("adv 7619 set conf start.....\n");
+	//PCA9548_SwitchToBus(PCA9548A_IIC_SWID_7619);
 	for (i = 0; i < num; i++)
 	{
 		if (adv7619_default[i].flag == 0)
@@ -138,7 +140,9 @@ WV_S32 ADV_7619_SetConf()
 		devAddr = adv7619_default[i].port;
 		regAddr = adv7619_default[i].reg;
 		data = adv7619_default[i].data;
-		WV_CHECK_RET(HIS_IIC_Write(ADV_IIC_PORT,devAddr,regAddr, data));
+
+		//WV_CHECK_RET(PCA9548_IIC_Write(PCA9548A_IIC_SWID_7619,devAddr,regAddr, data));
+		PCA9548_IIC_Write(PCA9548A_IIC_SWID_7619,devAddr,regAddr,data);
 		usleep(500000);
 	}
 
@@ -155,90 +159,90 @@ WV_S32  ADV_7619_Check(ADV7619_SATUS_S * pStat)
 WV_S32 ADV_7619_Check(ADV7619_SATUS_S *pStat)
 {
 	WV_U8 data;
-	PCA9548_SwitchToBus(PCA9548A_IIC_SWID_7619);
+	////PCA9548_SwitchToBus(PCA9548A_IIC_SWID_7619);
 
-	HIS_IIC_Read(ADV_IIC_PORT, ADV_IO_SLA, 0x6F, &data); //0 means no cable and 1 means cable detected on PORT A
+	PCA9548_IIC_Read(PCA9548A_IIC_SWID_7619, ADV_IO_SLA, 0x6F, &data); //0 means no cable and 1 means cable detected on PORT A
 	pStat->cableInset = data;
-	HIS_IIC_Read(ADV_IIC_PORT, ADV_IO_SLA, 0x21, &data); //bit3=0 means SPA=0,bit3=1 means SPA=1
+	PCA9548_IIC_Read(PCA9548A_IIC_SWID_7619, ADV_IO_SLA, 0x21, &data); //bit3=0 means SPA=0,bit3=1 means SPA=1
 	pStat->spa = (data >> 3) & 0x1;
 
-	HIS_IIC_Read(ADV_IIC_PORT, ADV_IO_SLA, 0x6A, &data); //bit6=PORT A locked clock,bit4=TMDS clock detected on PORT A,bit1=VSYNC is valid.bit0=DE is locked
+	PCA9548_IIC_Read(PCA9548A_IIC_SWID_7619, ADV_IO_SLA, 0x6A, &data); //bit6=PORT A locked clock,bit4=TMDS clock detected on PORT A,bit1=VSYNC is valid.bit0=DE is locked
 	pStat->deLock = data & 0x1;
 	pStat->tmdsLock = data;
-	HIS_IIC_Read(ADV_IIC_PORT, ADV_KSV_SLA, 0x74, &data); //bit1=1 means PORT B can access internal EDID,bit0=1 means PORT A
+	PCA9548_IIC_Read(PCA9548A_IIC_SWID_7619, ADV_KSV_SLA, 0x74, &data); //bit1=1 means PORT B can access internal EDID,bit0=1 means PORT A
 	pStat->edidEna = data & 0x1;
 
-	HIS_IIC_Read(ADV_IIC_PORT, ADV_HDMI_SLA, 0x51, &data); //0X51&0X52[8]=TMDS frequency
+	PCA9548_IIC_Read(PCA9548A_IIC_SWID_7619, ADV_HDMI_SLA, 0x51, &data); //0X51&0X52[8]=TMDS frequency
 	if (data < 70)
-		HIS_IIC_Write(ADV_IIC_PORT, ADV_IO_SLA, 0x14, 0x55);
+		PCA9548_IIC_Write(PCA9548A_IIC_SWID_7619, ADV_IO_SLA, 0x14, 0x55);
 	else if (data > 100)
-		HIS_IIC_Write(ADV_IIC_PORT, ADV_IO_SLA, 0x14, 0x7F);
+		PCA9548_IIC_Write(PCA9548A_IIC_SWID_7619, ADV_IO_SLA, 0x14, 0x7F);
 	else
-		HIS_IIC_Write(ADV_IIC_PORT, ADV_IO_SLA, 0x14, 0x6A);
+		PCA9548_IIC_Write(PCA9548A_IIC_SWID_7619, ADV_IO_SLA, 0x14, 0x6A);
 
 	pStat->tmdsFrq = data;
 
-	HIS_IIC_Read(ADV_IIC_PORT, ADV_HDMI_SLA, 0x52, &data); //0x52[6:0]=TMDS fractional frequency measurement in 1/128MHz
+	PCA9548_IIC_Read(PCA9548A_IIC_SWID_7619, ADV_HDMI_SLA, 0x52, &data); //0x52[6:0]=TMDS fractional frequency measurement in 1/128MHz
 	pStat->tmdsFrq = (pStat->tmdsFrq << 1) | ((data >> 7) & 0x1);
 
 	pStat->tmdsFrqFract = data & 0x3f;
 
-	HIS_IIC_Read(ADV_IIC_PORT, ADV_HDMI_SLA, 0x05, &data); //bit0=HDMI or DVI,bit1=HDCP,bit2=HSync active low,bit3=V active low
+	PCA9548_IIC_Read(PCA9548A_IIC_SWID_7619, ADV_HDMI_SLA, 0x05, &data); //bit0=HDMI or DVI,bit1=HDCP,bit2=HSync active low,bit3=V active low
 	pStat->mode = (data >> 7) & 0x1;
 	pStat->hsyncPola = (data >> 2) & 0x1;
 	pStat->vsyncPola = (data >> 3) & 0x1;
-	HIS_IIC_Read(ADV_IIC_PORT, ADV_HDMI_SLA, 0x07, &data); //bit7=V locked,bit5=DE locked
+	PCA9548_IIC_Read(PCA9548A_IIC_SWID_7619, ADV_HDMI_SLA, 0x07, &data); //bit7=V locked,bit5=DE locked
 	pStat->lock = ((data >> 5) & 0x1) | ((data >> 6) & 0x2);
 	pStat->lineAct = (data & 0x0f) << 8;
-	HIS_IIC_Read(ADV_IIC_PORT, ADV_HDMI_SLA, 0x08, &data); //0x7[4:0]&0x8[7:0]=total number of active pixel per line
+	PCA9548_IIC_Read(PCA9548A_IIC_SWID_7619, ADV_HDMI_SLA, 0x08, &data); //0x7[4:0]&0x8[7:0]=total number of active pixel per line
 	pStat->lineAct |= data & 0xff;
 
-	HIS_IIC_Read(ADV_IIC_PORT, ADV_HDMI_SLA, 0x1E, &data);
+	PCA9548_IIC_Read(PCA9548A_IIC_SWID_7619, ADV_HDMI_SLA, 0x1E, &data);
 	pStat->lineTotal = (data & 0x1f) << 8;
-	HIS_IIC_Read(ADV_IIC_PORT, ADV_HDMI_SLA, 0x1F, &data); //0x1E[5:0]&0x1F[7:0]=total number of pixel per line
+	PCA9548_IIC_Read(PCA9548A_IIC_SWID_7619, ADV_HDMI_SLA, 0x1F, &data); //0x1E[5:0]&0x1F[7:0]=total number of pixel per line
 	pStat->lineTotal |= (data & 0xff);
 
-	HIS_IIC_Read(ADV_IIC_PORT, ADV_HDMI_SLA, 0x20, &data);
+	PCA9548_IIC_Read(PCA9548A_IIC_SWID_7619, ADV_HDMI_SLA, 0x20, &data);
 	pStat->hFronPorch = (data & 0x0f) << 8;
-	HIS_IIC_Read(ADV_IIC_PORT, ADV_HDMI_SLA, 0x21, &data); //0x20[4:0]&0x21[7:0]=total number of pixel in the front porch
+	PCA9548_IIC_Read(PCA9548A_IIC_SWID_7619, ADV_HDMI_SLA, 0x21, &data); //0x20[4:0]&0x21[7:0]=total number of pixel in the front porch
 	pStat->hFronPorch |= (data & 0xff);
 
-	HIS_IIC_Read(ADV_IIC_PORT, ADV_HDMI_SLA, 0x22, &data);
+	PCA9548_IIC_Read(PCA9548A_IIC_SWID_7619, ADV_HDMI_SLA, 0x22, &data);
 	pStat->hPulseWidth = (data & 0x0f) << 8;
-	HIS_IIC_Read(ADV_IIC_PORT, ADV_HDMI_SLA, 0x23, &data); //0x22[4:0]&0x23[7:0]=total number of pixel in the hsync pulse
+	PCA9548_IIC_Read(PCA9548A_IIC_SWID_7619, ADV_HDMI_SLA, 0x23, &data); //0x22[4:0]&0x23[7:0]=total number of pixel in the hsync pulse
 	pStat->hPulseWidth |= data;
 
-	HIS_IIC_Read(ADV_IIC_PORT, ADV_HDMI_SLA, 0x24, &data);
+	PCA9548_IIC_Read(PCA9548A_IIC_SWID_7619, ADV_HDMI_SLA, 0x24, &data);
 	pStat->hBackPorch = (data & 0x0f) << 8;
-	HIS_IIC_Read(ADV_IIC_PORT, ADV_HDMI_SLA, 0x25, &data); //0x24[4:0]&0x25[7:0]=total number of pixel in the back porch
+	PCA9548_IIC_Read(PCA9548A_IIC_SWID_7619, ADV_HDMI_SLA, 0x25, &data); //0x24[4:0]&0x25[7:0]=total number of pixel in the back porch
 	pStat->hBackPorch |= data;
 
-	HIS_IIC_Read(ADV_IIC_PORT, ADV_HDMI_SLA, 0x26, &data);
+	PCA9548_IIC_Read(PCA9548A_IIC_SWID_7619, ADV_HDMI_SLA, 0x26, &data);
 	pStat->vField0Total = (data & 0x1f) << 7;
-	HIS_IIC_Read(ADV_IIC_PORT, ADV_HDMI_SLA, 0x27, &data); //0x26[5:0]&0x27[7:0]=total number of line * 2
+	PCA9548_IIC_Read(PCA9548A_IIC_SWID_7619, ADV_HDMI_SLA, 0x27, &data); //0x26[5:0]&0x27[7:0]=total number of line * 2
 	pStat->vField0Total |= data >> 1;
 
-	HIS_IIC_Read(ADV_IIC_PORT, ADV_HDMI_SLA, 0x09, &data);
+	PCA9548_IIC_Read(PCA9548A_IIC_SWID_7619, ADV_HDMI_SLA, 0x09, &data);
 	pStat->vField0Act = (data & 0x0f) << 8;
-	HIS_IIC_Read(ADV_IIC_PORT, ADV_HDMI_SLA, 0x0A, &data); //0x09[4:0]&0x0A[7:0]=total number of active line in field0
+	PCA9548_IIC_Read(PCA9548A_IIC_SWID_7619, ADV_HDMI_SLA, 0x0A, &data); //0x09[4:0]&0x0A[7:0]=total number of active line in field0
 	pStat->vField0Act |= data;
 
-	HIS_IIC_Read(ADV_IIC_PORT, ADV_HDMI_SLA, 0x2A, &data);
+	PCA9548_IIC_Read(PCA9548A_IIC_SWID_7619, ADV_HDMI_SLA, 0x2A, &data);
 	pStat->vFrontPorch = (data & 0x1f) << 7;
-	HIS_IIC_Read(ADV_IIC_PORT, ADV_HDMI_SLA, 0x2B, &data); //0x2A[5:0]&0x2B[7:0]=total number of Vsync front porch * 2
+	PCA9548_IIC_Read(PCA9548A_IIC_SWID_7619, ADV_HDMI_SLA, 0x2B, &data); //0x2A[5:0]&0x2B[7:0]=total number of Vsync front porch * 2
 	pStat->vFrontPorch |= data >> 1;
 
-	HIS_IIC_Read(ADV_IIC_PORT, ADV_HDMI_SLA, 0x2E, &data);
+	PCA9548_IIC_Read(PCA9548A_IIC_SWID_7619, ADV_HDMI_SLA, 0x2E, &data);
 	pStat->vPulseWidth = (data & 0x1f) << 7;
-	HIS_IIC_Read(ADV_IIC_PORT, ADV_HDMI_SLA, 0x2F, &data); //0x2E[5:0]&0x2F[7:0]=total number of line in Vsync * 2
+	PCA9548_IIC_Read(PCA9548A_IIC_SWID_7619, ADV_HDMI_SLA, 0x2F, &data); //0x2E[5:0]&0x2F[7:0]=total number of line in Vsync * 2
 	pStat->vPulseWidth |= data >> 1;
 
-	HIS_IIC_Read(ADV_IIC_PORT, ADV_HDMI_SLA, 0x32, &data);
+	PCA9548_IIC_Read(PCA9548A_IIC_SWID_7619, ADV_HDMI_SLA, 0x32, &data);
 	pStat->vBackPorch = (data & 0x1f) << 7;
-	HIS_IIC_Read(ADV_IIC_PORT, ADV_HDMI_SLA, 0x33, &data); //0x32[5:0]&0x33[7:0]=total number of Vsync back porch * 2
+	PCA9548_IIC_Read(PCA9548A_IIC_SWID_7619, ADV_HDMI_SLA, 0x33, &data); //0x32[5:0]&0x33[7:0]=total number of Vsync back porch * 2
 	pStat->vBackPorch |= data >> 1;
 
-	HIS_IIC_Read(ADV_IIC_PORT, ADV_HDMI_SLA, 0x0B, &data); //bit5=1 means interlaced input,0 means progressive input
+	PCA9548_IIC_Read(PCA9548A_IIC_SWID_7619, ADV_HDMI_SLA, 0x0B, &data); //bit5=1 means interlaced input,0 means progressive input
 	pStat->interlaced = (data >> 5) & 0x1;
 	return WV_SOK;
 }

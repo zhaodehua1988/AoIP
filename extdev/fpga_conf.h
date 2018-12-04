@@ -72,7 +72,19 @@ typedef struct FPGA_RESOLUTION_INFO_S
  WV_U16 actVsize;
 } FPGA_RESOLUTION_INFO_S ; 
 
-WV_S32 FPGA_Init();
+WV_U16 FPGA_CONF_GerVer();
+WV_S32 FPGA_CONF_ResetA();
+WV_S32 FPGA_CONF_RqMcu();
+WV_S32 FPGA_CONF_ClrBuf();
 
-WV_S32 FPGA_DeInit();
+
+
+WV_S32 FPGA_CONF_SetWin(WV_U16  num, FPGA_WIN_INFO_S * pInfo);
+WV_S32 FPGA_CONF_SetResolution();
+WV_S32 FPGA_CONF_SetOutput(WV_U16  ena);
+WV_U16 FPGA_CONF_GetOutput();
+WV_S32 FPGA_CONF_GetVersion();
+WV_S32 FPGA_CONF_GetOutChl_Num();
+WV_S32 FPGA_CONF_GetVersion_ID(); 
+WV_U16 FPGA_CONF_SetGlobalOutput(WV_U16 ena);
 #endif

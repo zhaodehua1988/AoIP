@@ -11,98 +11,334 @@
 //#include "iTE6805_Global.h"
 #include "iTE6805_Init.h"
 #include "iTE6805_DRV.h"
-//#include "version.h"
 #include "iTE6805_DEV_DEFINE.h"
 #include "iTE6805_SYS.h"
 #include "PCA9548A.h"
+#include "iTE6805_config.h"
 #include "wv_common.h"
-_iTE6805_DATA iTE6805_DATA;
+#include "wv_thr.h"
+#include "PCA9555.h"
+ _iTE6805_DATA iTE6805_DATA;
 _iTE6805_VTiming iTE6805_CurVTiming;
 _iTE6805_PARSE3D_STR iTE6805_EDID_Parse3D;
 
-void ITE6805_Init(void)
+//////////////////////////////////////////////////
+typedef struct ITE68051_HDMI_INFO
 {
-	// iTE_u16 INT_TimeOutCnt = 0;
+	WV_U8 inputType; //0=MHL ;1=HDMI
+	WV_U16 totalPixel;
+	WV_U16 activePixel;
+	WV_U16 totalLine;
+	WV_U16 activeLine;
+
+} ITE68051_HDMI_INFO;
+
+/////////////////////////////////////////////////
+typedef struct ITE68051_DEV{
+	WV_THR_HNDL_T thrHndl;
+	WV_U32      open;
+	WV_U32      close;
+
+}ITE68051_DEV;
+
+ITE68051_DEV gIte68051Dev;
+/****************************************************
+ *void *ITE6805_Proc(void *prm)
+ ***************************************************/
+void *ITE6805_Proc(void *prm)
+{
+	iTE_u16 INT_TimeOutCnt = 0;
 	//P2_3 = 0;	// for DAC enable !!!
 	//initialTimer1();
 	//InitMessage();
 	//HoldSystem();
-	WV_printf("it68051 init start \n");
+
+
+	PCA9555_Clr(PCA9555_OUT_PORT0_REG,PCA9555_PIN_P00);
+	sleep(1);
+	PCA9555_Set(PCA9555_OUT_PORT0_REG,PCA9555_PIN_P00);
+	sleep(1);
 	PCA9548_SwitchToBus(PCA9548A_IIC_SWID_68051_HDMI_IN);
 	iTE6805_Init_fsm();
 
-	//iTE6805_HDCP_Detect();
-#ifdef EVB_AUTO_DETECT_PORT_BY_PIN
-//iTE6805_Port_Detect();
+	ITE68051_DEV *pDev = (ITE68051_DEV *)prm;
+	pDev->open = 1;
+	pDev->close = 0;
+	//EVB_CONTROL_4K_DOWNSCALE = 1; // mid
+	
+		
+			#ifdef DYNAMIC_HDCP_ENABLE_DISABLE
+			iTE6805_HDCP_Detect();
+			#endif
+
+			#ifdef EVB_AUTO_DETECT_PORT_BY_PIN
+			//iTE6805_Port_Detect();
+			#endif
+	#if 0
+   // while( pDev->open = 1 ) {
+
+			if( iTE6805_DATA.STATEV != STATEV_Unplug && iTE6805_DATA.STATEV != STATEV_VideoOff )
+			{
+				if(iTE6805_DATA.CurrentPort == PORT0)
+				{
+					iTE6805_hdmirx_port0_SYS_irq();
+					#ifdef _ENABLE_AUTO_EQ_
+					iTE6805_hdmirx_port0_EQ_irq();
+					#endif
+
+					#ifdef _ENABLE_IT6805_MHL_FUNCTION_
+					iTE6805_mhlrx_irq();
+					#endif
+				}
+				else
+				{
+					iTE6805_hdmirx_port1_SYS_irq();
+					#ifdef _ENABLE_AUTO_EQ_
+					iTE6805_hdmirx_port1_EQ_irq();
+					#endif
+				}
+				iTE6805_hdmirx_common_irq();
+			}
+
+			#ifdef _ENABLE_IT6805_CEC_
+			//iTE6805_hdmirx_CEC_irq();
+			#endif
+
+			#ifdef _ENABLE_AUTO_EQ_
+			iTE6805_EQ_fsm();
+			#endif
+
+		    iTE6805_vid_fsm();
+		    iTE6805_aud_fsm();
+     
+		
+	//}
+#else
+ while( pDev->open = 1 ) {
+		sleep(5);
+	}     
 #endif
-//iTE6805_Port_Detect();
-	if (iTE6805_DATA.STATEV != STATEV_Unplug && iTE6805_DATA.STATEV != STATEV_VideoOff)
+ 
+	gIte68051Dev.close = 1;
+
+}
+
+
+/****************************************************************************
+
+WV_S32 iTE6805_GetCmd(WV_S32 argc, WV_S8 **argv,WV_S8 *prfBuff)
+
+****************************************************************************/
+WV_S32 iTE6805_GetCmd(WV_S32 argc, WV_S8 **argv, WV_S8 *prfBuff)
+{
+	WV_U32 regAddr, dataNum;
+	WV_S32 ret, i;
+	WV_U8 data;
+	ITE68051_HDMI_INFO info;
+	if (argc < 1)
 	{
-		if (iTE6805_DATA.CurrentPort == PORT0)
+
+		prfBuff += sprintf(prfBuff, "get 6805 <cmd> ;cmd like:reg/input\r\n");
+		return 0;
+	}
+
+	if (strcmp(argv[0], "reg") == 0)
+	{
+
+		if (argc < 3)
 		{
-			printf("----------------port 0 -----------------------\n");
-			iTE6805_hdmirx_port0_SYS_irq();
-#define _ENABLE_AUTO_EQ_
+			prfBuff += sprintf(prfBuff, "get 6805 reg <regAddr> <dataNum>\r\n");
+		}
+		ret = WV_STR_S2v(argv[1], &regAddr);
+		if (ret != WV_SOK)
+		{
+			prfBuff += sprintf(prfBuff, "input erro!\r\n");
+			return WV_SOK;
+		}
+		ret = WV_STR_S2v(argv[2], &dataNum);
+		if (ret != WV_SOK)
+		{
+			prfBuff += sprintf(prfBuff, "input erro!\r\n");
+			return WV_SOK;
+		}
 
-#ifdef _ENABLE_AUTO_EQ_
-			iTE6805_hdmirx_port0_EQ_irq();
-#endif
-
-#ifdef _ENABLE_IT6805_MHL_FUNCTION_
-			iTE6805_mhlrx_irq();
-#endif
+		for (i = 0; i < dataNum; i++)
+		{
+			PCA9548_IIC_Read(PCA9548A_IIC_SWID_68051_HDMI_IN, ADDR_HDMI, regAddr + i, &data);
+			prfBuff += sprintf(prfBuff, "get 0x%X = 0x%X\r\n", regAddr + i, data);
+		}
+	}
+	else if (strcmp(argv[0], "input") == 0)
+	{
+		//change to bank 0
+		ret = PCA9548_IIC_Write(PCA9548A_IIC_SWID_68051_HDMI_IN, ADDR_HDMI, 0xf, 0);
+		if (ret != 0)
+			return WV_SOK;
+		WV_U16 temp1, temp;
+		ret = PCA9548_IIC_Read(PCA9548A_IIC_SWID_68051_HDMI_IN, ADDR_HDMI, 0x13, &data);
+		if (ret != 0)
+			return WV_SOK;
+		if (data & 0x40)
+		{
+			info.inputType = 1;
 		}
 		else
 		{
-			iTE6805_hdmirx_port1_SYS_irq();
-#ifdef _ENABLE_AUTO_EQ_
-			iTE6805_hdmirx_port1_EQ_irq();
-#endif
+			info.inputType = 0;
 		}
-		iTE6805_hdmirx_common_irq();
+		//get totalPix
+		ret = PCA9548_IIC_Read(PCA9548A_IIC_SWID_68051_HDMI_IN, ADDR_HDMI, 0x9B, &data);
+		if (ret != 0)
+			return WV_SOK;
+		info.totalPixel = data;
+		ret = PCA9548_IIC_Read(PCA9548A_IIC_SWID_68051_HDMI_IN, ADDR_HDMI, 0x9C, &data);
+		if (ret != 0)
+		return WV_SOK;
+		info.totalPixel = info.totalPixel | (data & 0x3f) << 8;
+		//get activePix
+		ret = PCA9548_IIC_Read(PCA9548A_IIC_SWID_68051_HDMI_IN, ADDR_HDMI, 0x9D, &data);
+		if (ret != 0)
+			return WV_SOK;
+		info.activePixel = data;
+		ret = PCA9548_IIC_Read(PCA9548A_IIC_SWID_68051_HDMI_IN, ADDR_HDMI, 0x9E, &data);
+		if (ret != 0)
+			return WV_SOK;
+		info.activePixel = info.activePixel | (data & 0x3f) << 8;
+		//get totalLine
+		ret = PCA9548_IIC_Read(PCA9548A_IIC_SWID_68051_HDMI_IN, ADDR_HDMI, 0xA2, &data);
+		if (ret != 0)
+			return WV_SOK;
+		info.totalLine = data;
+		ret = PCA9548_IIC_Read(PCA9548A_IIC_SWID_68051_HDMI_IN, ADDR_HDMI, 0xA3, &data);
+		if (ret != 0)
+			return WV_SOK;
+		info.totalLine = info.totalLine | (data & 0x3f) << 8;
+		//get activeLine
+		ret = PCA9548_IIC_Read(PCA9548A_IIC_SWID_68051_HDMI_IN, ADDR_HDMI, 0xA4, &data);
+		if (ret != 0)
+			return WV_SOK;
+		info.activeLine = data;
+		ret = PCA9548_IIC_Read(PCA9548A_IIC_SWID_68051_HDMI_IN, ADDR_HDMI, 0xA5, &data);
+		if (ret != 0)
+			return WV_SOK;
+		info.activeLine = info.activeLine | (data & 0x3f) << 8;
+
+		if (info.inputType = 0)
+		{
+			prfBuff += sprintf(prfBuff, "input mode = MHL\r\n");
+		}
+		else
+		{
+			prfBuff += sprintf(prfBuff, "input mode = HDMI\r\n");
+		}
+
+		prfBuff += sprintf(prfBuff, "input totalPix = %d\r\n",info.totalPixel);
+		prfBuff += sprintf(prfBuff, "input activePix = %d\r\n",info.activePixel);
+		prfBuff += sprintf(prfBuff, "input totalLine = %d\r\n",info.totalLine);
+		prfBuff += sprintf(prfBuff, "input totalLine = %d\r\n",info.activeLine);
+
 	}
 
-#ifdef _ENABLE_IT6805_CEC_
-	iTE6805_hdmirx_CEC_irq();
-#endif
+	return WV_SOK;
+}
 
-#ifdef _ENABLE_AUTO_EQ_
-	iTE6805_EQ_fsm();
-#endif
+/****************************************************************************
 
-	iTE6805_vid_fsm();
-	iTE6805_aud_fsm();
-	//INT_TimeOutCnt = 0;
+WV_S32 iTE6805_SetCmd(WV_S32 argc, WV_S8 **argv,WV_S8 *prfBuff)
 
-	//   HoldSystem();
-	//}
-	
+****************************************************************************/
+WV_S32 iTE6805_SetCmd(WV_S32 argc, WV_S8 **argv, WV_S8 *prfBuff)
+{
+	WV_U32 cmd, regAddr, data;
+	WV_S32 ret;
+	if (argc < 1)
+	{
+
+		prfBuff += sprintf(prfBuff, "set 6805 <cmd>;//cmd like: reg/mode/\r\n");
+		return 0;
+	}
+	//设置寄存器
+	if (strcmp(argv[0], "reg") == 0)
+	{
+		ret = WV_STR_S2v(argv[0], &regAddr);
+		if (ret != WV_SOK)
+		{
+			prfBuff += sprintf(prfBuff, "input erro!\r\n");
+			return WV_SOK;
+		}
+		ret = WV_STR_S2v(argv[1], &data);
+		if (ret != WV_SOK)
+		{
+			prfBuff += sprintf(prfBuff, "input erro!\r\n");
+			return WV_SOK;
+		}
+		PCA9548_IIC_Write(PCA9548A_IIC_SWID_68051_HDMI_IN, ADDR_HDMI, (WV_U8)regAddr, (WV_U8)data);
+		prfBuff += sprintf(prfBuff, "set 0x%X = 0x%X\r\n", regAddr, data);
+	}
+	else if (strcmp(argv[0], "mode") == 0)
+	{ //设置输出模式单双沿
+
+		if (argc < 2)
+		{
+
+			prfBuff += sprintf(prfBuff, "set 6805 mode <1 0r 2>//1:sigle pixel mode ;2 dual pixel mode \r\n");
+			return 0;
+		}
+
+		ret = WV_STR_S2v(argv[1], &data);
+		if (ret != WV_SOK)
+		{
+			prfBuff += sprintf(prfBuff, "input erro!\r\n");
+			return WV_SOK;
+		}
+
+		if (data != 1 && data != 2)
+		{
+			prfBuff += sprintf(prfBuff, "input mode error\r\n");
+			return WV_SOK;
+		}
+		iTE6805_Set_LVDS_Video_Path((WV_U8)data);
+		prfBuff += sprintf(prfBuff, "set 6805 hdmi mode = %d \r\n", data);
+	}
+	else
+	{
+		prfBuff += sprintf(prfBuff, "input erro!\r\n");
+	}
+
+	return WV_SOK;
+}
+
+/******************************************************
+ * void ITE6805_Open(void)
+ ******************************************************/
+void ITE6805_Open(void)
+{	WV_printf("it68051 init start \n");
+
+	PCA9555_Clr(PCA9555_OUT_PORT0_REG,PCA9555_PIN_P00);
+	sleep(1);
+	PCA9555_Set(PCA9555_OUT_PORT0_REG,PCA9555_PIN_P00);
+	sleep(1);
+	PCA9548_SwitchToBus(PCA9548A_IIC_SWID_68051_HDMI_IN);
+	iTE6805_Init_fsm();
+
+    WV_CMD_Register("set", "6805", "pca9555 set reg", iTE6805_SetCmd);
+    WV_CMD_Register("get", "6805", "pca9555 get reg", iTE6805_GetCmd); 
+
+	WV_THR_Create(&gIte68051Dev.thrHndl,ITE6805_Proc, WV_THR_PRI_DEFAULT, WV_THR_STACK_SIZE_DEFAULT, (void *)&gIte68051Dev);
 	WV_printf("it68051 init end \n");
-}
+	
 
-void InitMessage()
-{
-#if Debug_message
-	init_printf();
-	printf("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n");
-	printf("                   %s\n", VERSION_STRING);
-	printf("                   %s\n", DATE_STRING);
-	printf("!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!\n\n");
-#endif
 }
+/******************************************************
+ * void ITE6805_Close(void)
+ ******************************************************/
+void ITE6805_Close(void)
+{
+	if(gIte68051Dev.open == 1){
+		gIte68051Dev.open = 0;
+		while(gIte68051Dev.close == 1);
+		WV_THR_Destroy(&gIte68051Dev.thrHndl);
+	}
+	printf("ite68051 deinit ok..");
 
-/*
-void HoldSystem(void)
-{
-    Hold_Pin=1;
-    while(!Hold_Pin)
-    {
-    #if Debug_message
-            printf("Hold\\\r");
-            printf("Hold-\r");
-            printf("Hold/\r");
-            printf("Hold|\r");
-    #endif
-    }
 }
-*/

@@ -10,7 +10,7 @@
 //******************************************/
 #ifndef _ITE6805_DRV_H_
 #define _ITE6805_DRV_H_
-#include "typedef.h"
+#include "iTE6805_typedef.h"
 void iTE6805_Set_LVDS_Video_Path(iTE_u8 LaneNum);
 void iTE6805_Set_TTL_Video_Path();
 void iTE6805_Set_AVMute(iTE_u8 AVMUTE_STATE);

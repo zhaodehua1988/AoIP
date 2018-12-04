@@ -196,6 +196,10 @@ WV_S32 PCA9555_Init()
 {
     WV_CMD_Register("set", "9555", "pca9555 set reg", PCA9555_SetCmd);
     WV_CMD_Register("get", "9555", "pca9555 get reg", PCA9555_GetCmd); 
+
+    PCA9555_WriteRegData(PCA9555_CFG_PORT0_REG,PCA9555_OUTPUT);
+    PCA9555_WriteRegData(PCA9555_CFG_PORT1_REG,PCA9555_OUTPUT);
+    //PCA9555_Set(PCA9555_CFG_PORT0_REG,PCA9555_OUTPUT);
     return WV_SOK;
 }
 /*****************************************************

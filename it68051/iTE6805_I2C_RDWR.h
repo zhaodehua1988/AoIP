@@ -8,7 +8,7 @@
 //   @date   2017/09/15
 //   @fileversion: iTE6805_MCUSRC_1.02
 //******************************************/
-#include "typedef.h"
+#include "iTE6805_typedef.h"
 typedef struct
 {
     iTE_u8 ucAddr;

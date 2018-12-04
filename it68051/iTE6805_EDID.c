@@ -32,7 +32,7 @@ void iTE6805_EDID_Init()
 	chgbank(0);
 	hdmirxwr(0x4B, (ADDR_EDID|0x01));	//[7:1] EDID RAM Slave Adr ,[0]1: Enable access EDID block
 	iTE6805_EDID_RAMInitial();
-	iTE6805_EDID_ParseVSDB_3Dblock();
+	//iTE6805_EDID_ParseVSDB_3Dblock();
 	hdmirxset(0xC5, 0x01, 0x00);	// enable PORT0 internal EDID
 	/*
 	chgbank(4);

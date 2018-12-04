@@ -166,7 +166,7 @@ WV_S32 HIS_IIC_Write(WV_U32 port, WV_U8 devAddr, WV_U8 regAddr, WV_U8 data)
   ret = HI_UNF_I2C_Write(port, devAddr, (WV_U32)regAddr, 1, &data, 1);
   if (ret != WV_SOK)
   {
-    WV_ERROR("HI_UNF_I2C_Write devAddr=0x%02x[%d],regAddr=0x%02x[%d],data=0x%02x[%d]erro = 0x%04x\r\n",devAddr,devAddr, regAddr,regAddr,data,data,ret);
+    WV_ERROR("HI_UNF_I2C_Write erro = 0x%04x\r\n", ret);
   }
   return ret;
 }
@@ -183,7 +183,7 @@ WV_S32 HIS_IIC_Read(WV_U32 port, WV_U8 devAddr, WV_U8 regAddr, WV_U8 *pData)
   ret = HI_UNF_I2C_Read(port, devAddr, (WV_U32)regAddr, 1, pData, 1);
   if (ret != WV_SOK)
   {
-    WV_ERROR("HI_UNF_I2C_Read devAddr=0x%02x[%d],regAddr=0x%02x[%d],erro = 0x%04x\r\n",devAddr,devAddr,regAddr,regAddr,ret);
+    WV_ERROR("HI_UNF_I2C_Read erro = 0x%04x\r\n", ret);
   }
   return ret;
 }

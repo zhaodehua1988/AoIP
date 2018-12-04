@@ -36,6 +36,7 @@ WV_S32  HIS_SYS_ConfInit()
   //gHisConf.disFormat = HI_UNF_ENC_FMT_3840X2160_30;
   //gHisConf.disFormat = HI_UNF_ENC_FMT_1080P_60; 
  // gHisConf.disFormat = HI_UNF_ENC_FMT_VESA_2560X1600_60_RB;
+
   gHisConf.disFormat = HI_UNF_ENC_FMT_BUTT;
 	
     return WV_SOK;

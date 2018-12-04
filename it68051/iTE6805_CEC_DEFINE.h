@@ -11,7 +11,7 @@
 #ifndef _ITE6805_CEC_DEFINE_H_
 #define _ITE6805_CEC_DEFINE_H_
 
-#include "typedef.h"
+#include "iTE6805_typedef.h"
 
 #define CEC_MAX_MSG_LEN		(16)	/* 16 blocks */
 

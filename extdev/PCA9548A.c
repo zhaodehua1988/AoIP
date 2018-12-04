@@ -23,6 +23,7 @@ Description:PCA9548A芯片控制
 #define HI3798_IIC_CHANEL 2
 #define PCA9548A_ADDR 0xE0
 
+static pthread_mutex_t mutex;
 /************************************************
 Function:       PCA9548_SwitchToBus(WV_U8 busID,WV_U8 rw)
 Description:    切换9548A总线
@@ -48,22 +49,31 @@ Other:
 ************************************************/
 WV_S32 PCA9548_IIC_Write(WV_U8 id, WV_U8 devAddr, WV_U8 regAddr, WV_U8 data)
 {
+    //unlock
+    if (pthread_mutex_lock(&mutex) != 0)
+    {
+        PCA9548A_printf("9548lock error!\n");
+    }
+
     WV_S32 ret;
     ret = PCA9548_SwitchToBus(id);
     if (ret != 0)
     {
-        ret = PCA9548_SwitchToBus(id);
+
+        PCA9548A_printf("9548_iic switch to bus [0x%2x] err \n", id);
+    }
+    else
+    {
+        ret = HIS_IIC_Write(HI3798_IIC_CHANEL, devAddr, regAddr, data);
         if (ret != 0)
         {
-            PCA9548A_printf("9548_iic switch to bus [0x%2x] err \n", id);
-            return ret;
+            PCA9548A_printf("9548_iic write err \n");
         }
     }
-
-    ret = HIS_IIC_Write(HI3798_IIC_CHANEL, devAddr, regAddr, data);
-    if (ret != 0)
+    //lock
+    if (pthread_mutex_unlock(&mutex) != 0)
     {
-        PCA9548A_printf("9548_iic write err \n");
+        PCA9548A_printf("9548unlock error!\n");
     }
     return ret;
 }
@@ -77,22 +87,32 @@ Other:
 ************************************************/
 WV_S32 PCA9548_IIC_Read(WV_U8 id, WV_U8 devAddr, WV_U8 regAddr, WV_U8 *data)
 {
+
+    if (pthread_mutex_lock(&mutex) != 0)
+    {
+        PCA9548A_printf("9548lock error!\n");
+    }
+
     WV_S32 ret;
     ret = PCA9548_SwitchToBus(id);
     if (ret != 0)
     {
-        ret = PCA9548_SwitchToBus(id);
+        PCA9548A_printf("9548_iic switch to bus [0x%2x] err \n", id);
+    }
+    else
+    {
+        ret = HIS_IIC_Read(HI3798_IIC_CHANEL, devAddr, regAddr, data);
         if (ret != 0)
         {
-            PCA9548A_printf("9548_iic switch to bus [0x%2x] err \n", id);
-            return ret;
+            PCA9548A_printf("9548_iic read err \n");
         }
     }
-    ret = HIS_IIC_Read(HI3798_IIC_CHANEL, devAddr, regAddr, data);
-    if (ret != 0)
+
+    if (pthread_mutex_unlock(&mutex) != 0)
     {
-        PCA9548A_printf("9548_iic read err \n");
+        PCA9548A_printf("9548unlock error!\n");
     }
+
     return ret;
 }
 
@@ -139,16 +159,16 @@ WV_S32 PCA9548_IIC_GetReg(WV_S32 argc, WV_S8 **argv, WV_S8 *prfBuff)
     {
         prfBuff += sprintf(prfBuff, "input erro!\r\n");
     }
-    printf("\nbusid:%d,devAddr:%02x,regAddr:%02x,dataLen:%d\n", busId, (WV_U8)devAddr, regAddr, dataLen);
+    //printf("\nbusid:%d,devAddr:%02x,regAddr:%02x,dataLen:%d\n", busId, (WV_U8)devAddr, regAddr, dataLen);
     //prfBuff += sprintf("\nbusid:%d,devAddr:%02x,regAddr:%02x,dataLen:%d\n", busId, (WV_U8)devAddr, regAddr, dataLen);
     for (i = 0; i < dataLen; i++)
     {
-        ret = PCA9548_IIC_Read((WV_U8)busId, (WV_U8)devAddr, (WV_U8)(regAddr+i), &buf[i]);
+        ret = PCA9548_IIC_Read((WV_U8)busId, (WV_U8)devAddr, (WV_U8)(regAddr + i), &buf[i]);
         if (ret != 0)
         {
-            prfBuff += sprintf(prfBuff, "get %02x err\r\n", regAddr+i);
+            prfBuff += sprintf(prfBuff, "get %02x err\r\n", regAddr + i);
         }
-        prfBuff += sprintf(prfBuff, "0x%02x = 0x%02x\r\n", regAddr + i, buf[i]);
+        prfBuff += sprintf(prfBuff, "read 0x%02x = 0x%02x\r\n", regAddr + i, buf[i]);
     }
     return WV_SOK;
 }
@@ -195,13 +215,13 @@ WV_S32 PCA9548_IIC_SetReg(WV_S32 argc, WV_S8 **argv, WV_S8 *prfBuff)
     {
         prfBuff += sprintf(prfBuff, "input erro!\r\n");
     }
-    printf("\r\nbusid:%d,devAddr:%02x,regAddr:%02x,data:0x%02x\r\n", busId, (WV_U8)devAddr, regAddr, data);
+    //printf("\r\nbusid:%d,devAddr:%02x,regAddr:%02x,data:0x%02x\r\n", busId, (WV_U8)devAddr, regAddr, data);
     ret = PCA9548_IIC_Write((WV_U8)busId, (WV_U8)devAddr, (WV_U8)regAddr, (WV_U8)data);
     if (ret != 0)
     {
         prfBuff += sprintf(prfBuff, "get %02x err\r\n", regAddr);
     }
-    prfBuff += sprintf(prfBuff, "0x%02x = 0x%02x\r\n", regAddr,data);
+    prfBuff += sprintf(prfBuff, "write 0x%02x = 0x%02x\r\n", regAddr, data);
 
     return WV_SOK;
 }
@@ -214,7 +234,7 @@ WV_S32 PCA9548_Init()
 WV_S32 PCA9548_Init()
 {
     WV_CMD_Register("get", "9548", "pca9548a iic bus read", PCA9548_IIC_GetReg);
-    WV_CMD_Register("set", "9548", "pca9548aiic bus write", PCA9548_IIC_SetReg);    
+    WV_CMD_Register("set", "9548", "pca9548aiic bus write", PCA9548_IIC_SetReg);
     return WV_SOK;
 }
 /*****************************************************

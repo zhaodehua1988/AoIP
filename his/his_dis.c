@@ -5,7 +5,7 @@
 
 #define  HIS_CAST_WIDTH   	1280 
 #define  HIS_CAST_HEIGHT   	720  
-#define  HIS_DIS_HEIGHT     2172        
+#define  HIS_DIS_HEIGHT     2160        
 
 //{1,   1,   2,  2160,  82,  8,  3840, 384, 176,       1,   1,  1,    88, 10, 1, 0,  0,  0}
 HI_UNF_DISP_TIMING_S CustTiming = 
@@ -191,7 +191,7 @@ WV_S32  HIS_DIS_Init(HI_UNF_ENC_FMT_E disFormat,WV_S32 mode)
 		//Ret = HI_UNF_DISP_SetVirtualScreen(HI_UNF_DISPLAY1, 3840, 1092);
 	}
 */
-	Ret = HI_UNF_DISP_SetVirtualScreen(HI_UNF_DISPLAY1, 1920, 1092); 
+	Ret = HI_UNF_DISP_SetVirtualScreen(HI_UNF_DISPLAY1, 1920, 1080); 
     if (Ret != HI_SUCCESS)
     {
         WV_printf("HI_UNF_DISP_SetVirtualScreen failed, Ret=%#x.\n", Ret);
@@ -280,8 +280,8 @@ WV_S32  HIS_DIS_Init(HI_UNF_ENC_FMT_E disFormat,WV_S32 mode)
    	     //return Ret;
    	 }
 
-     }
-    /*
+    }
+    
      HI_UNF_DISP_TIMING_S  hdmiTims;
      Ret =  HI_UNF_DISP_GetCustomTiming (HI_UNF_DISPLAY1,&hdmiTims);
     
@@ -305,7 +305,7 @@ WV_S32  HIS_DIS_Init(HI_UNF_ENC_FMT_E disFormat,WV_S32 mode)
 	printf("AspectRatioW   	= %d\n",hdmiTims.AspectRatioW);
 	printf("AspectRatioH   	= %d\n",hdmiTims.AspectRatioH);
 	printf("bUseGamma   	= %d\n",hdmiTims.bUseGamma);
- */
+ 
      
     return  WV_SOK; 
     
@@ -495,6 +495,7 @@ WV_S32 HIS_DIS_SetCustomTiming(WV_S32 mode)
 **********************************************************************************************/
 WV_S32  HIS_DIS_SetCustomTiming(WV_U32 mode)
 { 
+	printf("set custom ...................mode %d ................\n",mode);
 	HI_UNF_DISP_TIMING_S    custTiming;
 	WV_S32 ret=-1;
 	memset(&custTiming,0,sizeof(HI_UNF_DISP_TIMING_S));
@@ -513,7 +514,7 @@ WV_S32  HIS_DIS_SetCustomTiming(WV_U32 mode)
 		case 1:
 		  	custTiming.VFB = 4;//8
 			custTiming.VBB = 29; //80
-			custTiming.VACT= 2172;//HIS_DIS_HEIGHT;//2172
+			custTiming.VACT= 2160;//HIS_DIS_HEIGHT;//2172
 			custTiming.HFB = 176;
 			custTiming.HBB = 384;
 			custTiming.HACT= 3840;

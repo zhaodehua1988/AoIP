@@ -14,6 +14,7 @@
 #include "hi_svr_metadata.h"
 #include "hi_svr_assa.h"
 #include "hi_unf_edid.h"
+#include "tsk_player.h"
 #include <time.h>
 #define  HIS_PLAYER_STATUS_INIT          	0
 #define  HIS_PLAYER_STATUS_DEINIT        	1

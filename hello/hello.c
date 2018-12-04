@@ -5,15 +5,16 @@
 #include "his_spi.h"
 #include "his_fb.h"
 #include "adi_7619.h"
+#include "tsk_fpga.h"
 #include "fpga_conf.h"
 #include <sys/time.h>
 #include "wv_file.h"
 #include "sys_env.h"
 #include "wv_file.h"
-#include "iTE6805_Init.h"
 #include "PCA9548A.h"
 #include "PCA9555.h"
-//#include "iTE6615_Init.h"
+#include "iTE6805_Init.h"
+#include "iTE6615_Init.h"
 WV_S32 main()
 {
 	WV_S32 ret;
@@ -26,13 +27,17 @@ WV_S32 main()
 	SYS_ENV_Open();
 	WV_TTY_Create();
 	HIS_SYS_Init();
+	//SYS_DATE_Init();
 	SYS_IP_Init();
+	ADV_7619_Init();
+	TSK_PLAYER_Open();
 	PCA9548_Init();
 	PCA9555_Init();
-	//ADV_7619_Init();
-	//FPGA_Init();
-	ITE6805_Init();
-	//iTE6615_Init();
+	ITE6805_Open();
+	ITE6615_Open();
+	//TSK_FPGA_Open();
+	//TSK_GO_Open();
+	//system("./MultiViewer > /dev/null");
 	rowNum = 0;
 	while (1)
 	{
@@ -41,10 +46,14 @@ WV_S32 main()
 			break;
 		usleep(100000);
 	}
-	PCA9555_DeInit();
-	PCA9548_DeInit();
-	//FPGA_DeInit();
+
+	//TSK_GO_Close();
+	//TSK_FPGA_Close();
+	ITE6615_Close();
+	ITE6805_Close();
+	TSK_PLAYER_Close();
 	SYS_IP_DeInit();
+	//SYS_DATE_DeInit();
 	HIS_SYS_DeInit();
 	WV_TTY_Destroy();
 	SYS_ENV_Close();

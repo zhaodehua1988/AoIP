@@ -12,9 +12,8 @@
 #ifndef _ITE6805_INIT_H_
 #define _ITE6805_INIT_H_ 
 
-void ITE6805_Init( void );
-//void InitMessage();
-//void HoldSystem();
+void ITE6805_Open( void);
+void ITE6805_Close(void);
 
 #endif
 

@@ -1290,6 +1290,7 @@ void iTE6805_Port_Select(iTE_u8 ucPortSel)
 	{
 	    hdmirxset(0x35, BIT0, 0); //select port 0
 		iTE6805_Set_HPD_Ctrl(PORT1 , HPD_LOW);
+		iTE6805_Set_HPD_Ctrl(PORT0 , HPD_HIGH);
 	}
 	else
 	{
@@ -1301,39 +1302,27 @@ void iTE6805_Port_Select(iTE_u8 ucPortSel)
 		iTE6805_Set_HPD_Ctrl(PORT0 , HPD_LOW);
 	}
 	chgbank(0);
+/*
 	iTE6805_DATA.CurrentPort = ucPortSel;
-    //if(iTE6805_DATA.CurrentPort != ucPortSel)
-    //{
-		//iTE6805_DATA.CurrentPort = ucPortSel;
-        //iTE6805_vid_chg(STATEV_WaitSync);
-		//iTE6805_vid_chg(STATEV_Unplug);
-    //}
+    if(iTE6805_DATA.CurrentPort != ucPortSel)
+    {
+		iTE6805_DATA.CurrentPort = ucPortSel;
+        iTE6805_vid_chg(STATEV_WaitSync);
+		iTE6805_vid_chg(STATEV_Unplug);
+    }
+*/
 }
 
 #ifdef EVB_AUTO_DETECT_PORT_BY_PIN
 iTE_u8 LAST_PORT = 3;
 void iTE6805_Port_Detect()
 {
-/*
-	if(PORT_SWITCH == LAST_PORT)
-	{
-		return;
-	}
-*/
-/*
-	if(PORT_SWITCH!=0)
-	{
-		iTE6805_Port_Select(PORT0);
-		iTE6805_Reset_ALL_Logic(PORT0);
-	}
-	else
-	{
-		iTE6805_Port_Select(PORT1);
-		iTE6805_Reset_ALL_Logic(PORT1);
-	}
 
-	LAST_PORT = PORT_SWITCH;
-	*/
+
+	//printf("port detect port 0");
+	iTE6805_Port_Select(PORT0);
+	iTE6805_Reset_ALL_Logic(PORT0);
+
 	printf("test:iTE6805_Port_Detect\n");
 }
 #endif
