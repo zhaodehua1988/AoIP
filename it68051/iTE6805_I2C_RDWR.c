@@ -106,7 +106,7 @@ iTE_u8 hdmirxwr( iTE_u8 RegAddr,iTE_u8 DataIn)
 iTE_u8  hdmirxset( iTE_u8  offset, iTE_u8  mask, iTE_u8  ucdata )
 {
     iTE_u8  temp;
-     REG_PRINTF(("=====HDMI I2C  Write Reg0x%X=0x%X =====\n",(int)offset,(int)ucdata));
+     //REG_PRINTF(("=====HDMI I2C  Write Reg0x%X=0x%X =====\n",(int)offset,(int)ucdata));
     temp = hdmirxrd(offset);
     temp = (temp&((~mask)&0xFF))+(mask&ucdata);
     return hdmirxwr(offset, temp);
@@ -143,7 +143,6 @@ void hdimrx_write_init(iTE6805_INI_REG _CODE *tdata)
     {
         hdmirxset(tdata[cnt].ucAddr,tdata[cnt].andmask,tdata[cnt].ucValue);
         cnt++;
-        printf("[%d]:",cnt);
     }
     printf("hdmi init end..\n");
     // REG_PRINTF("hdimrx_write_init end \n");

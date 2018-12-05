@@ -1,6 +1,7 @@
 #include "wv_common.h"
 #include "wv_cmd.h"
 #include "wv_tty.h"
+#include "wv_telnet.h"
 #include "his_sys.h"
 #include "his_spi.h"
 #include "his_fb.h"
@@ -26,6 +27,7 @@ WV_S32 main()
 	WV_CMD_Create();
 	SYS_ENV_Open();
 	WV_TTY_Create();
+	WV_TEL_Open();
 	HIS_SYS_Init();
 	//SYS_DATE_Init();
 	SYS_IP_Init();
@@ -55,6 +57,7 @@ WV_S32 main()
 	SYS_IP_DeInit();
 	//SYS_DATE_DeInit();
 	HIS_SYS_DeInit();
+	WV_TEL_Close();
 	WV_TTY_Destroy();
 	SYS_ENV_Close();
 	WV_CMD_Destroy();

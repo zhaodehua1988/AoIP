@@ -1571,7 +1571,7 @@ void iTE6805_Init_fsm()
 
 	//iTE6805_Init_CAOF();  //ok
 
-	//chgbank(0);
+	chgbank(0);
 	//hdmirxwr(0x28, 0x88); // 0714 MHL CTS need set 0x28 to 0x88
 	//iTE6805_Set_Video_Tristate(TRISTATE_ON);//ok
 	//iTE6805_OCLK_Cal();  //set mhl
@@ -1582,14 +1582,14 @@ void iTE6805_Init_fsm()
 	//iTE6805_Init_TTL_VideoOutputConfigure(); //ok
 	//iTE6805_Set_TTL_Video_Path(); //ok
 
-	#ifdef _ENABLE_IT6805_MHL_FUNCTION_
-	//iTE6805_DATA.DumpREG = TRUE;
-	//iTE6805_DATA.MHL_DiscoveryDone = 0;
-	//iTE6805_DATA.MHL_RAP_Content_State = RAP_CONTENT_ON;
+	//#ifdef _ENABLE_IT6805_MHL_FUNCTION_
+	iTE6805_DATA.DumpREG = FALSE;
+	iTE6805_DATA.MHL_DiscoveryDone = 0;
+	iTE6805_DATA.MHL_RAP_Content_State = RAP_CONTENT_ON;
 	
-	//mhlrx_write_init(iTE6805_INIT_MHL_TABLE);
-	//iTE6805_DATA.DumpREG = FALSE;
-	#endif
+	mhlrx_write_init(iTE6805_INIT_MHL_TABLE);
+	iTE6805_DATA.DumpREG = FALSE;
+	//#endif
 
 	#ifdef _ENABLE_IT6805_CEC_   //HDMI数字控制
 	//iTE6805_CEC_INIT();

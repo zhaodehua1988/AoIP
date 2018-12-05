@@ -146,15 +146,15 @@ iTE_u8 iTE6805_EDID_UpdateRAM(iTE_u8 *pEDID,iTE_u8 BlockNUM)
     EDID_DEBUG_PRINTF(("block No =%02X offset = %02X\n",(int) BlockNUM,(int) offset));
 
     for( i=0 ; i<0x7F ; i++ ){
-		EDID_DEBUG_PRINTF(("%02X ",(int) *(pEDID+offset)));
+		//EDID_DEBUG_PRINTF(("%02X ",(int) *(pEDID+offset)));
         edid_ram_wr(offset,1 ,(pEDID+offset));
         sum += *(pEDID+offset);
         offset ++;
         if((i % 16) == 15){
-            EDID_DEBUG_PRINTF(("\n"));
+            //EDID_DEBUG_PRINTF(("\n"));
         }
     }
-	EDID_DEBUG_PRINTF(("\n"));
+	//EDID_DEBUG_PRINTF(("\n"));
     sum = 0x00 - sum;
     return sum;
 }
