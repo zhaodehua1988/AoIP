@@ -16,6 +16,7 @@
 #include "PCA9555.h"
 #include "iTE6805_Init.h"
 #include "iTE6615_Init.h"
+#include "ti1297_init.h"
 WV_S32 main()
 {
 	WV_S32 ret;
@@ -37,6 +38,7 @@ WV_S32 main()
 	PCA9555_Init();
 	ITE6805_Open();
 	ITE6615_Open();
+	TI1297_Init();
 	//TSK_FPGA_Open();
 	//TSK_GO_Open();
 	//system("./MultiViewer > /dev/null");
