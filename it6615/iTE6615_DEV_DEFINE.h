@@ -174,7 +174,7 @@
 #define abs(x) (((x)>=0)?(x):(-(x)))
 #define PROG 1
 #define INTR 0
-#define _TTL_Enable_DDR_        1  //1   // 1 : Input Enable DDR
+//#define _TTL_Enable_DDR_        1  //1   // 1 : Input Enable DDR
 #define Vneg 0
 #define Hneg 0
 #define Vpos 1

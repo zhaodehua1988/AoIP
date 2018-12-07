@@ -22,172 +22,6 @@
 
 #define OVERLAY_PARAMETER_DATA_PORT 0X20
 
-OVERLAY_PARAMETER fpga_parameter[16] = {
-	{.BITS.video_channel = 1,
-	 .BITS.outline_channel = 0,
-	 .BITS.linenumber = 200,
-	 .BITS.pixelnumber = 450,
-	 .BITS.yoffset = 0,
-	 .BITS.xoffset = 0},
-	{.BITS.video_channel = 1,
-	 .BITS.outline_channel = 0,
-	 .BITS.linenumber = 200,
-	 .BITS.pixelnumber = 450,
-	 .BITS.yoffset = 0,
-	 .BITS.xoffset = 450},
-	{.BITS.video_channel = 1,
-	 .BITS.outline_channel = 2,
-	 .BITS.linenumber = 200,
-	 .BITS.pixelnumber = 450,
-	 .BITS.yoffset = 0,
-	 .BITS.xoffset = 900},
-	{.BITS.video_channel = 1,
-	 .BITS.outline_channel = 3,
-	 .BITS.linenumber = 200,
-	 .BITS.pixelnumber = 450,
-	 .BITS.yoffset = 0,
-	 .BITS.xoffset = 1300},
-	{.BITS.video_channel = 1,
-	 .BITS.outline_channel = 4,
-	 .BITS.linenumber = 200,
-	 .BITS.pixelnumber = 450,
-	 .BITS.yoffset = 0,
-	 .BITS.xoffset = 1800},
-	{.BITS.video_channel = 1,
-	 .BITS.outline_channel = 5,
-	 .BITS.linenumber = 200,
-	 .BITS.pixelnumber = 450,
-	 .BITS.yoffset = 0,
-	 .BITS.xoffset = 2250},
-	{.BITS.video_channel = 1,
-	 .BITS.outline_channel = 6,
-	 .BITS.linenumber = 200,
-	 .BITS.pixelnumber = 450,
-	 .BITS.yoffset = 0,
-	 .BITS.xoffset = 2700},
-	{.BITS.video_channel = 1,
-	 .BITS.outline_channel = 7,
-	 .BITS.linenumber = 200,
-	 .BITS.pixelnumber = 450,
-	 .BITS.yoffset = 0,
-	 .BITS.xoffset = 3150},
-	{.BITS.video_channel = 1,
-	 .BITS.outline_channel = 8,
-	 .BITS.linenumber = 200,
-	 .BITS.pixelnumber = 450,
-	 .BITS.yoffset = 600,
-	 .BITS.xoffset = 0},
-	{.BITS.video_channel = 1,
-	 .BITS.outline_channel = 9,
-	 .BITS.linenumber = 200,
-	 .BITS.pixelnumber = 450,
-	 .BITS.yoffset = 600,
-	 .BITS.xoffset = 450},
-	{.BITS.video_channel = 1,
-	 .BITS.outline_channel = 10,
-	 .BITS.linenumber = 200,
-	 .BITS.pixelnumber = 450,
-	 .BITS.yoffset = 600,
-	 .BITS.xoffset = 900},
-	{.BITS.video_channel = 1,
-	 .BITS.outline_channel = 11,
-	 .BITS.linenumber = 200,
-	 .BITS.pixelnumber = 450,
-	 .BITS.yoffset = 600,
-	 .BITS.xoffset = 1350},
-	{.BITS.video_channel = 1,
-	 .BITS.outline_channel = 12,
-	 .BITS.linenumber = 200,
-	 .BITS.pixelnumber = 450,
-	 .BITS.yoffset = 600,
-	 .BITS.xoffset = 1800},
-	{.BITS.video_channel = 0,
-	 .BITS.outline_channel = 13,
-	 .BITS.linenumber = 200,
-	 .BITS.pixelnumber = 450,
-	 .BITS.yoffset = 6000,
-	 .BITS.xoffset = 2250},
-	{.BITS.video_channel = 0,
-	 .BITS.outline_channel = 14,
-	 .BITS.linenumber = 200,
-	 .BITS.pixelnumber = 450,
-	 .BITS.yoffset = 600,
-	 .BITS.xoffset = 2700},
-	{.BITS.video_channel = 1,
-	 .BITS.outline_channel = 15,
-	 .BITS.linenumber = 200,
-	 .BITS.pixelnumber = 450,
-	 .BITS.yoffset = 600,
-	 .BITS.xoffset = 3150},
-};
-
-OVERLAY_REG fpga_reg = {
-	.ADDR.S.frame_number_addr = 0X09,
-
-	.ADDR.S.splite_start_line_addr = 0X10,
-	.ADDR.S.splite_end_line_addr = 0X11,
-	.ADDR.S.start_pixel_split1_addr = 0X12,
-	.ADDR.S.start_pixel_split2_addr = 0X14,
-	.ADDR.S.start_pixel_split3_addr = 0X16,
-	.ADDR.S.start_pixel_split4_addr = 0X18,
-	.ADDR.S.end_pixel_split1_addr = 0X13,
-	.ADDR.S.end_pixel_split2_addr = 0X15,
-	.ADDR.S.end_pixel_split3_addr = 0X17,
-	.ADDR.S.end_pixel_split4_addr = 0X19,
-	.ADDR.S.split_start_addr = 0x0c,
-	.ADDR.S.video_gen_test_addr = 0x25,
-
-	.ADDR.S.start_addr = 0x0b,
-
-	.DATA.S.frame_number = 0X2,
-	.DATA.S.splite_start_line = 0X00,
-	.DATA.S.splite_end_line = 0X437,
-	.DATA.S.start_pixel_split1 = 0X0,
-	.DATA.S.start_pixel_split2 = 0X3C1,
-	.DATA.S.start_pixel_split3 = 0X0,
-	.DATA.S.start_pixel_split4 = 0x3c1,
-
-	.DATA.S.end_pixel_split1 = 0x3c0,
-	.DATA.S.end_pixel_split2 = 0x780,
-	.DATA.S.end_pixel_split3 = 0x3c0,
-	.DATA.S.end_pixel_split4 = 0x780,
-	.DATA.S.split_start = 0x000f,
-	.DATA.S.video_gen_test = 0x00,
-
-	.DATA.S.start = 0x0000
-
-};
-
-OUTPUT_REG output_reg = {
-	.ADDR.S.ch_en_addr = 0x0f,
-	.ADDR.S.freq_l_addr = 0x11,
-	.ADDR.S.freq_h_addr = 0x12,
-	.ADDR.S.freq_up_addr1 = 0x13,
-	.ADDR.S.freq_up_addr2 = 0x13,
-	.ADDR.S.total_pix_addr = 0x16,
-	.ADDR.S.total_line_addr = 0x17,
-	.ADDR.S.hsync_width_addr = 0x18,
-	.ADDR.S.vsync_width_addr = 0x19,
-	.ADDR.S.active_hstart_addr = 0x1a,
-	.ADDR.S.active_hsize_addr = 0x1b,
-	.ADDR.S.active_vstart_addr = 0x1c,
-	.ADDR.S.active_vsize_addr = 0x1d,
-
-	.DATA.S.ch_en = 0x00ff,
-	.DATA.S.freq_l = 0x0,
-	.DATA.S.freq_h = 0x0,
-	.DATA.S.freq_up1 = 0x0,
-	.DATA.S.freq_up2 = 0x0,
-	.DATA.S.total_pix = 2200,
-	.DATA.S.total_line = 1125,
-	.DATA.S.hsync_width = 44,
-	.DATA.S.vsync_width = 5,
-	.DATA.S.active_hstart = 192,
-	.DATA.S.active_hsize = 1920,
-	.DATA.S.active_vstart = 41,
-	.DATA.S.active_vsize = 1080,
-};
-
 /*******************************************************************************************************
 
 WV_S32  HIS_SPI_SpiWrit(WV_U16 addr,WV_U16 data);
@@ -308,7 +142,7 @@ WV_S32  HIS_SPI_FpgaRdNum(WV_U16 addr,WV_U16 * pData,WV_U32 dataNum);
 WV_S32 HIS_SPI_FpgaRdNum(WV_U16 addr, WV_U16 *pData, WV_U32 dataNum)
 {
 	HI_UNF_SPI_DEV_E dev;
-	WV_U16 rBuf[20], wBuf[20];
+	WV_U16  wBuf[20];
 	WV_S32 ret;
 	dev = HIS_SPI_DEV_SEL;
 	wBuf[0] = (addr << 4) & 0x7fff;
@@ -343,182 +177,6 @@ WV_S32 HIS_SPI_FpgaRd2(WV_U16 addr, WV_U16 *pData)
 	return WV_SOK;
 }
 
-/****************************************************************************
-
-WV_S32 HIS_SPI_SetFpga(WV_S
-32 argc, WV_S8 **argv,WV_S8 *prfBuff)
-
-****************************************************************************/
-WV_S32 HIS_SPI_SetFpga(WV_S32 argc, WV_S8 **argv, WV_S8 *prfBuff)
-{
-	HIS_SPI_printf("FPGA write ");
-
-	//HIS_SPI_FpgaWd(2,0xf0);
-	WV_U16 i;
-	for (i = 0; i < 14; i++)
-	{
-		HIS_SPI_FpgaWd(fpga_reg.ADDR.address[i], fpga_reg.DATA.data[i]);
-	}
-
-	return WV_SOK;
-}
-
-/****************************************************************************
-
-WV_S32 HIS_SPI_GetFpga(WV_S32 argc, WV_S8 **argv,WV_S8 *prfBuff)
-
-****************************************************************************/
-WV_S32 HIS_SPI_GetFpga(WV_S32 argc, WV_S8 **argv, WV_S8 *prfBuff)
-{
-	prfBuff += sprintf(prfBuff, "FPGA read\r\n");
-	WV_U16 data;
-	WV_U16 i;
-	for (i = 0; i <= 0x30; i++)
-	{
-		HIS_SPI_FpgaRd(i, &data);
-		prfBuff += sprintf(prfBuff, " fpga reg %d = %x\r\n", i, data);
-	}
-	return WV_SOK;
-}
-/****************************************************************************
-
-WV_S32 HIS_SPI_SetParameter(WV_S
-32 argc, WV_S8 **argv,WV_S8 *prfBuff)
-
-****************************************************************************/
-WV_S32 HIS_SPI_SetParameter(WV_S32 argc, WV_S8 **argv, WV_S8 *prfBuff)
-{
-	HIS_SPI_printf("FPGA Set Parameter ");
-
-	//HIS_SPI_FpgaWd(2,0xf0);
-	WV_U16 i, j;
-	for (j = 0; j < 16; j++)
-	{
-		for (i = 0; i < 4; i++)
-		{
-			HIS_SPI_FpgaWd(OVERLAY_PARAMETER_DATA_PORT, fpga_parameter[j].parameter[3 - i]);
-		}
-	}
-	return WV_SOK;
-}
-/****************************************************************************
-
-WV_S32 HIS_SPI_TestFpga(WV_S
-32 argc, WV_S8 **argv,WV_S8 *prfBuff)
-
-****************************************************************************/
-WV_S32 HIS_SPI_TestFpga(WV_S32 argc, WV_S8 **argv, WV_S8 *prfBuff)
-{
-	HIS_SPI_printf("FPGA test\r\n");
-	WV_U16 data;
-	WV_U16 i, j;
-	WV_U16 error;
-	WV_U16 error_data;
-
-	error = 0xffff;
-	for (j = 0; j < 100; j++)
-	{
-		for (i = 0; i < 13; i++)
-		{
-			HIS_SPI_FpgaWd(fpga_reg.ADDR.address[i], fpga_reg.DATA.data[i]);
-		}
-		for (i = 0; i < 13; i++)
-		{
-			HIS_SPI_FpgaRd(fpga_reg.ADDR.address[i], &data);
-			if (data != fpga_reg.DATA.data[i])
-			{
-				error = i;
-				error_data = data;
-			}
-		}
-		if (error != 0xffff)
-			break;
-	}
-	HIS_SPI_printf("TestFpga complete! j = %x  i = %x  errordata = %x\n", j, error, error_data);
-	return WV_SOK;
-}
-
-/****************************************************************************
-
-WV_S32 HIS_SPI_SetFpga2(WV_S
-32 argc, WV_S8 **argv,WV_S8 *prfBuff)
-
-****************************************************************************/
-WV_S32 HIS_SPI_SetFpga2(WV_S32 argc, WV_S8 **argv, WV_S8 *prfBuff)
-{
-	HIS_SPI_printf("FPGA write 2");
-
-	//HIS_SPI_FpgaWd(2,0xf0);
-	WV_U16 i;
-	for (i = 0; i < 13; i++)
-	{
-		HIS_SPI_FpgaWd2(output_reg.ADDR.address[i], output_reg.DATA.data[i]);
-	}
-
-	return WV_SOK;
-}
-
-/****************************************************************************
-
-WV_S32 HIS_SPI_GetFpga2(WV_S32 argc, WV_S8 **argv,WV_S8 *prfBuff)
-
-****************************************************************************/
-WV_S32 HIS_SPI_GetFpga2(WV_S32 argc, WV_S8 **argv, WV_S8 *prfBuff)
-{
-	HIS_SPI_printf("FPGA read 2");
-	WV_U16 data;
-	WV_U16 i;
-	for (i = 0; i < 13; i++)
-	{
-		HIS_SPI_FpgaRd2(output_reg.ADDR.address[i], &data);
-	}
-	return WV_SOK;
-}
-
-/****************************************************************************
-
-WV_S32 HIS_SPI_TestFpga2(WV_S
-32 argc, WV_S8 **argv,WV_S8 *prfBuff)
-
-****************************************************************************/
-WV_S32 HIS_SPI_TestFpga2(WV_S32 argc, WV_S8 **argv, WV_S8 *prfBuff)
-{
-	HIS_SPI_printf("FPGA test 2");
-	WV_U16 data;
-	WV_U16 i, j;
-	WV_U16 error;
-	WV_U16 error_data;
-
-	error = 0xffff;
-
-	for (j = 0; j < 100; j++)
-	{
-		for (i = 0; i < 13; i++)
-		{
-			HIS_SPI_FpgaWd2(output_reg.ADDR.address[i], output_reg.DATA.data[i]);
-		}
-		for (i = 0; i < 13; i++)
-		{
-			HIS_SPI_FpgaRd2(output_reg.ADDR.address[i], &data);
-			if (data != output_reg.DATA.data[i])
-			{
-				error = i;
-				error_data = data;
-			}
-		}
-		if (error != 0xffff)
-			break;
-	}
-
-	/*HIS_SPI_FpgaWd2(0x01,0xaaaa);
-	for( j = 0 ; j < 100 ; j ++)
-	{
-		HIS_SPI_FpgaRd2(0x01,&data);
-	}
-	*/
-	HIS_SPI_printf("TestFpga complete! j = %x  i = %x  errordata = %x\n", j, error, error_data);
-	return WV_SOK;
-}
 
 /****************************************************************************
 
@@ -569,8 +227,8 @@ WV_S32 HIS_SPI_CMDWriteFromFile(WV_S32 argc, WV_S8 **argv, WV_S8 *prfBuff)
 {
 
 	WV_U16 addr;
-	WV_U32 dataNum, temp, readLen;
-	WV_S32 ret = 0, i = 0, j = 0;
+	WV_U32 dataNum, temp;
+	WV_S32 ret = 0, i = 0;
 	WV_U32 data[2048];
 	WV_S8 buf[10] = {0};
 	if (argc < 2)
@@ -668,7 +326,7 @@ WV_S32 HIS_SPI_CMDRead(WV_S32 argc, WV_S8 **argv, WV_S8 *prfBuff)
 
 	addr = temp & 0xffff;
 	prfBuff += sprintf(prfBuff, "spi read 0x%0X ,dataNum=%d\n", addr, dataNum);
-	ret = HIS_SPI_FpgaRdNum(addr, &data, dataNum);
+	ret = HIS_SPI_FpgaRdNum(addr, data, dataNum);
 	if (ret != 0)
 	{
 		prfBuff += sprintf(prfBuff, "get spi err \r\n");
@@ -849,10 +507,6 @@ WV_S32 HIS_SPI_Init()
   HIS_SPI_printf("attr.enSph[%d]",attr.unExtAttr.stMoto.enSph);
   HIS_SPI_printf("attr.enSpoh[%d]",attr.unExtAttr.stMoto.enSpo);
   */
-	WV_CMD_Register("get", "fpga", "spi bus read fpga", HIS_SPI_GetFpga);
-	WV_CMD_Register("set", "fpga", "spi bus write fpga", HIS_SPI_SetFpga);
-	WV_CMD_Register("test", "fpga", "spi bus test fpga", HIS_SPI_TestFpga);
-	WV_CMD_Register("set", "fpga_param", "spi bus set fpga parameter", HIS_SPI_SetParameter);
 
 	//
 	WV_CMD_Register("set", "spi", "spi bus write fpga1 sigle", HIS_SPI_CMDWrite);

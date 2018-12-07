@@ -22,7 +22,7 @@ WV_S32  TSK_FPGA_Open()
      //配置分割参数
     FPGA_CONF_SetSplit();
     
-    HIS_FB_ClrFpga();
+    //HIS_FB_ClrFpga();
     FPGA_CONF_ClrBuf();
     HIS_SPI_FpgaWd(0x9,0);// stop win number
 	HIS_SPI_FpgaWd(0xb,0);

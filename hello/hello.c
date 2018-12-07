@@ -7,6 +7,7 @@
 #include "his_fb.h"
 #include "adi_7619.h"
 #include "tsk_fpga.h"
+#include "tsk_go.h"
 #include "fpga_conf.h"
 #include <sys/time.h>
 #include "wv_file.h"
@@ -38,9 +39,9 @@ WV_S32 main()
 	PCA9555_Init();
 	ITE6805_Open();
 	ITE6615_Open();
-	TI1297_Init();
+	//TI1297_Init();
 	//TSK_FPGA_Open();
-	//TSK_GO_Open();
+	TSK_GO_Open();
 	//system("./MultiViewer > /dev/null");
 	rowNum = 0;
 	while (1)
@@ -51,7 +52,7 @@ WV_S32 main()
 		usleep(100000);
 	}
 
-	//TSK_GO_Close();
+	TSK_GO_Close();
 	//TSK_FPGA_Close();
 	ITE6615_Close();
 	ITE6805_Close();

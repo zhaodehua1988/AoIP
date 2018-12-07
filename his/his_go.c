@@ -378,86 +378,21 @@ WV_S32 HIS_GO_RefreshLayer(HIS_DEV_HIGO_E * pDev)
  HI_HANDLE screenSurf[2];
  WV_S32 ret;
  HIGO_BLTOPT_S BltOpt = {0};
-  // WV_CHECK_RET( HI_GO_WaitForBlank(pDev -> layerHndl) );  
-  // WV_CHECK_RET(HI_GO_RefreshLayer(pDev -> layerHndl, NULL)); 
+
    ret = HIS_FB_SurfGet(screenSurf);
    if(ret == WV_EFAIL)
    {
      return WV_EFAIL;
    }
-    //BltOptKey.EnableScale = HI_TRUE;
-    //BltOpt.EnablePixelAlpha = HI_TRUE;
-    //BltOpt.PixelAlphaComp =  HIGO_COMPOPT_SRC;
-    HI_RECT Rect;
-
-    Rect.x =0;
-    Rect.y = 0;
-    Rect.w = 1920;
-    Rect.h = 1080+4;
-	// WV_printf(" handl screenSurf = 0x%x pDev->layerSurfHndl =  0x%x\r\n",screenSurf[0],screenSurf[1]);   
-  // WV_CHECK_RET( HI_GO_FillRect(screenSurf[0],NULL, 0x0, HIGO_COMPOPT_NONE) );
- 
-    WV_CHECK_RET( HI_GO_Blit(pDev->layerSurfHndl,&Rect,screenSurf[0], NULL, &BltOpt)); 
-
-    Rect.x =1920;
-    Rect.y = 0;
-    Rect.w = 1920;
-    Rect.h = 1080+4;
-    // WV_CHECK_RET( HI_GO_FillRect(screenSurf[1],NULL, 0x0, HIGO_COMPOPT_NONE) );
-    WV_CHECK_RET( HI_GO_Blit(pDev->layerSurfHndl,&Rect,screenSurf[1], NULL, &BltOpt)); 
-    WV_CHECK_RET( HIS_FB_SurfFresh());
-   return  WV_SOK;
-}
-
-/***************************************************************
-
-WV_S32 HIS_GO_RefreshLayerForPic(HIS_DEV_HIGO_E * pDev);
-
-***************************************************************/
-
-WV_S32 HIS_GO_RefreshLayerForPic(HIS_DEV_HIGO_E * pDev)
-{
-
-	static int refresh = 0;
-	if(refresh == 0)
-	{
-	 	refresh = 1;
-	}else{
-		return WV_SOK;
-	}
-
-	 HI_HANDLE screenSurf[2];
-	 WV_S32 ret;
-	 HIGO_BLTOPT_S BltOpt = {0};
-  // WV_CHECK_RET( HI_GO_WaitForBlank(pDev -> layerHndl) );  
-  // WV_CHECK_RET(HI_GO_RefreshLayer(pDev -> layerHndl, NULL)); 
-   ret = HIS_FB_SurfGetForPic(screenSurf);
-   if(ret == WV_EFAIL)
-   {
-     return WV_EFAIL;
-   }
-    //BltOptKey.EnableScale = HI_TRUE;
-    //BltOpt.EnablePixelAlpha = HI_TRUE;
-    //BltOpt.PixelAlphaComp =  HIGO_COMPOPT_SRC;
     HI_RECT Rect;
 
     Rect.x =0;
     Rect.y = 0;
     Rect.w = 1920;
     Rect.h = 1080;
-	// WV_printf(" handl screenSurf = 0x%x pDev->layerSurfHndl =  0x%x\r\n",screenSurf[0],screenSurf[1]);   
-  // WV_CHECK_RET( HI_GO_FillRect(screenSurf[0],NULL, 0x0, HIGO_COMPOPT_NONE) );
- 
     WV_CHECK_RET( HI_GO_Blit(pDev->layerSurfHndl,&Rect,screenSurf[0], NULL, &BltOpt)); 
-
-    Rect.x =1920;
-    Rect.y = 0;
-    Rect.w = 1920;
-    Rect.h = 1080;
-    // WV_CHECK_RET( HI_GO_FillRect(screenSurf[1],NULL, 0x0, HIGO_COMPOPT_NONE) );
-    WV_CHECK_RET( HI_GO_Blit(pDev->layerSurfHndl,&Rect,screenSurf[1], NULL, &BltOpt)); 
     WV_CHECK_RET( HIS_FB_SurfFresh());
-	refresh = 0;
+    
    return  WV_SOK;
 }
 
