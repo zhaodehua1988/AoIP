@@ -54,7 +54,7 @@
 #define _Input_Enable_HL_Swap_          0               // Input L/H swap function, !!!single-in only for "Low"!!! can't swap by register.
 
 // 6615 TTL INPUT CONFIG
-#define _TTL_Enable_DDR_        0  //1   // 1 : Input Enable DDR
+#define _TTL_Enable_DDR_        1  //1   // 1 : Input Enable DDR
 #define _TTL_Enable_HalfBus_    0   // 1 : Input Enable Half-Bus
 #define _TTL_Enable_BTAFormat_  0   // 1 : Input Enable YCbCr422 BTA-T1004 format
 #define _TTL_Enable_SyncEmbedd_ 0   // 1 : Input Enable Sync Embedded
