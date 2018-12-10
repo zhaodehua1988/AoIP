@@ -8,6 +8,8 @@
 //   @date   2017/09/15
 //   @fileversion: iTE6805_MCUSRC_1.02
 //******************************************/
+#ifndef _ITE6805_EQ_H_H_
+#define _ITE6805_EQ_H_H_
 void iTE6805_EQ_fsm();
 void iTE6805_EQ_chg(STATEEQ_Type NewState);
 void iTE6805_hdmirx_port0_EQ_irq();
@@ -32,3 +34,5 @@ void iTE6805_Set_DFE(iTE_u8 EQ_Value, iTE_u8 Type_Channel);
 iTE_u8 iTE6805_Find_indexof_DEF(iTE_u8 EQ_Value);
 
 void iTE6805_Set_EQResult_Flag();
+
+#endif

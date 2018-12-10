@@ -8,6 +8,8 @@
 //   @date   2017/09/15
 //   @fileversion: iTE6805_MCUSRC_1.02
 //******************************************/
+#ifndef _ITE6805_CEC_SYS_H_H_
+#define _ITE6805_CEC_SYS_H_H_
 void	iTE6805_hdmirx_CEC_irq();
 
 void	iTE6805_CEC_fsm();
@@ -19,3 +21,5 @@ void	iTE6805_CEC_CMD_Push_To_Queue_Handler();
 void	iTE6805_CEC_CMD_Ready_To_Fire();
 
 void	iTE6805_CEC_INIT();
+
+#endif

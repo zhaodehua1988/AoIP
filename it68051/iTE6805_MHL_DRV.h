@@ -9,7 +9,8 @@
 //   @fileversion: iTE6805_MCUSRC_1.02
 //******************************************/
 
-
+#ifndef _ITE6805_MHL_DRV_H_H_
+#define _ITE6805_MHL_DRV_H_H_
 
 // MSC Function
 iTE_u8		iTE6805_MHL_MSC_Get_Response_State();
@@ -22,3 +23,4 @@ void		iTE6805_MHL_3D_REQ_fsm(MHL3D_STATE *e3DReqState);
 
 void		iTE6805_MHL_Set_RAP_Content(iTE_u8 RCP_CONTENT);
 
+#endif

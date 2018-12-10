@@ -977,8 +977,8 @@ void iTE6805_vid_fsm(void)
 				Flag_FirstTimeParameterChange = TRUE;
 				#ifdef iTE68051
 				// If new avi info frame arrive , need init LVDS again, 15m line might had new AVI infoframe condition
-				iTE6805_Init_6028LVDS(0); // init first 6028 chip
-				iTE6805_Init_6028LVDS(1); // init first 6028 chip
+				//iTE6805_Init_6028LVDS(0); // init first 6028 chip
+				//iTE6805_Init_6028LVDS(1); // init first 6028 chip
 				#endif
 			}
 
@@ -1188,13 +1188,10 @@ void iTE6805_vid_chg(STATEV_Type NewState)
 			iTE6805_Show_VID_Info();
 			#endif
 			iTE6805_Set_1B0_By_PixelClock(); // 0713 Andrew suggest if PCLK < 25 need to set 1B0[0] to 0, else 1
-
 			iTE6805_Get_AVIInfoFrame_Info(); // add here for setting DownScale variable
-
 			#ifdef iTE68051
 			iTE68051_Video_Output_Setting(); // DaulPixel setting/ DownScaling setting/ Demo Setting/ PIN Config Setting only for 6805A0
 			#endif
-
 			#ifdef iTE68052
 			iTE68052_Video_Output_Setting(); // DaulPixel setting/ DownScaling setting/ Demo Setting/ PIN Config Setting only for 6805A0
 			#endif
@@ -1217,11 +1214,11 @@ void iTE6805_vid_chg(STATEV_Type NewState)
 			delay1ms(100);
 			// 6028 init move from beginning to here because if init in the beginning, the DE between 6028 and 6805 can't sync
 			// and the rightest V-line in the screen will be all block or white, need move 6028 init from beginning to here.
-			iTE6805_Init_6028LVDS(0); // init first 6028 chip
-			iTE6805_Init_6028LVDS(1); // init first 6028 chip
+			//iTE6805_Init_6028LVDS(0); // init first 6028 chip
+			//iTE6805_Init_6028LVDS(1); // init first 6028 chip
 
-			iTE6805_Init_6028LVDS(0); // init first 6028 chip
-			iTE6805_Init_6028LVDS(1); // init first 6028 chip
+			//iTE6805_Init_6028LVDS(0); // init first 6028 chip
+			//iTE6805_Init_6028LVDS(1); // init first 6028 chip
 			// reset twice for ensurance ...
 			#endif
 
@@ -1290,7 +1287,6 @@ void iTE6805_Port_Select(iTE_u8 ucPortSel)
 	{
 	    hdmirxset(0x35, BIT0, 0); //select port 0
 		iTE6805_Set_HPD_Ctrl(PORT1 , HPD_LOW);
-		iTE6805_Set_HPD_Ctrl(PORT0 , HPD_HIGH);
 	}
 	else
 	{
@@ -1302,28 +1298,37 @@ void iTE6805_Port_Select(iTE_u8 ucPortSel)
 		iTE6805_Set_HPD_Ctrl(PORT0 , HPD_LOW);
 	}
 	chgbank(0);
-/*
 	iTE6805_DATA.CurrentPort = ucPortSel;
-    if(iTE6805_DATA.CurrentPort != ucPortSel)
-    {
-		iTE6805_DATA.CurrentPort = ucPortSel;
-        iTE6805_vid_chg(STATEV_WaitSync);
-		iTE6805_vid_chg(STATEV_Unplug);
-    }
-*/
+    //if(iTE6805_DATA.CurrentPort != ucPortSel)
+    //{
+		//iTE6805_DATA.CurrentPort = ucPortSel;
+        //iTE6805_vid_chg(STATEV_WaitSync);
+		//iTE6805_vid_chg(STATEV_Unplug);
+    //}
 }
 
 #ifdef EVB_AUTO_DETECT_PORT_BY_PIN
 iTE_u8 LAST_PORT = 3;
 void iTE6805_Port_Detect()
 {
+	/*if(PORT_SWITCH == LAST_PORT)
+	{
+		return;
+	}
+	*/
+	//if(PORT_SWITCH!=0)
+	{
+		iTE6805_Port_Select(PORT0);
+		iTE6805_Reset_ALL_Logic(PORT0);
+	}
+	/*
+	else
+	{
+		iTE6805_Port_Select(PORT1);
+		iTE6805_Reset_ALL_Logic(PORT1);
+	}
 
-
-	//printf("port detect port 0");
-	iTE6805_Port_Select(PORT0);
-	iTE6805_Reset_ALL_Logic(PORT0);
-
-	printf("test:iTE6805_Port_Detect\n");
+	LAST_PORT = PORT_SWITCH;*/
 }
 #endif
 
@@ -1346,16 +1351,16 @@ void iTE68051_Video_Output_Setting()
 	_iTE68051_4K60_Mode_ = iTE68051_4K60_Mode;
 
 	#ifdef DEMO
-	//if (EDID_WP0 == 1) //zdh
+	if (EDID_WP0 == 1)
 	#else
 	if(_iTE68051_4K60_Mode_ != MODE_DownScale || _iTE68051_4K60_Mode_ == MODE_EvenOdd_Plus_DownScale)
 	#endif
 	{
 		#ifdef DEMO
-		//if (EDID_WP1 == 0)  //zdh
+		if (EDID_WP1 == 0)
 			_iTE68051_4K60_Mode_ = MODE_EvenOdd;
-		//else
-		//	_iTE68051_4K60_Mode_ = MODE_LeftRight;
+		else
+			_iTE68051_4K60_Mode_ = MODE_LeftRight;
 		#endif
 
 		if (iTE6805_Check_4K_Resolution())
@@ -1393,7 +1398,7 @@ void iTE68051_Video_Output_Setting()
 
 
 	#ifdef DEMO
-	//if (EDID_WP0 == 0)
+	if (EDID_WP0 == 0)
 	#else
 	if (_iTE68051_4K60_Mode_ == MODE_DownScale || _iTE68051_4K60_Mode_ == MODE_EvenOdd_Plus_DownScale)
 	#endif
@@ -1711,7 +1716,13 @@ void iTE6805_Enable_Audio_Output(void)
 	//{
 	//	SW_Sampling_Frequency = (iTE_u8) ((sum/(iTE_u32)128)/iTE6805_CurVTiming.CTS);
 	//}
-    SW_Sampling_Frequency = (iTE_u8) (sum/(128*iTE6805_CurVTiming.CTS));
+	if(iTE6805_CurVTiming.CTS == 0){
+		SW_Sampling_Frequency = 0;
+	}else{
+	    SW_Sampling_Frequency = (iTE_u8) (sum/(128*iTE6805_CurVTiming.CTS));
+	//HDMIRX_AUDIO_PRINTF(("SW caulate SW_Sampling_Frequency = %d \n",(int) SW_Sampling_Frequency));	
+	}
+    //SW_Sampling_Frequency = (iTE_u8) (sum/(128*iTE6805_CurVTiming.CTS));
 	HDMIRX_AUDIO_PRINTF(("SW caulate SW_Sampling_Frequency = %d \n",(int) SW_Sampling_Frequency));
 
     if(SW_Sampling_Frequency>25 && SW_Sampling_Frequency<=38){
@@ -1951,12 +1962,6 @@ void iTE6805_Identify_Chip()
 
 	}while(Result==0);
 
-		HDMIRX_DEBUG_PRINT(("This is  iTE6805 chip !!!\n"));
-		HDMIRX_DEBUG_PRINT(("REG00 = %X !!!\n",(int)REG00));
-		HDMIRX_DEBUG_PRINT(("REG01 = %X !!!\n",(int)REG01));
-		HDMIRX_DEBUG_PRINT(("REG02 = %X !!!\n",(int)REG02));
-		HDMIRX_DEBUG_PRINT(("REG03 = %X !!!\n",(int)REG03));
-
 	//iTE6805_DATA.ChipID = 0xA0; // kuro test
 	iTE6805_DATA.ChipID = hdmirxrd(0x04);
 	HDMIRX_DEBUG_PRINT(("iTE6805_DATA.ChipID = %X !!!\n",(int) iTE6805_DATA.ChipID ));
@@ -1975,17 +1980,4 @@ void iTE6805_HDCP_Detect()
 	iTE6805_Set_HPD_Ctrl(iTE6805_DATA.CurrentPort, HPD_HIGH);
 	iTE6805_DATA.STATE_HDCP_FINAL = iTE6805_DATA.STATE_HDCP;
 }
-/*
-void iTE6805_HDCP_Detect()
-{
-	if(iTE6805_DATA.STATE_HDCP == iTE6805_DATA.STATE_HDCP_FINAL)
-	{
-		return;
-	}
-	iTE6805_Set_HPD_Ctrl(iTE6805_DATA.CurrentPort, HPD_LOW);
-	iTE6805_Set_HDCP(iTE6805_DATA.STATE_HDCP);
-	delay1ms(100); //HPD OFF spec need at least 100ms
-	iTE6805_Set_HPD_Ctrl(iTE6805_DATA.CurrentPort, HPD_HIGH);
-	iTE6805_DATA.STATE_HDCP_FINAL = iTE6805_DATA.STATE_HDCP;
-}*/
 #endif

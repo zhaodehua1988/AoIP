@@ -8,6 +8,8 @@
 //   @date   2017/09/15
 //   @fileversion: iTE6805_MCUSRC_1.02
 //******************************************/
+#ifndef _ITE6805_VM_TABLE_H_H_
+#define _ITE6805_VM_TABLE_H_H_
 typedef struct {
     int HActive ;
     int VActive ;
@@ -182,4 +184,6 @@ _CODE VTiming s_VMTable[] = {
 
 
 #define     SizeofVMTable    (sizeof(s_VMTable)/sizeof(VTiming))
+#endif
+
 #endif

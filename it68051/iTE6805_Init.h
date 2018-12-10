@@ -9,10 +9,10 @@
 //   @fileversion: iTE6805_MCUSRC_1.02
 //******************************************/
 
-#ifndef _ITE6805_INIT_H_
-#define _ITE6805_INIT_H_ 
+#ifndef _ITE6805_INIT_H_H_
+#define _ITE6805_INIT_H_H_
 
-void ITE6805_Open( void);
+void ITE6805_Open(void);
 void ITE6805_Close(void);
 
 #endif

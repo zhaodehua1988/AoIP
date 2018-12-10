@@ -8,6 +8,8 @@
 //   @date   2017/09/15
 //   @fileversion: iTE6805_MCUSRC_1.02
 //******************************************/
+#ifndef _iTE6805_MHL_DEF_H_H_
+#define _iTE6805_MHL_DEF_H_H_
 #define WAITABORTNUM  			  	(3000)//(300)			//change from 3000 to 5000 for ATC 6.3.6.5
 
 
@@ -223,3 +225,5 @@ typedef struct {
 #define SCRATCHPAD_SIZE				(0x10)
 #define INT_STA_SIZE				(0x33)
 /*-----------RD Init Option-----------*/
+
+#endif

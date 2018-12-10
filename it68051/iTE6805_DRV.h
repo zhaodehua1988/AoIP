@@ -8,9 +8,8 @@
 //   @date   2017/09/15
 //   @fileversion: iTE6805_MCUSRC_1.02
 //******************************************/
-#ifndef _ITE6805_DRV_H_
-#define _ITE6805_DRV_H_
-#include "iTE6805_typedef.h"
+#ifndef _iTE6805_DRV_H_H_
+#define _iTE6805_DRV_H_H_
 void iTE6805_Set_LVDS_Video_Path(iTE_u8 LaneNum);
 void iTE6805_Set_TTL_Video_Path();
 void iTE6805_Set_AVMute(iTE_u8 AVMUTE_STATE);
@@ -65,7 +64,5 @@ void iTE6805_Init_fsm();
 void iTE6805_Init_TTL_VideoOutputConfigure();
 void iTE6805_Init_CAOF();
 void iTE6805_Init_6028LVDS(iTE_u8 chip);
-
-
 
 #endif

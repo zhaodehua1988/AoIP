@@ -12,7 +12,7 @@
 #include "iTE6805_CEC_SYS.h"
 #include "iTE6805_CEC_DRV.h"
 #include "iTE6805_CEC_FETURE.h"
-#include "iTE6805_CEC_CMDTable.c"
+//#include "iTE6805_CEC_CMDTable.c"
 
 #define iTE6805_CEC_Logical_Address CEC_LOG_ADDR_TV
 
@@ -20,20 +20,26 @@ extern _iTE6805_DATA	iTE6805_DATA;
 extern iTE_u8			CEC_timeunit;
 
 
+#define Max_TX_Retry_Count 5
+iTE_u8 Current_TX_Retry_Count = 0;
+
+// In 6805 only need is iTE6805_CECRX
+//_iTE6805_CEC iTE6805_CEC_RX[1], iTE6805_CEC_TX[1];
+_iTE6805_CEC iTE6805_CEC_RX[1];
+_iTE6805_CEC *iTE6805_CEC;
+
+//cec table
 #define DIRECTED	0x80
 #define BCAST1_4	0x40
 #define BCAST2_0	0x20	/* broadcast only allowed for >= 2.0 */
 #define BCAST		(BCAST1_4 | BCAST2_0)
 #define BOTH		(BCAST | DIRECTED)
-/************************************************
-cmd table
-******************************************/
 
- #define DIRECTED	0x80
-#define BCAST1_4	0x40
-#define BCAST2_0	0x20	/* broadcast only allowed for >= 2.0 */
-#define BCAST		(BCAST1_4 | BCAST2_0)
-#define BOTH		(BCAST | DIRECTED)
+/*
+ * Specify minimum length and whether the message is directed, broadcast
+ * or both. Messages that do not match the criteria are ignored as per
+ * the CEC specification.
+ */
 iTE_u8 cec_msg_size[256] = {0};
 
 void iTE6805_INIT_MSG_CHECK_TABLE()
@@ -115,18 +121,6 @@ void iTE6805_INIT_MSG_CHECK_TABLE()
 	cec_msg_size[CEC_MSG_CDC_MESSAGE] = 2 | BCAST;
 }
 
-/*
- * Specify minimum length and whether the message is directed, broadcast
- * or both. Messages that do not match the criteria are ignored as per
- * the CEC specification.
- */
-#define Max_TX_Retry_Count 5
-iTE_u8 Current_TX_Retry_Count = 0;
-
-// In 6805 only need is iTE6805_CECRX
-//_iTE6805_CEC iTE6805_CEC_RX[1], iTE6805_CEC_TX[1];
-_iTE6805_CEC iTE6805_CEC_RX[1];
-_iTE6805_CEC *iTE6805_CEC;
 
 
 void	iTE6805_hdmirx_CEC_irq()
@@ -386,25 +380,23 @@ iTE_u8	iTE6805_CEC_CMD_Check(pCEC_FRAME CEC_FRAME)
 
 void iTE6805_CEC_INIT()
 {
+	printf("init cec start ..\r\n");
 	iTE_u32 ulClkCnt = 0;
 
 	iTE6805_DATA.STATECEC = STATECEC_None;
-
 	iTE6805_CEC_RX->MY_LA = iTE6805_CEC_Logical_Address;
 	iTE6805_CEC_RX->MY_PA_HIGH = 0x10;
 	iTE6805_CEC_RX->MY_PA_LOW = 0x00; // ROOT TV PA FROM HIGH TO LOW = 1.0.0.0
 	iTE6805_CEC_RX->Rx_Queue.Rptr = iTE6805_CEC->Rx_Queue.Wptr = 0;
+
 	iTE6805_CEC_RX->Tx_Queue.Rptr = iTE6805_CEC->Tx_Queue.Wptr = 0;
 	iTE6805_CEC_RX->Rx_TmpHeader[0] = 0;
 	iTE6805_CEC_RX->Tx_QueueFull = 0;
 	iTE6805_CEC_RX->Tx_CECDone = 1;
 	iTE6805_CEC_RX->Tx_CECFire = 0x00;
 	iTE6805_CEC_RX->Tx_CECInitDone = 0x00;
-
 	iTE6805_CEC = &iTE6805_CEC_RX; // point to CEC_RX, if needed TX, need to implement change TX RX sel
-
 	iTE6805_INIT_MSG_CHECK_TABLE();
-
 	cecwr(0x08, 0x4C);
 	cecwr(0x08, 0x48);
 
@@ -419,11 +411,11 @@ void iTE6805_CEC_INIT()
 
 	cecwr(0x06, 0x00);			// enable INT
 	cecset(0x08, 0x01, 0x01);	// enable INT
-
 	iTE6805_CEC_Reset_RX_FIFO();
-
 	cecwr(0x22, iTE6805_CEC_Logical_Address);	// setting 6805 Logical Address
 
 	cecwr(0x0A, 0x03);
 	cecset(0x0A, 0x40, 0x40);			// Enable CEC
+
+	printf("init cec end ..\r\n");
 }

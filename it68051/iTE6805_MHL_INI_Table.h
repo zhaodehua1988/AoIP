@@ -8,14 +8,14 @@
 //   @date   2017/09/15
 //   @fileversion: iTE6805_MCUSRC_1.02
 //******************************************/
-
+#ifndef _ITE6805_MHL_INI_TABLE_H_H_
+#define _ITE6805_MHL_INI_TABLE_H_H_
 iTE6805_INI_REG _CODE iTE6805_INIT_MHL_TABLE[] = {
 
 	{0x0A , 0xFF , 0x00 } ,
 	{0x08 , 0xFF , 0x00 } ,
 	{0x09 , 0xFF , 0x00 } ,
 
-	//{0x28 , 0xDF , 0x00 } , // come from 6802 setting, and 6805 setting is so.
 	{0x28 , 0xDF , 0x40 } , // force to hdmi//come from 6802 setting, and 6805 setting is so.
 	{0x29 , 0x83 , (T10usSrcSel<<7)+CDDGSel } ,
 	{0x39 , 0x80 , 0x80 } , // I2C Deglitch for MHL
@@ -60,3 +60,5 @@ iTE6805_INI_REG _CODE iTE6805_INIT_MHL_TABLE[] = {
 	{0x0F , 0x10 , 0x00 } ,
 	{0xFF , 0xFF , 0xFF } ,
 };
+
+#endif

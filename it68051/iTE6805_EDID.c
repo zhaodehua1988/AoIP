@@ -11,12 +11,8 @@
 
 #include "iTE6805_Global.h"
 #include "iTE6805_EDID_Table.h"
-#include "iTE6805_DEV_DEFINE.h"
-
-//extern _iTE6805_DATA iTE6805_DATA;
-//extern _iTE6805_PARSE3D_STR iTE6805_EDID_Parse3D;
-_iTE6805_DATA iTE6805_DATA;
-_iTE6805_PARSE3D_STR iTE6805_EDID_Parse3D;
+extern _iTE6805_DATA iTE6805_DATA;
+extern _iTE6805_PARSE3D_STR iTE6805_EDID_Parse3D;
 
 #ifdef 	_HDMI_SWITCH_
 iTE_u8  txphyadr[2];	// for CEC function (TX Reveice EDID ABCD transfrom to RX EDID ABCD phy Value, only for HDMI Switch)
@@ -26,30 +22,27 @@ iTE_u8  rxphyadr[2][2];	// for EDID RAM function
 
 void iTE6805_EDID_Init()
 {
-	printf("edid init start ...\n");
+	printf("edid init start ..\n");
 	// init EDID
 #ifdef _ENABLE_EDID_RAM_
 	chgbank(0);
 	hdmirxwr(0x4B, (ADDR_EDID|0x01));	//[7:1] EDID RAM Slave Adr ,[0]1: Enable access EDID block
 	iTE6805_EDID_RAMInitial();
-	//iTE6805_EDID_ParseVSDB_3Dblock();
+	iTE6805_EDID_ParseVSDB_3Dblock();
 	hdmirxset(0xC5, 0x01, 0x00);	// enable PORT0 internal EDID
-	/*
 	chgbank(4);
 	hdmirxset(0xC5, 0x01, 0x00);	// enable PORT1 internal EDID
-	*/
 	chgbank(0);
 
 	//come from 6802 for reset EDID start
     hdmirxset(0xC5, 0x10, 0x10);	// reset PORT0
     delay1ms(1);
     hdmirxset(0xC5, 0x10, 0x00);
-/*
+
 	chgbank(4);
     hdmirxset(0xC5, 0x10, 0x10);	// reset PORT1
     delay1ms(1);
     hdmirxset(0xC5, 0x10, 0x00);
-*/
 	chgbank(0);
 
 	//come from 6802 for reset EDID start
@@ -66,7 +59,7 @@ void iTE6805_EDID_Init()
 	iTE6805_EDID_Parse3D.ucDtdCnt = 0;
 #endif
 
-	printf("set edid end ..\n");
+	printf("edid init end ..\n");
 }
 
 
@@ -146,15 +139,15 @@ iTE_u8 iTE6805_EDID_UpdateRAM(iTE_u8 *pEDID,iTE_u8 BlockNUM)
     EDID_DEBUG_PRINTF(("block No =%02X offset = %02X\n",(int) BlockNUM,(int) offset));
 
     for( i=0 ; i<0x7F ; i++ ){
-		//EDID_DEBUG_PRINTF(("%02X ",(int) *(pEDID+offset)));
+		EDID_DEBUG_PRINTF(("%02X ",(int) *(pEDID+offset)));
         edid_ram_wr(offset,1 ,(pEDID+offset));
         sum += *(pEDID+offset);
         offset ++;
         if((i % 16) == 15){
-            //EDID_DEBUG_PRINTF(("\n"));
+            EDID_DEBUG_PRINTF(("\n"));
         }
     }
-	//EDID_DEBUG_PRINTF(("\n"));
+	EDID_DEBUG_PRINTF(("\n"));
     sum = 0x00 - sum;
     return sum;
 }

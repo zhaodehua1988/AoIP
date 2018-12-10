@@ -8,11 +8,10 @@
 //   @date   2017/09/15
 //   @fileversion: iTE6805_MCUSRC_1.02
 //******************************************/
-#ifndef _ITE6805_CEC_DEFINE_H_
-#define _ITE6805_CEC_DEFINE_H_
+#ifndef _ITE6805_CEC_DEFINE_H_H
+#define  _ITE6805_CEC_DEFINE_H_H
 
 #include "iTE6805_typedef.h"
-
 #define CEC_MAX_MSG_LEN		(16)	/* 16 blocks */
 
 #define CEC_BCAST_ADDR		(0x0f)
@@ -78,7 +77,6 @@ typedef struct {
 	CEC_QUEUE	Tx_Queue;	// for Receive Message
 	iTE_u8		Rx_TmpHeader[3];
 	CEC_FRAME	CEC_FRAME_RX, CEC_FRAME_TX;
-
 	iTE_u8		Tx_QueueFull;
 	iTE_u8		Tx_CECDone;
 	iTE_u8		Tx_CECFire;
@@ -112,7 +110,7 @@ typedef struct {
 #define CEC_LOG_ADDR_BROADCAST          15 /* as destination address */
 
 
-//typedef enum
+//typedef enum#endif
 //{
 	//OP_FeaturOP_Abort = 0x00,
 
@@ -195,7 +193,6 @@ struct cec_enum_values {
 //    MessageType MSG_Type;
 //    iTE_u8		SIZE;
 //} CEC_CMD;
-
 
 
 #endif

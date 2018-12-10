@@ -20,8 +20,8 @@
 //   @fileversion: ITE_MHLRX_SAMPLE_V1.16
 //******************************************/
 
-#ifndef _TYPEDEF_H_
-#define _TYPEDEF_H_
+#ifndef _ITE6805_TYPEDEF_H_H_
+#define _ITE6805_TYPEDEF_H_H_
 
 //////////////////////////////////////////////////
 // MCU 8051data type
@@ -76,10 +76,9 @@ typedef unsigned int UINT, uint, *PUINT, *puint; */
 #endif
 
 //#define _MCU_8051_
-typedef unsigned char iTE_u1;
 /*
 #ifdef _MCU_8051_
-	//typedef bit iTE_u1 ;
+	typedef bit iTE_u1 ;
 	#define _CODE code
     #define _BIT       bit
     #define _BDATA     bdata
@@ -93,7 +92,7 @@ typedef unsigned char iTE_u1;
 		typedef iTE_u16 iTE_u1 ;
 		#define _CODE
 	#else
-		typedef iTE_u16 iTE_u1 ;
+	//	typedef iTE_u16 iTE_u1 ;
 	//	#define _CODE
 		#define _CODE __attribute__ ((section ("._OEM_BU1_RODATA ")))
 	#endif
@@ -114,6 +113,9 @@ typedef unsigned char iTE_u1;
 #define _XDATA
 #define _FAR
 #define _REENTRANT
+
+
+typedef unsigned char iTE_u1;
 typedef char iTE_s8, *piTE_s8;
 typedef unsigned char iTE_u8, *piTE_u8;
 typedef short iTE_s16, *piTE_s16;

@@ -9,10 +9,8 @@
 //   @fileversion: iTE6805_MCUSRC_1.02
 //******************************************/
 // IRQ
-#ifndef _iTE6805_SYS_H_H_
-#define _iTE6805_SYS_H_H_
-
-#include "iTE6805_typedef.h"
+#ifndef _ITE6805_SYS_H_H_
+#define _ITE6805_SYS_H_H_
 void iTE6805_hdmirx_port0_SYS_irq();
 void iTE6805_hdmirx_port1_SYS_irq();
 void iTE6805_hdmirx_common_irq();
@@ -48,4 +46,3 @@ void iTE6805_HDCP_Detect();
 #endif
 
 #endif
-

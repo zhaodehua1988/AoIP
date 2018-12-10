@@ -8,10 +8,8 @@
 //   @date   2017/09/15
 //   @fileversion: iTE6805_MCUSRC_1.02
 //******************************************/
-#ifndef _ITE6805_CEC_FETURE_H_
-#define _ITE6805_CEC_FETURE_H_
-
-#include "iTE6805_typedef.h"
+#ifndef _ITE6805_CEC_FETURE_H_H_
+#define _ITE6805_CEC_FETURE_H_H_
 #include "iTE6805_CEC_DEFINE.h"
 void iTE6805_CEC_CMD_Feature_decode(pCEC_FRAME CEC_FRAME);
 
@@ -546,5 +544,6 @@ void iTE6805_CEC_MSG_Give_Deive_VendorID();
 #define CEC_OP_HPD_ERROR_NONE_NO_VIDEO                  4
 
 /* End of Messages */
+
 
 #endif

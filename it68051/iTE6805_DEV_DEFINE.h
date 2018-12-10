@@ -8,8 +8,8 @@
 //   @date   2017/09/15
 //   @fileversion: iTE6805_MCUSRC_1.02
 //******************************************/
-#ifndef _ITE6805_DEV_DEFINE_H_
-#define _ITE6805_DEV_DEFINE_H_
+#ifndef _ITE6805_DEV_DEFINE_H_H_
+#define _ITE6805_DEV_DEFINE_H_H_
 #define MS_TimeOut(x) ((x)+1)
 
 #define LVDS 	0

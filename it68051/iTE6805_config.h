@@ -8,8 +8,8 @@
 //   @date   2017/09/15
 //   @fileversion: iTE6805_MCUSRC_1.02
 //******************************************/
-#ifndef _CONFIG_H_
-#define _CONFIG_H_
+#ifndef _iTE6805_CONFIG_H_
+#define _iTE6805_CONFIG_H_
 
 #ifdef _iTE6805_
 #pragma message("defined _iTE6805_ config")
@@ -18,15 +18,15 @@
 //////////////////////////////////////////////////////////////////////////////////////////
 // 68051 68052 EVB Option
 //////////////////////////////////////////////////////////////////////////////////////////
-#define DEMO		// for demo code MCU pin
+//#define DEMO		// for demo code MCU pin
 // DEMO code
 // if EDID_WP0 = 0, when 4k then output dowscale to 1080p
 // if EDID_WP0 = 1, if EDID_WP1 = 0 ,when 4k the output is Odd Even Mode
 // if EDID_WP0 = 1, if EDID_WP1 = 1 ,when 4k the output is LeftRight Mode
 
 
-#define EVB_BOARD_FOR_RING_FREQ // for EVB clock ring error need using MCU 100ms K
-#define EVB_AUTO_DETECT_PORT_BY_PIN // for P3^0 pin auto detect port
+//#define EVB_BOARD_FOR_RING_FREQ // for EVB clock ring error need using MCU 100ms K
+//#define EVB_AUTO_DETECT_PORT_BY_PIN // for P3^0 pin auto detect port
 //#define EVB_4096_DOWNSCALE_TO_2048_OR_1920_CONTROL_BY_PIN // for EVB DownScale By PIN P0^0
 
 //////////////////////////////////////////////////////////////////////////////////////////
@@ -46,7 +46,6 @@
 // this define for dynamic HDCP enable/disable by using variable iTE6805_DATA.STATE_HDCP = HDCP_ENABLE/HDCP_DISABLE
 // for customer can change HDCP state in upper code level, default HDCP is enable
 // default disable this define
-
 //#define DYNAMIC_HDCP_ENABLE_DISABLE
 
 
@@ -165,7 +164,7 @@
 //////////////////////////////////////////////////////////////////////////////////////////
 // CEC Config
 //////////////////////////////////////////////////////////////////////////////////////////
-#define _ENABLE_IT6805_CEC_
+//#define _ENABLE_IT6805_CEC_
 #define _ENABLE_IT6805_CEC_I2C_
 #define CEC_VENDOR_ID 0x0000
 #define iTE6805CECGPIOid		0	// for identife iTE6805_CEC use Pin 1.0 & 1.1
@@ -176,7 +175,6 @@
 // Other Config
 //////////////////////////////////////////////////////////////////////////////////////////
 #define ADDR_HDMI   0x90
-//#define	ADDR_MHL	0xE0	//Software programmable I2C address of iTE6805 MHL
 #define	ADDR_MHL	0x70	//Software programmable I2C address of iTE6805 MHL
 #define	ADDR_EDID	0xA8	//Software programmable I2C address of iTE6805 EDID RAM
 #define ADDR_CEC	0xC8	//Software programmable I2C address of iTE6805 CEC
@@ -187,7 +185,7 @@
 //////////////////////////////////////////////////////////////////////////////////////////
 // MHL Config
 //////////////////////////////////////////////////////////////////////////////////////////
-//#define _ENABLE_IT6805_MHL_FUNCTION_
+#define _ENABLE_IT6805_MHL_FUNCTION_
 //#define _ENABLE_MHL_SUPPORT_3D_
 #define _ENABLE_IT6805_MHL_I2C_
 

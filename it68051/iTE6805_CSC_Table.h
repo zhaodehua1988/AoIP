@@ -12,6 +12,9 @@
 // 3 type of CSC convert, full to full, limit to limit, full to limit
 // (do not have limit to full because limit range do not have information of full)
 
+#ifndef _ITE6805_CSC_TABLE_H_H_
+#define _ITE6805_CSC_TABLE_H_H_
+
 typedef enum
 {
 	CSCMtx_RGB2YUV_ITU601_16_235,
@@ -42,3 +45,4 @@ _CODE iTE_u8 CSC_Matrix[][22] =
 /*bCSCMtx_RGB_16_235_RGB_00_255*/	{0xED, 0xED, 0x00, 0x50, 0x09, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x50, 0x09, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x50, 0x09, 0xED}
 };
 
+#endif

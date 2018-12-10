@@ -11,10 +11,7 @@
 #include "iTE6805_Global.h"
 #include "iTE6805_CEC_DRV.h"
 #include "iTE6805_CEC_DEFINE.h"
-//extern _iTE6805_CEC *iTE6805_CEC;
-
 extern _iTE6805_CEC *iTE6805_CEC;
-
 
 void iTE6805_CEC_Fire_Tx(void)
 {
@@ -27,7 +24,7 @@ void iTE6805_CEC_INIT_CMD(iTE_u8 Initiator,iTE_u8 Follower)
 	iTE_u8 i;
 	for(i = 0 ; i  < CEC_FRAME_SIZE; i++)
 	{
-		iTE6805_CEC->CEC_FRAME_TX.array[i] = 0;
+		iTE6805_CEC->CEC_FRAME_TX.array[i]=0;
 	}
 	iTE6805_CEC->CEC_FRAME_TX.id.HEADER=((Initiator<<4)+Follower);
 	iTE6805_CEC->CEC_FRAME_TX.id.SIZE=1;

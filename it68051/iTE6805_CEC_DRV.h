@@ -8,7 +8,8 @@
 //   @date   2017/09/15
 //   @fileversion: iTE6805_MCUSRC_1.02
 //******************************************/
-
+#ifndef _ITE6805_CEC_DRV_H_H_
+#define  _ITE6805_CEC_DRV_H_H_
 
 void	iTE6805_CEC_Fire_Tx();
 
@@ -26,3 +27,5 @@ void	iTE6805_CEC_Clear_INT();
 // Queue
 iTE_u8 iTE6805_CEC_RX_CMD_Push(piTE_u8 pHeader);
 iTE_u8 iTE6805_CEC_RX_CMD_Pull();
+
+#endif

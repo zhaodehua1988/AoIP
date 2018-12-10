@@ -33,15 +33,15 @@ WV_S32 main()
 	HIS_SYS_Init();
 	//SYS_DATE_Init();
 	SYS_IP_Init();
-	ADV_7619_Init();
-	TSK_PLAYER_Open();
+	//ADV_7619_Init();
+	//TSK_PLAYER_Open();
 	PCA9548_Init();
 	PCA9555_Init();
 	ITE6805_Open();
-	ITE6615_Open();
+	//ITE6615_Open();
 	//TI1297_Init();
 	//TSK_FPGA_Open();
-	TSK_GO_Open();
+	//TSK_GO_Open();
 	//system("./MultiViewer > /dev/null");
 	rowNum = 0;
 	while (1)
@@ -52,11 +52,11 @@ WV_S32 main()
 		usleep(100000);
 	}
 
-	TSK_GO_Close();
+	//TSK_GO_Close();
 	//TSK_FPGA_Close();
-	ITE6615_Close();
+	//ITE6615_Close();
 	ITE6805_Close();
-	TSK_PLAYER_Close();
+	//TSK_PLAYER_Close();
 	SYS_IP_DeInit();
 	//SYS_DATE_DeInit();
 	HIS_SYS_DeInit();
