@@ -15,4 +15,5 @@ WV_S32 SYS_IP_SaveConf();
 WV_S32 SYS_IP_SaveUpdate();
 WV_S32 SYS_IP_getIpInt(WV_S8 *pName,WV_U8* pIp);
 WV_S32 SYS_IP_getMacInt(WV_U8* pMac);
+WV_S32 SYS_IP_SwitchChar(WV_S8 *pStr,WV_S32 *pValue);
 #endif

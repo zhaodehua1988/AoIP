@@ -97,6 +97,7 @@ void *ITE6805_Proc(void *prm){
 		    iTE6805_vid_fsm();
 		    iTE6805_aud_fsm();
            // INT_TimeOutCnt = 0;
+		   usleep(300000);
 		}
 
 	

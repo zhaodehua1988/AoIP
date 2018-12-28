@@ -41,8 +41,8 @@ WV_S32 TSK_GO_SetCmd(WV_S32 argc, WV_S8 **argv, WV_S8 *prfBuff)
 	HI_RECT Rect;
 	Rect.x = 0;
 	Rect.y = 0;
-	Rect.w = 1920;
-	Rect.h = 1080;
+	Rect.w = HIS_FB_VITURE_SCEEN_W;//1920;
+	Rect.h = HIS_FB_VITURE_SCEEN_H;
 
 	if (argc < 1)
 	{
@@ -63,6 +63,32 @@ WV_S32 TSK_GO_SetCmd(WV_S32 argc, WV_S8 **argv, WV_S8 *prfBuff)
 
 			prfBuff += sprintf(prfBuff, "input erro!\r\n");
 		}
+		if(argc >=6){
+			ret = WV_STR_S2v(argv[2], &Rect.x);
+			if (ret != WV_SOK)
+			{
+
+				prfBuff += sprintf(prfBuff, "input erro!\r\n");
+			}	
+			ret = WV_STR_S2v(argv[3], &Rect.y);
+			if (ret != WV_SOK)
+			{
+
+				prfBuff += sprintf(prfBuff, "input erro!\r\n");
+			}
+			ret = WV_STR_S2v(argv[4], &Rect.w);
+			if (ret != WV_SOK)
+			{
+
+				prfBuff += sprintf(prfBuff, "input erro!\r\n");
+			}
+			ret = WV_STR_S2v(argv[5], &Rect.h);
+			if (ret != WV_SOK)
+			{
+
+				prfBuff += sprintf(prfBuff, "input erro!\r\n");
+			}					
+		}
 		color = color | 0xff000000;
 		HI_GO_FillRect(gGoDev.goDev.layerSurfHndl, &Rect, color, HIGO_COMPOPT_NONE);
 		HIS_GO_RefreshLayer(&gGoDev.goDev);
@@ -72,6 +98,7 @@ WV_S32 TSK_GO_SetCmd(WV_S32 argc, WV_S8 **argv, WV_S8 *prfBuff)
 		HIS_GO_RefreshLayer(&gGoDev.goDev);
 	}else if (strcmp(argv[0], "pic") == 0)
 	{
+		WV_U32 x,y,w,h;
 		if(argc < 2 )
 		{
 			prfBuff += sprintf(prfBuff, "err!cmd like-> set higo pic <filename>\r\n");
@@ -104,8 +131,9 @@ void *TSK_GO_Proc(void *prm)
 
 	while (pDev->open == 1)
 	{
+		
 		fresh = 0;
-
+		
 		for (i = 0; i < TSK_HIGO_ANI_MAX_NUM; i++)
 		{
 
@@ -119,6 +147,7 @@ void *TSK_GO_Proc(void *prm)
 		{
 			//HIS_GO_SetColorKey(gGoDev.colorKeyEna, 0xff000000);
 			HIS_GO_RefreshLayer(pGoDev);
+			usleep(30000);
 		}
 		else
 		{

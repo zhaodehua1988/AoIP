@@ -35,10 +35,12 @@ WV_S32  HIS_SYS_ConfInit()
 {
   //gHisConf.disFormat = HI_UNF_ENC_FMT_3840X2160_30;
   //gHisConf.disFormat = HI_UNF_ENC_FMT_1080P_60; 
- // gHisConf.disFormat = HI_UNF_ENC_FMT_VESA_2560X1600_60_RB;
+  //gHisConf.disFormat = HI_UNF_ENC_FMT_VESA_2560X1600_60_RB;
 
-  gHisConf.disFormat = HI_UNF_ENC_FMT_BUTT;
-	
+    gHisConf.disFormat = HI_UNF_ENC_FMT_BUTT;
+    //gHisConf.disFormat = HI_UNF_ENC_FMT_1080P_60;
+
+    //gHisConf.disFormat = HI_UNF_ENC_FMT_1080P_30;
     return WV_SOK;
 }
 /*************************************************************************************
@@ -59,7 +61,7 @@ WV_S32   HIS_SYS_Init()
   HIS_SND_Init();
   HIS_SO_Init();
   HIS_DEMUX_Init(); 
-  HIS_DIS_Init(gHisConf.disFormat,1);
+  HIS_DIS_Init(gHisConf.disFormat,2);
   HIS_HDMI_Init(gHisConf.disFormat);  
   HIS_AVP_Init();
   HIS_VENC_Init();

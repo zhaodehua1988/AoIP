@@ -1,8 +1,7 @@
 #include "his_dis.h"
 #include "hi_unf_disp.h"
 #include "hi_unf_vo.h"
-#include "fpga_conf.h"
-
+#include "his_fb.h"
 #define  HIS_CAST_WIDTH   	1280 
 #define  HIS_CAST_HEIGHT   	720  
 #define  HIS_DIS_HEIGHT     2160        
@@ -31,7 +30,7 @@ HI_UNF_DISP_TIMING_S CustTiming =
 
     0,//HI_BOOL bInterlace;                             /**<progressive or interlace*//**<CNcomment:逐行或者隔行*/
     0,//HI_U32  PixFreq;                                /**<pixel clock*//**<CNcomment:像素时钟*/
-    30,//HI_U32  VertFreq;                               /**<display rate*//**<CNcomment:刷新率*/
+    30000,//HI_U32  VertFreq;                               /**<display rate*//**<CNcomment:刷新率*/
     0,//HI_U32  AspectRatioW;                           /**<width of screen*//**<CNcomment:屏幕宽度*/
     0,//HI_U32  AspectRatioH;                           /**<height of screen*//**<CNcomment:屏幕高度*/
     0,//HI_BOOL bUseGamma;                              /**<gamma modulation*//**<CNcomment:伽马调节*/
@@ -182,16 +181,8 @@ WV_S32  HIS_DIS_Init(HI_UNF_ENC_FMT_E disFormat,WV_S32 mode)
    	     return Ret;      
         }
      }
-/*
-	if(mode == 0){
-		Ret = HI_UNF_DISP_SetVirtualScreen(HI_UNF_DISPLAY1, 3840, 1092);
-		//Ret = HI_UNF_DISP_SetVirtualScreen(HI_UNF_DISPLAY1, 1920, 1092);
-	}else{
-  		Ret = HI_UNF_DISP_SetVirtualScreen(HI_UNF_DISPLAY1, 3840, HIS_DIS_HEIGHT);
-		//Ret = HI_UNF_DISP_SetVirtualScreen(HI_UNF_DISPLAY1, 3840, 1092);
-	}
-*/
-	Ret = HI_UNF_DISP_SetVirtualScreen(HI_UNF_DISPLAY1, 1920, 1080); 
+
+	Ret = HI_UNF_DISP_SetVirtualScreen(HI_UNF_DISPLAY1, HIS_FB_VITURE_SCEEN_W, HIS_FB_VITURE_SCEEN_H); 
     if (Ret != HI_SUCCESS)
     {
         WV_printf("HI_UNF_DISP_SetVirtualScreen failed, Ret=%#x.\n", Ret);
@@ -238,49 +229,24 @@ WV_S32  HIS_DIS_Init(HI_UNF_ENC_FMT_E disFormat,WV_S32 mode)
         HI_UNF_DISP_DeInit();
         return Ret;
     } 
-   
-  if(disFormat ==  HI_UNF_ENC_FMT_BUTT)
-  {
-/*
-   memset(&custTiming,0,sizeof(HI_UNF_DISP_TIMING_S));
-	mode =1;
-	if(mode==0){	
-	
-	custTiming.VFB = 4;//4
-	custTiming.VBB = 29; //29
-	custTiming.VACT= 1092;//1092
-	custTiming.HFB = 176;//176;
-	custTiming.HBB = 384;//384;
-	custTiming.HACT= 3840;
-	custTiming.VPW = 5;//5
+
+	if(disFormat ==  HI_UNF_ENC_FMT_BUTT)
+	{
+
 		
+		Ret = HIS_DIS_SetCustomTiming(mode);
+		if (Ret != HI_SUCCESS)
+		{
+			WV_printf("HI_UNF_DISP_SetCustomTiming, Ret=%#x.\n", Ret); 
+		// HI_UNF_DISP_DeInit();
+			//return Ret;
+		}
+
 	}else{
-
-  	custTiming.VFB = 4;//8
-	custTiming.VBB = 29; //80
-	custTiming.VACT= HIS_DIS_HEIGHT;//2172
-	custTiming.HFB = 176;
-	custTiming.HBB = 384;
-	custTiming.HACT= 3840;
-	custTiming.VPW = 10;//5	
-	
+        printf("--------set to disFormat=%d\n",disFormat);
+		//HI_UNF_DISP_SetCustomTiming(HI_UNF_DISPLAY1,&custTiming);
+        
 	}
-	custTiming.HPW = 88; 
-	custTiming.DataWidth = HI_UNF_DISP_INTF_DATA_WIDTH24; 
-	custTiming.ItfFormat = HI_UNF_DISP_INTF_DATA_FMT_RGB888;
-        custTiming.VertFreq = 30000;
-          
-      Ret = HI_UNF_DISP_SetCustomTiming(HI_UNF_DISPLAY1,&custTiming);
-*/
-	Ret = HIS_DIS_SetCustomTiming(mode);
-    	if (Ret != HI_SUCCESS)
-   	 {
-   	     WV_printf("HI_UNF_DISP_SetCustomTiming, Ret=%#x.\n", Ret); 
-   	    // HI_UNF_DISP_DeInit();
-   	     //return Ret;
-   	 }
-
-    }
     
      HI_UNF_DISP_TIMING_S  hdmiTims;
      Ret =  HI_UNF_DISP_GetCustomTiming (HI_UNF_DISPLAY1,&hdmiTims);
@@ -302,6 +268,7 @@ WV_S32  HIS_DIS_Init(HI_UNF_ENC_FMT_E disFormat,WV_S32 mode)
 	printf("Dither   	= %d\n",hdmiTims.DitherEnable);
 	printf("bInterlace   	= %d\n",hdmiTims.bInterlace);
 	printf("PixFreq   	= %d\n",hdmiTims.PixFreq);
+	printf("VertFreq    = %d\n",hdmiTims.VertFreq);
 	printf("AspectRatioW   	= %d\n",hdmiTims.AspectRatioW);
 	printf("AspectRatioH   	= %d\n",hdmiTims.AspectRatioH);
 	printf("bUseGamma   	= %d\n",hdmiTims.bUseGamma);
@@ -457,7 +424,6 @@ WV_S32  HIS_DIS_WinDetach(HI_HANDLE *  pHndlWin,HI_HANDLE *  pHndlSrc)
 WV_S32  HIS_DIS_WinFreeze(HI_HANDLE *  pHndlWin,HI_BOOL bEnable,WV_S32 mode);
 
 **********************************************************************************************/
-
 WV_S32  HIS_DIS_WinFreeze(HI_HANDLE *  pHndlWin,HI_BOOL bEnable,WV_S32 mode)
 { 
 
@@ -495,7 +461,7 @@ WV_S32 HIS_DIS_SetCustomTiming(WV_S32 mode)
 **********************************************************************************************/
 WV_S32  HIS_DIS_SetCustomTiming(WV_U32 mode)
 { 
-	printf("set custom ...................mode %d ................\n",mode);
+	//printf("set custom ...................mode = %d ................\n",mode);
 	HI_UNF_DISP_TIMING_S    custTiming;
 	WV_S32 ret=-1;
 	memset(&custTiming,0,sizeof(HI_UNF_DISP_TIMING_S));
@@ -510,24 +476,30 @@ WV_S32  HIS_DIS_SetCustomTiming(WV_U32 mode)
 			custTiming.HBB = 384;//384;
 			custTiming.HACT= 3840;
 			custTiming.VPW = 5;//5
+			custTiming.VertFreq = 30000;
 			break;
 		case 1:
-		  	custTiming.VFB = 4;//8
-			custTiming.VBB = 29; //80
+		  	custTiming.VFB = 8;
+			custTiming.VBB = 82;//80;
 			custTiming.VACT= 2160;//HIS_DIS_HEIGHT;//2172
-			custTiming.HFB = 176;
-			custTiming.HBB = 384;
-			custTiming.HACT= 3840;
+			custTiming.HFB = 88;//176
+			custTiming.HBB = 192;//384;192
+			custTiming.HACT= 1920;//1920;//3840;r
 			custTiming.VPW = 10;//5	
+			custTiming.VertFreq = 30000;
+			custTiming.PixFreq = 297000;//148500;//297000;
+			
 			break;
 		case 2:
 		  	custTiming.VFB = 4;//8
 			custTiming.VBB = 29; //80
-			custTiming.VACT= 2172;//HIS_DIS_HEIGHT;//2172
+			custTiming.VACT= 2160;//
 			custTiming.HFB = 176;
 			custTiming.HBB = 384;
 			custTiming.HACT= 3840;
 			custTiming.VPW = 10;//5	
+			custTiming.VertFreq = 30000;
+			//custTiming.PixFreq = 297000;	
 			break;
 		default:
 			return -1;	
@@ -536,7 +508,9 @@ WV_S32  HIS_DIS_SetCustomTiming(WV_U32 mode)
 	custTiming.HPW = 88; 
 	custTiming.DataWidth = HI_UNF_DISP_INTF_DATA_WIDTH24; 
 	custTiming.ItfFormat = HI_UNF_DISP_INTF_DATA_FMT_RGB888;
-   custTiming.VertFreq = 30000;
+    //custTiming.VertFreq = 60000;
+	
+    //custTiming.VertFreq = 30000;
           
 	ret = HI_UNF_DISP_SetCustomTiming(HI_UNF_DISPLAY1,&custTiming);
 	if (ret != HI_SUCCESS)

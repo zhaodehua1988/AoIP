@@ -6,9 +6,7 @@
 #include "his_spi.h"
 #include "his_fb.h"
 #include "adi_7619.h"
-#include "tsk_fpga.h"
 #include "tsk_go.h"
-#include "fpga_conf.h"
 #include <sys/time.h>
 #include "wv_file.h"
 #include "sys_env.h"
@@ -18,6 +16,9 @@
 #include "iTE6805_Init.h"
 #include "iTE6615_Init.h"
 #include "ti1297_init.h"
+#include "fpga_conf.h"
+#define HELLO_DEBUG
+
 WV_S32 main()
 {
 	WV_S32 ret;
@@ -33,15 +34,21 @@ WV_S32 main()
 	HIS_SYS_Init();
 	//SYS_DATE_Init();
 	SYS_IP_Init();
-	//ADV_7619_Init();
-	//TSK_PLAYER_Open();
+
+	FPGA_CONF_Init();
+#ifdef HELLO_DEBUG
+	ADV_7619_Init();
+
+	
+	TSK_PLAYER_Open();
 	PCA9548_Init();
 	PCA9555_Init();
 	ITE6805_Open();
-	//ITE6615_Open();
+	ITE6615_Open();
 	//TI1297_Init();
 	//TSK_FPGA_Open();
-	//TSK_GO_Open();
+	TSK_GO_Open();
+#endif
 	//system("./MultiViewer > /dev/null");
 	rowNum = 0;
 	while (1)
@@ -51,12 +58,14 @@ WV_S32 main()
 			break;
 		usleep(100000);
 	}
-
-	//TSK_GO_Close();
+#ifdef HELLO_DEBUG
+	TSK_GO_Close();
 	//TSK_FPGA_Close();
-	//ITE6615_Close();
+	ITE6615_Close();
 	ITE6805_Close();
-	//TSK_PLAYER_Close();
+	TSK_PLAYER_Close();
+#endif
+	FPGA_CONF_DeInit();
 	SYS_IP_DeInit();
 	//SYS_DATE_DeInit();
 	HIS_SYS_DeInit();

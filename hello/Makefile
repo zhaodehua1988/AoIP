@@ -2,7 +2,7 @@
 CC := arm-hisiv200-linux-gcc
 ##############################################################################################
 WORK_PATH := ../
-SUBDIR   := common his extdev task server sys it68051 it6615 ti1297 
+SUBDIR   := common his extdev task server sys it68051 it6615 ti1297 fpga
 
 ##############################################################################################
 SOFT_VER  := "1.4.2.0"

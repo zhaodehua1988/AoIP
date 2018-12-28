@@ -41,10 +41,10 @@ static HIS_HIFB_DEV_E gHifbDev;
 static int colorKeyena=0;
 static struct fb_var_screeninfo ghifb_st_def_vinfo =
     {
-        1920,       //visible resolution xres
-        1080,       // yres
-        1920,       //1920, //virtual resolution xres_virtual
-        1092 * 2,   //1092*2, //yres_virtual
+        HIS_FB_VITURE_SCEEN_W,//960,//1920,       //visible resolution xres
+        HIS_FB_VITURE_SCEEN_H,//540, //1080      // yres
+        HIS_FB_VITURE_SCEEN_W,//960,//1920,       //1920, //virtual resolution xres_virtual
+        HIS_FB_VITURE_SCEEN_H* 2,   //1092*2, //yres_virtual
         0,          //xoffset
         0,          //yoffset
         32,         //bits per pixel
@@ -130,7 +130,6 @@ WV_S32 HIS_FB_PrintFinfo(struct fb_fix_screeninfo *finfo)
 WV_S32 HIS_FB_BufGet(HIS_HIFB_DEV_E * pDev;
 
 ****************************************************************************/
-
 WV_S32 HIS_FB_BufGet(HIS_HIFB_DEV_E *pDev)
 {
 
@@ -267,21 +266,21 @@ WV_S32 HIS_FB_Init(HIS_HIFB_DEV_E *pDev)
         }
         // creat surf for higodec
         HIGO_SURINFO_S SurInfo;
-        SurInfo.Width = 1920;
-        SurInfo.Height = 1080; //1084
+        SurInfo.Width = HIS_FB_VITURE_SCEEN_W;//960;//1920;
+        SurInfo.Height = HIS_FB_VITURE_SCEEN_H;//540;//1080; //1084
         SurInfo.PixelFormat = HIGO_PF_8888;
-        SurInfo.Pitch[0] = 1920 * 4;
+        SurInfo.Pitch[0] = HIS_FB_VITURE_SCEEN_W * 4;
         SurInfo.pVirAddr[0] = pDev->mapped_mem; //+ 1920*4*4;
         SurInfo.pPhyAddr[0] = pDev->mapped_phy; //+ 1920*4*4;
         SurInfo.MemType = HIGO_MEMTYPE_MMZ;
         SurInfo.bPubPalette = HI_TRUE;
         WV_CHECK_RET(HI_GO_CreateSurfaceFromMem(&SurInfo, &(pDev->mapped_surf[0])));
-        SurInfo.Width = 1920;
-        SurInfo.Height = 1080; //1084
+        SurInfo.Width = HIS_FB_VITURE_SCEEN_W;//960;//1920;
+        SurInfo.Height = HIS_FB_VITURE_SCEEN_H;//540;//1080; //1084
         SurInfo.PixelFormat = HIGO_PF_8888;
-        SurInfo.Pitch[0] = 1920 * 4;
-        SurInfo.pVirAddr[0] = pDev->mapped_mem + 1920 * 4 * 1080;
-        SurInfo.pPhyAddr[0] = pDev->mapped_phy + 1920 * 4 * 1080;
+        SurInfo.Pitch[0] = HIS_FB_VITURE_SCEEN_W*4;//960*4;//1920 * 4;
+        SurInfo.pVirAddr[0] = pDev->mapped_mem + HIS_FB_VITURE_SCEEN_W * 4 * HIS_FB_VITURE_SCEEN_H;
+        SurInfo.pPhyAddr[0] = pDev->mapped_phy + HIS_FB_VITURE_SCEEN_W * 4 * HIS_FB_VITURE_SCEEN_H;
         SurInfo.MemType = HIGO_MEMTYPE_MMZ;
         SurInfo.bPubPalette = HI_TRUE;
         WV_CHECK_RET(HI_GO_CreateSurfaceFromMem(&SurInfo, &(pDev->mapped_surf[1])));
@@ -355,13 +354,13 @@ WV_S32 HIS_FB_SurfFresh()
     HIFB_COLORKEY_S colorKey;
     //
     WV_U32 w, h;
-    WV_U8 *pW, *pH;
+//    WV_U8 *pW, *pH;
     WV_U8 *pMem;
     pMem = pDev->screen_mem;
-    w = 1920;
-    h = 1080;
-    pW = (WV_U8 *)(&w);
-    pH = (WV_U8 *)(&h);
+//    w = 1920;
+//    h = 1080;
+//    pW = (WV_U8 *)(&w);
+//    pH = (WV_U8 *)(&h);
 
     if (ioctl(pDev->mapped_fd, FBIOGET_VBLANK_HIFB) != 0)
     {
@@ -378,7 +377,7 @@ WV_S32 HIS_FB_SurfFresh()
     }
 
     /*************get color key***********/
-
+/*
     if (colorKeyena == 1)
     {
 
@@ -413,7 +412,7 @@ WV_S32 HIS_FB_SurfFresh()
             return WV_EFAIL;
         }
     }
-
+*/
     if (ioctl(pDev->mapped_fd, FBIOGET_VBLANK_HIFB) != 0)
     {
         WV_ERROR("FBIOGET_VBLANK_HIFB failed!\n");

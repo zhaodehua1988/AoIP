@@ -143,7 +143,7 @@ WV_S32 ADV_7619_SetConf()
 
 		//WV_CHECK_RET(PCA9548_IIC_Write(PCA9548A_IIC_SWID_7619,devAddr,regAddr, data));
 		PCA9548_IIC_Write(PCA9548A_IIC_SWID_7619,devAddr,regAddr,data);
-		usleep(500000);
+		usleep(200000);
 	}
 
 	WV_printf("adv 7619 set conf end.....\n");

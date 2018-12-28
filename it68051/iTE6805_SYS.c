@@ -1362,10 +1362,10 @@ void iTE68051_Video_Output_Setting()
 		else
 			_iTE68051_4K60_Mode_ = MODE_LeftRight;
 		#endif
-
+		printf("_iTE68051_4K60_Mode_=%d\n",_iTE68051_4K60_Mode_);
 		if (iTE6805_Check_4K_Resolution())
 		{
-			HDMIRX_DEBUG_PRINT(("!!!!!! Set Dual Pixel Mode For 4K60 !!!!!!\n"));
+			HDMIRX_DEBUG_PRINT(("---------------------!!!!!! Set Dual Pixel Mode For 4K60 !!!!!!\n"));
 			iTE6805_Set_LVDS_Video_Path(2);	// 2 lane for dual pixel mode
 		}
 		else

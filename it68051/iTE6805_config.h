@@ -93,7 +93,7 @@
 
 // If define DEMO, this define will be ignored, iTE68051_4K60_Mode setting will by WP1 pin setting
 #ifndef iTE68051_4K60_Mode
-#define iTE68051_4K60_Mode MODE_LeftRight // MODE_EvenOdd or MODE_LeftRight or MODE_DownScale or MODE_EvenOdd_Plus_DownScale
+#define iTE68051_4K60_Mode MODE_EvenOdd //MODE_LeftRight //MODE_EvenOdd // MODE_EvenOdd or MODE_LeftRight or MODE_DownScale or MODE_EvenOdd_Plus_DownScale
 #endif
 
 #define iTE6028_DE_Delay 0xD1 // can be D0~D3, De Delay Level D3>D2>D1>D0

@@ -107,6 +107,7 @@ void iTE6805_Set_ColorDepth(){
 
 void iTE6805_Set_LVDS_Video_Path(iTE_u8 LaneNum)
 {
+	printf("-----------set mode = %d \n",LaneNum);
 	#ifdef iTE68051
 	chgbank(1);
 	if(LaneNum == 2)
@@ -612,6 +613,7 @@ iTE_u8 iTE6805_Check_4K_Resolution()
 		return TRUE;
 	}
 	HDMIRX_DEBUG_PRINT(("iTE6805_Check_4K_Resolution = FALSE!!!\n"));
+	return TRUE;
 	return FALSE;
 }
 

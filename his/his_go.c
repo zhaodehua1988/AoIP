@@ -372,7 +372,6 @@ WV_S32 HIS_GODEC_Render(HIS_DEV_GODEC_E * pDev)
 WV_S32 HIS_GO_RefreshLayer(HIS_DEV_HIGO_E * pDev);
 
 ***************************************************************/
-
 WV_S32 HIS_GO_RefreshLayer(HIS_DEV_HIGO_E * pDev)
 {
  HI_HANDLE screenSurf[2];
@@ -388,9 +387,10 @@ WV_S32 HIS_GO_RefreshLayer(HIS_DEV_HIGO_E * pDev)
 
     Rect.x =0;
     Rect.y = 0;
-    Rect.w = 1920;
-    Rect.h = 1080;
+    Rect.w = HIS_FB_VITURE_SCEEN_W;//1920;
+    Rect.h = HIS_FB_VITURE_SCEEN_H;//1080;
     WV_CHECK_RET( HI_GO_Blit(pDev->layerSurfHndl,&Rect,screenSurf[0], NULL, &BltOpt)); 
+	
     WV_CHECK_RET( HIS_FB_SurfFresh());
     
    return  WV_SOK;

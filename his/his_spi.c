@@ -50,6 +50,7 @@ WV_S32  HIS_SPI_FpgaWd(WV_U16 addr,WV_U16 data);
 *******************************************************************************************************/
 WV_S32 HIS_SPI_FpgaWd(WV_U16 addr, WV_U16 data)
 {
+	//printf("FPGA write : 0x%04x  = 0x%04x[%d] \n", addr,data,data);
 	HI_UNF_SPI_DEV_E dev;
 	WV_U16 buf[20];
 	WV_S32 ret;
@@ -67,29 +68,6 @@ WV_S32 HIS_SPI_FpgaWd(WV_U16 addr, WV_U16 data)
 	return ret;
 }
 
-/*******************************************************************************************************
-
-WV_S32  HIS_SPI_FpgaWd2(WV_U16 addr,WV_U16 data);
-
-*******************************************************************************************************/
-WV_S32 HIS_SPI_FpgaWd2(WV_U16 addr, WV_U16 data)
-{
-	HI_UNF_SPI_DEV_E dev;
-	WV_U16 buf[20];
-	WV_S32 ret;
-	dev = HIS_SPI_DEV_SEL;
-	buf[0] = (addr << 6) | 0xc000;
-	buf[1] = data;
-
-	ret = HI_UNF_SPI_Write(dev, (HI_U8 *)buf, 4);
-	usleep(1);
-	if (ret != 0)
-	{
-		HIS_SPI_printf("FPGA write 2 : 0x%04x  = 0x%04x[%d]", addr, buf[1], buf[1]);
-	}
-	//return WV_SOK;
-	return ret;
-}
 /*******************************************************************************************************
 
 WV_S32  HIS_SPI_FpgaWd_buffer(WV_U16 *pBuffer,WV_U16 length);
@@ -120,6 +98,7 @@ WV_S32  HIS_SPI_FpgaRd(WV_U16 addr,WV_U16 * pData);
 #if 1
 WV_S32 HIS_SPI_FpgaRd(WV_U16 addr, WV_U16 *pData)
 {
+	//printf("FPGA read : 0x%04x\n",addr);
 	HI_UNF_SPI_DEV_E dev;
 	WV_U16 rBuf[20], wBuf[20];
 	WV_S32 ret;
@@ -131,6 +110,8 @@ WV_S32 HIS_SPI_FpgaRd(WV_U16 addr, WV_U16 *pData)
 	{
 		HIS_SPI_printf("FPGA read : 0x%04x  = 0x%04x", addr, rBuf[0]);
 	}
+	//printf("FPGA read : 0x%04x  = 0x%04x[%d]\n", addr, rBuf[0],rBuf[0]);
+
 	return WV_SOK;
 }
 #endif
@@ -150,29 +131,6 @@ WV_S32 HIS_SPI_FpgaRdNum(WV_U16 addr, WV_U16 *pData, WV_U32 dataNum)
 	if (ret != 0)
 	{
 		HIS_SPI_printf("FPGA read : 0x%04x err\r\n.", addr);
-	}
-	return WV_SOK;
-}
-
-/*******************************************************************************************************
-
-WV_S32  HIS_SPI_FpgaRd2(WV_U16 addr,WV_U16 * pData);
-
-*******************************************************************************************************/
-WV_S32 HIS_SPI_FpgaRd2(WV_U16 addr, WV_U16 *pData)
-{
-	HI_UNF_SPI_DEV_E dev;
-	WV_U16 rBuf[20], wBuf[20];
-	WV_S32 ret;
-	dev = HIS_SPI_DEV_SEL;
-
-	wBuf[0] = (addr << 6) & 0x7fff;
-	wBuf[0] |= 0x4000;
-	ret = HI_UNF_SPI_ReadExt(dev, (HI_U8 *)wBuf, 2, (HI_U8 *)rBuf, 2);
-	*pData = rBuf[0];
-	if (ret != 0)
-	{
-		HIS_SPI_printf("FPGA read 2: 0x%04x  = 0x%04x", addr, rBuf[0]);
 	}
 	return WV_SOK;
 }
@@ -335,7 +293,7 @@ WV_S32 HIS_SPI_CMDRead(WV_S32 argc, WV_S8 **argv, WV_S8 *prfBuff)
 	{
 		for (i = 0; i < dataNum; i++)
 		{
-			prfBuff += sprintf(prfBuff, "spi read fpga   0x%x = 0x%x \r\n", addr + i, data[i]);
+			prfBuff += sprintf(prfBuff, "spi read fpga   0x%x = 0x%x[%d] \r\n", addr + i, data[i],data[i]);
 		}
 	}
 	/*
@@ -353,95 +311,7 @@ WV_S32 HIS_SPI_CMDRead(WV_S32 argc, WV_S8 **argv, WV_S8 *prfBuff)
 	return WV_SOK;
 }
 
-/****************************************************************************
 
-WV_S32 HIS_SPI_CMDWrite2(WV_S32 argc, WV_S8 **argv,WV_S8 *prfBuff)
-
-****************************************************************************/
-WV_S32 HIS_SPI_CMDWrite2(WV_S32 argc, WV_S8 **argv, WV_S8 *prfBuff)
-{
-
-	WV_U16 data, addr;
-	WV_U32 temp;
-	WV_S32 ret = 0;
-	;
-	if (argc < 2)
-	{
-		prfBuff += sprintf(prfBuff, "set spi2  <u16Addr> <u16Data>  \r\n");
-		return WV_SOK;
-	}
-	//
-	ret = WV_STR_S2v(argv[0], &temp);
-	if (ret != WV_SOK)
-	{
-		prfBuff += sprintf(prfBuff, "input erro !\r\n");
-		return WV_SOK;
-	}
-	addr = temp & 0xffff;
-	//
-	ret = WV_STR_S2v(argv[1], &temp);
-	if (ret != WV_SOK)
-	{
-		prfBuff += sprintf(prfBuff, "input erro !\r\n");
-		return WV_SOK;
-	}
-	data = temp & 0xffff;
-	//
-	//WV_ASSERT_RET(HIS_SPI_SpiWrit(addr,data));
-	HIS_SPI_FpgaWd2(addr, data);
-	prfBuff += sprintf(prfBuff, "spi writ fpga2   0x%x = 0x%x \r\n", addr, data);
-	return WV_SOK;
-}
-
-/****************************************************************************
-
-WV_S32 HIS_SPI_CMDRead2(WV_S32 argc, WV_S8 **argv,WV_S8 *prfBuff)
-
-****************************************************************************/
-WV_S32 HIS_SPI_CMDRead2(WV_S32 argc, WV_S8 **argv, WV_S8 *prfBuff)
-{
-
-	WV_U16 data, addr;
-	WV_U32 temp;
-	WV_S32 ret = 0;
-	;
-	if (argc < 1)
-	{
-		prfBuff += sprintf(prfBuff, "get spi2  <u16Addr>  \r\n");
-		return WV_SOK;
-	}
-	//
-	ret = WV_STR_S2v(argv[0], &temp);
-	if (ret != WV_SOK)
-	{
-		prfBuff += sprintf(prfBuff, "input erro !\r\n");
-		return WV_SOK;
-	}
-	addr = temp & 0xffff;
-
-	//
-	//WV_ASSERT_RET(HIS_SPI_SpiWrit(addr,data));
-
-	HIS_SPI_FpgaRd2(addr, &data);
-	prfBuff += sprintf(prfBuff, "spi read fpga2   0x%x = 0x%x \r\n", addr, data);
-	return WV_SOK;
-}
-
-/*******************************************************************************************************
-
-WV_S32  HIS_SPI_FpgaReset();
-
-*******************************************************************************************************/
-
-WV_S32 HIS_SPI_FpgaReset()
-{
-	HIS_SPI_FpgaWd2(0x33, 1);
-	HIS_SPI_FpgaWd2(0x33, 0);
-	HIS_SPI_FpgaWd(0x0d, 1);
-	HIS_SPI_FpgaWd(0x0d, 0);
-
-	return WV_SOK;
-}
 
 /*******************************************************************************************************
 
