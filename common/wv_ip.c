@@ -54,7 +54,7 @@ WV_S32 WV_IP_CheckIp(WV_S8 * pIp)
 WV_S32 WV_IP_CheckIp(WV_S8 * pIp)
 {
 	WV_S32  len,i,start,dot,dotNum;
-	WV_U32  data,num;
+	WV_U32  data;
 	if(pIp == NULL)
 	{
 		return WV_EFAIL;
@@ -169,7 +169,7 @@ WV_S32 WV_IP_Get(WV_S8 * pName ,WV_S8 * pMac ,WV_S8 * pIp )
  
  struct ifreq ifr;
  
- WV_S32  fd,ret,i,j;
+ WV_S32  fd,ret,j;
  WV_S8 * pChar;
  
  

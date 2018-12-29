@@ -33,11 +33,7 @@ Return:         // 0 成功 ；其他失败
 ************************************************/
 WV_S32 PCA9548_SwitchToBus(WV_U8 id)
 {
-    WV_S32 ret;
-    WV_U8 devAddr = 0;
-    ret = HIS_IIC_Write(HI3798_IIC_CHANEL, PCA9548A_ADDR, 0, id);
-
-    return ret;
+    return HIS_IIC_Write(HI3798_IIC_CHANEL, PCA9548A_ADDR, 0, id);
 }
 /************************************************
 Function:       PCA9548_I2C_Write(WV_U8 busID,WV_U16 data)
@@ -123,7 +119,7 @@ WV_S32 PCA9548_IIC_GetReg(WV_S32 argc, WV_S8 **argv,WV_S8 *prfBuff)
 ****************************************************************************/
 WV_S32 PCA9548_IIC_GetReg(WV_S32 argc, WV_S8 **argv, WV_S8 *prfBuff)
 {
-    WV_U32 busId, regAddr, addrCnt, dataLen;
+    WV_U32 busId, regAddr, dataLen;
     WV_U32 devAddr;
     WV_U8 buf[255] = {0};
     WV_S32 ret, i;
@@ -180,9 +176,9 @@ WV_S32 PCA9548_IIC_SetReg(WV_S32 argc, WV_S8 **argv,WV_S8 *prfBuff)
 ****************************************************************************/
 WV_S32 PCA9548_IIC_SetReg(WV_S32 argc, WV_S8 **argv, WV_S8 *prfBuff)
 {
-    WV_U32 busId, regAddr, addrCnt, data;
+    WV_U32 busId, regAddr, data;
     WV_U32 devAddr;
-    WV_S32 ret, i;
+    WV_S32 ret;
 
     if (argc < 4)
     {

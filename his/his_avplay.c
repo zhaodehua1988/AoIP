@@ -241,8 +241,6 @@ WV_S32  HIS_AVP_SetVolume(WV_U32 playerID,WV_S32 volume)
 	
 	WV_S32 ret;
 	HI_UNF_SND_GAIN_ATTR_S stGain;
-	WV_U8 name[20];
-	
 	
 	if(s_hAudioTrack[playerID] == INVALID_TRACK_HDL)
 	{
@@ -251,8 +249,8 @@ WV_S32  HIS_AVP_SetVolume(WV_U32 playerID,WV_S32 volume)
 	}
 
 	stGain.bLinearMode =   HI_TRUE;  //HI_FALSE    = 0,    HI_TRUE     = 1,
-								/**<Linear gain(bLinearMode is HI_TRUE) , ranging from 0 to 100*/ /**<CNcomment:ÏßÐÔÒôÁ¿: 0~100 */
-                   				 /**<Decibel gain(bLinearMode is HI_FALSE) , ranging from -70dB to 0dB */ /**<CNcomment: dBÒôÁ¿:-70~0*/
+								/**<Linear gain(bLinearMode is HI_TRUE) , ranging from 0 to 100*/ /**<CNcomment:ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½: 0~100 */
+                   				 /**<Decibel gain(bLinearMode is HI_FALSE) , ranging from -70dB to 0dB */ /**<CNcomment: dBï¿½ï¿½ï¿½ï¿½:-70~0*/
 	stGain.s32Gain = volume	;
 	ret=HI_UNF_SND_SetTrackWeight(s_hAudioTrack[playerID], &stGain);
 
@@ -275,8 +273,8 @@ WV_S32  HIS_AVP_GetVolume(WV_U32 playerID,WV_S32 *pVolume)
 	WV_S32 ret;
 	HI_UNF_SND_GAIN_ATTR_S stGain;
 	stGain.bLinearMode =   HI_TRUE;  //HI_FALSE    = 0,    HI_TRUE     = 1,
-								/**<Linear gain(bLinearMode is HI_TRUE) , ranging from 0 to 100*/ /**<CNcomment:ÏßÐÔÒôÁ¿: 0~100 */
-                   				 /**<Decibel gain(bLinearMode is HI_FALSE) , ranging from -70dB to 0dB */ /**<CNcomment: dBÒôÁ¿:-70~0*/
+								/**<Linear gain(bLinearMode is HI_TRUE) , ranging from 0 to 100*/ /**<CNcomment:ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½: 0~100 */
+                   				 /**<Decibel gain(bLinearMode is HI_FALSE) , ranging from -70dB to 0dB */ /**<CNcomment: dBï¿½ï¿½ï¿½ï¿½:-70~0*/
 	//stGain.s32Gain = volume;
 	ret =HI_UNF_SND_GetTrackWeight(s_hAudioTrack[playerID],&stGain);
 	*pVolume = stGain.s32Gain;
@@ -289,9 +287,9 @@ WV_S32  HIS_AVP_EsOpen(HI_HANDLE  avHandl,HI_UNF_VCODEC_TYPE_E vDecType);
 ********************************************************************************/
 WV_S32  HIS_AVP_EsOpen(HI_HANDLE *avHandl,HI_UNF_VCODEC_TYPE_E vDecType,WV_U32 playerID)
 {
-    HI_S32 Ret;
+    //HI_S32 Ret;
     HI_UNF_AVPLAY_ATTR_S avPlayAttr;
-    HI_UNF_SYNC_ATTR_S avSyncAttr;
+    //HI_UNF_SYNC_ATTR_S avSyncAttr;
     HI_UNF_AVPLAY_OPEN_OPT_S   *pMaxCapbility = HI_NULL; 
     HI_UNF_VCODEC_ATTR_S VcodecAttr;
     

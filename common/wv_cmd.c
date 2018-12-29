@@ -477,7 +477,7 @@ WV_S32 	 WV_CMD_SysReboot(WV_S32 argc, WV_S8 ** args,WV_S8 *prfBuff)
 WV_S32 	 WV_CMD_SysReboot(WV_S32 argc, WV_S8 ** args,WV_S8 *prfBuff)
 {
 
-    prfBuff += sprintf(prfBuff,"rebooting!!!!!\r\n",SOFTVER_NAME,SOFTVER_MAIN,SOFTVER_DATE,SOFTVER_TIME );
+    prfBuff += sprintf(prfBuff,"rebooting!!!!!\r\n");
     system("reboot");
     return  WV_SOK;
 }

@@ -17,6 +17,8 @@
 #include "iTE6615_Init.h"
 #include "ti1297_init.h"
 #include "fpga_conf.h"
+#include "sys_ip.h"
+#include "tsk_player.h"
 #define HELLO_DEBUG
 
 WV_S32 main()
@@ -35,10 +37,10 @@ WV_S32 main()
 	//SYS_DATE_Init();
 	SYS_IP_Init();
 
-	FPGA_CONF_Init();
+	
 #ifdef HELLO_DEBUG
 	ADV_7619_Init();
-
+	FPGA_CONF_Init();
 	
 	TSK_PLAYER_Open();
 	PCA9548_Init();

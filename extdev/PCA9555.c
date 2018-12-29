@@ -100,7 +100,7 @@ WV_S32 PCA9555_SetCmd(WV_S32 argc, WV_S8 **argv,WV_S8 *prfBuff)
 WV_S32 PCA9555_SetCmd(WV_S32 argc, WV_S8 **argv, WV_S8 *prfBuff)
 {
     WV_U32 regAddr, data;
-    WV_S32 ret, i;
+    WV_S32 ret;
     if (argc < 3)
     {
 

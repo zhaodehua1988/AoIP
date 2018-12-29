@@ -839,7 +839,7 @@ int FPGA_SDP_SetInfo(FPGA_SDP_Info *pSetInfo,WV_U16 type,WV_U16 eth, WV_U16 chan
 
     baseAddr = 0x100;
     regAddr = ((baseAddr >> 2) + eth) << 2;
-    printf("sdp reg addr = %d \n",regAddr);
+    //printf("sdp reg addr = %d \n",regAddr);
     ret+=HIS_SPI_FpgaWd(regAddr + 0x46 +channel*5,videoInfo);
     ret+=HIS_SPI_FpgaWd(regAddr + 0x47 +channel*5,videoWidth);
     ret+=HIS_SPI_FpgaWd(regAddr + 0x48 +channel*5,videoHight);

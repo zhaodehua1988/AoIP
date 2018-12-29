@@ -27,6 +27,7 @@
 #include "iTE6805_MHL_DEF.h"
 #include "iTE6805_MHL_SYS.h"
 #include "iTE6805_MHL_DRV.h"
+#include "iTE6615_common.h"
 
 #endif
 

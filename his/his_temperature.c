@@ -15,7 +15,7 @@ WV_S32 HIS_TEMP_ReadTemp(WV_S16 * pTemp)
     WV_U32 regData,regAddr;
     WV_U8  i, j;
     WV_U32 average = 0;
-    WV_S32  ret;
+
 
     regAddr =  PERI_PMC10;
     regData =  0x07200000; 

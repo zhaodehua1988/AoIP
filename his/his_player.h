@@ -6,7 +6,7 @@ WV_S32  HIS_PLAYER_Init();
 WV_S32  HIS_PLAYER_DeInit();
 WV_S32  HIS_PLAYER_Create(HI_HANDLE  * pHndlPlayer, HI_HANDLE * pHndlAVplay);
 WV_S32  HIS_PLAYER_Destory(HI_HANDLE  * pHndlPlayer);
-WV_S32  HIS_PLAYER_Start(HI_HANDLE  * pHndlPlayer ,WV_U8 * pFileName);
+WV_S32  HIS_PLAYER_Start(HI_HANDLE  * pHndlPlayer ,WV_S8 * pFileName);
 WV_S32  HIS_PLAYER_Play(HI_HANDLE  * pHndlPlayer);
 WV_S32  HIS_PLAYER_Pause(HI_HANDLE  * pHndlPlayer);
 WV_S32  HIS_PLAYER_Resume(HI_HANDLE  * pHndlPlayer);

@@ -34,9 +34,7 @@ WV_S32 TSK_GO_GetCmd(WV_S32 argc, WV_S8 **argv,WV_S8 *prfBuff)
 WV_S32 TSK_GO_SetCmd(WV_S32 argc, WV_S8 **argv, WV_S8 *prfBuff)
 {
 	WV_U32 color;
-	WV_U32 devAddr;
-	WV_U8 buf[255] = {0};
-	WV_S32 ret, i;
+	WV_S32 ret;
 
 	HI_RECT Rect;
 	Rect.x = 0;
@@ -64,25 +62,25 @@ WV_S32 TSK_GO_SetCmd(WV_S32 argc, WV_S8 **argv, WV_S8 *prfBuff)
 			prfBuff += sprintf(prfBuff, "input erro!\r\n");
 		}
 		if(argc >=6){
-			ret = WV_STR_S2v(argv[2], &Rect.x);
+			ret = WV_STR_S2v(argv[2], (WV_U32*)&Rect.x);
 			if (ret != WV_SOK)
 			{
 
 				prfBuff += sprintf(prfBuff, "input erro!\r\n");
 			}	
-			ret = WV_STR_S2v(argv[3], &Rect.y);
+			ret = WV_STR_S2v(argv[3], (WV_U32*)&Rect.y);
 			if (ret != WV_SOK)
 			{
 
 				prfBuff += sprintf(prfBuff, "input erro!\r\n");
 			}
-			ret = WV_STR_S2v(argv[4], &Rect.w);
+			ret = WV_STR_S2v(argv[4], (WV_U32*)&Rect.w);
 			if (ret != WV_SOK)
 			{
 
 				prfBuff += sprintf(prfBuff, "input erro!\r\n");
 			}
-			ret = WV_STR_S2v(argv[5], &Rect.h);
+			ret = WV_STR_S2v(argv[5],(WV_U32*) &Rect.h);
 			if (ret != WV_SOK)
 			{
 
@@ -98,7 +96,7 @@ WV_S32 TSK_GO_SetCmd(WV_S32 argc, WV_S8 **argv, WV_S8 *prfBuff)
 		HIS_GO_RefreshLayer(&gGoDev.goDev);
 	}else if (strcmp(argv[0], "pic") == 0)
 	{
-		WV_U32 x,y,w,h;
+		
 		if(argc < 2 )
 		{
 			prfBuff += sprintf(prfBuff, "err!cmd like-> set higo pic <filename>\r\n");
@@ -110,6 +108,8 @@ WV_S32 TSK_GO_SetCmd(WV_S32 argc, WV_S8 **argv, WV_S8 *prfBuff)
 		TSK_GO_DecOpen(0,name,0,0,3840,2160);
 
 	}
+
+	return WV_SOK;
 
 }
 

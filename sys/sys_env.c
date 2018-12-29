@@ -297,10 +297,10 @@ WV_S32  SYS_ENV_GetVersion(WV_U16 *pVer);
 ****************************************************************************/
 WV_S32  SYS_ENV_GetVersion(WV_U16 *pVer)
 {
-		WV_U8 name[20];
+		WV_S8 name[20];
 		memset(name,0,sizeof(name));
-                SYS_ENV_Get("EnvVer",name);
-                strcpy(name,SYS_ENV_VERSION_NO);      //这里是获取的宏定义的版本号，而不是从文件里写的版本号了
+        SYS_ENV_Get("EnvVer",name);
+        strcpy(name,SYS_ENV_VERSION_NO);      //这里是获取的宏定义的版本号，而不是从文件里写的版本号了
 		printf("the Version is %s\n",name);
 		WV_S32 i,j=3,temp;		
 		WV_U16 data = 0;
@@ -413,7 +413,7 @@ WV_S32 SYS_ENV_CmdSetDefault(WV_S32 argc, WV_S8 **argv,WV_S8 *prfBuff)
      }
      else
      {  
-        prfBuff += sprintf(prfBuff,"default all ok \r\n",argv[0],value);   
+        prfBuff += sprintf(prfBuff,"default all ok \r\n");   
      } 
    }  
    return WV_SOK;

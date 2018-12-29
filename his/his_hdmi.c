@@ -24,7 +24,7 @@ HI_VOID HIS_HDMI_ProPlug(HI_VOID *pPrivateData)
     HI_UNF_HDMI_ID_E       hHdmi   =  pArgs->enHdmi;
 
     HI_UNF_HDMI_ATTR_S             stHdmiAttr; 
-    HI_UNF_EDID_BASE_INFO_S        stSinkCap;
+    //HI_UNF_EDID_BASE_INFO_S        stSinkCap;
     HI_UNF_HDMI_STATUS_S           stHdmiStatus;
  
     HI_UNF_HDMI_GetStatus(hHdmi,&stHdmiStatus);

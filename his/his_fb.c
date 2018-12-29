@@ -351,9 +351,9 @@ WV_S32 HIS_FB_SurfFresh()
 {
     HIS_HIFB_DEV_E *pDev;
     pDev = &gHifbDev;
-    HIFB_COLORKEY_S colorKey;
+    //HIFB_COLORKEY_S colorKey;
     //
-    WV_U32 w, h;
+    //WV_U32 w, h;
 //    WV_U8 *pW, *pH;
     WV_U8 *pMem;
     pMem = pDev->screen_mem;
@@ -447,7 +447,6 @@ WV_S32  HIS_FB_Close();
 ***************************************/
 WV_S32 HIS_FB_Close()
 {
-    WV_S32 i = 0;
     HIS_HIFB_DEV_E *pDev;
 
     pDev = &gHifbDev;

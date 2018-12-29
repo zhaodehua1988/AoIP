@@ -147,7 +147,7 @@ WV_S32  HIS_DIS_Init(HI_UNF_ENC_FMT_E disFormat,WV_S32 mode)
     HI_UNF_DISP_BG_COLOR_S      BgColor;
     HI_UNF_DISP_INTF_S          stIntf;
     HI_UNF_DISP_OFFSET_S        offset;
-    HI_UNF_DISP_TIMING_S    custTiming;   
+    //HI_UNF_DISP_TIMING_S    custTiming;   
  
     WV_CHECK_RET(HI_UNF_DISP_Init());
    

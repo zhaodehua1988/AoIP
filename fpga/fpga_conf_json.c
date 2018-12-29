@@ -89,7 +89,7 @@ int analysisJson(char *json)
  * ****************************************************************/
 WV_S32 FPGA_CONF_WinAnalysisJson(char *json,FPGA_CONF_WIN_T *gWin)
 {
-	printf("analysisJson\n");
+	printf("analysisJson [%s]\n",json);
 #if 1
 	char out[4096*4]={0};
 	FILE *	fp=NULL;
@@ -102,8 +102,7 @@ WV_S32 FPGA_CONF_WinAnalysisJson(char *json,FPGA_CONF_WIN_T *gWin)
 	fread(out,1,4096*4,fp);
 	fclose(fp);
 
-	//FPGA_CONF_WIN_T gWin[16]={0};	
-    //FPGA_SDP_Info gSdp[16]={0};
+
 	cJSON * root,*dataJson,*winJson;
 	WV_S32 ena = 0;
     //printf("%s\n",out);
@@ -176,6 +175,7 @@ WV_S32 FPGA_CONF_WinAnalysisJson(char *json,FPGA_CONF_WIN_T *gWin)
 
 	}	
 #endif
+	return WV_SOK;
 }
 
 /*****************************************************************

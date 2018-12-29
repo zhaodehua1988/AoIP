@@ -137,7 +137,7 @@ WV_S32 HIS_IIC_SetReg(WV_S32 argc, WV_S8 **argv, WV_S8 *prfBuff)
   }
 
   buf[0] = (WV_U8)data;
-  printf("\nbusID:%d,devAddr%02x,regaddr%02x,addrCnt:%d,data:%02x ,datalen:%d\n", busId, (WV_U8)devAddr, regAddr, addrCnt, buf, dataLen);
+  //printf("\nbusID:%d,devAddr%02x,regaddr%02x,addrCnt:%d,data:%02x ,datalen:%d\n", busId, (WV_U8)devAddr, regAddr, addrCnt, buf, dataLen);
   ret = HI_UNF_I2C_Write(busId, (WV_U8)devAddr, regAddr, addrCnt, buf, dataLen);
   if (ret != WV_SOK)
   {

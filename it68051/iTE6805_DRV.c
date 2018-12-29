@@ -334,11 +334,13 @@ void iTE6805_Set_DNScale()
 	hdmirxwr(0x2A, (Ratio_Offset & 0xFF00) >> 8);
 	hdmirxwr(0x2B, Max_YRGB & 0xFF);
 	hdmirxwr(0x2C, Min_YRGB & 0xFF);
-	hdmirxwr(0x2D, ((Min_YRGB & 0xF00) >> 4) + (Max_YRGB & 0xF00) >> 8 );
+//	hdmirxwr(0x2D, ((Min_YRGB & 0xF00) >> 4) + ((Max_YRGB & 0xF00) >> 8) );
+	hdmirxwr(0x2D, ((Min_YRGB & 0xF00) >> 4) + ((Max_YRGB & 0xF00) >> 8) );
 
 	hdmirxwr(0x2E, Max_CRCB & 0xFF);
 	hdmirxwr(0x2F, Min_CRCB & 0xFF);
-	hdmirxwr(0x30, ((Min_CRCB & 0xF00) >> 4) + (Max_CRCB & 0xF00) >> 8 );
+	//hdmirxwr(0x30, ((Min_CRCB & 0xF00) >> 4) + ((Max_CRCB & 0xF00) >> 8) );
+	hdmirxwr(0x30, ((Min_CRCB & 0xF00) >> 4) + ((Max_CRCB & 0xF00) >> 8) );
 
 	hdmirxwr(0x31, 0x10 + (0x02 << 2) + (TG_HSPOL << 1) + TG_VSPOL); // this color depth force set to 12bits Reg31 2:3
 	hdmirxwr(0x32, TG_HFP & 0xFF);

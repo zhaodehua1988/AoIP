@@ -162,7 +162,7 @@ WV_S32   WV_FILE_Cpy(WV_S8 *filenameScr,WV_S8 *filenameDst)
 	if(fpDst == NULL)
 		{ 
 		WV_ERROR(" open  %s wb ERROR!! [%d]\r\n",filenameDst,errno); 
-		fclose(filenameScr);
+		fclose(fpScr);
 		return WV_EFAIL; 
 		} 
 
@@ -276,7 +276,7 @@ WV_S32   WV_FILE_CpyWithOutHead(WV_U32 headLen,WV_S8 *filenameScr,WV_S8 *filenam
 	if(fpDst == NULL)
 		{ 
 		WV_ERROR(" open  %s wb ERROR!! [%d]\r\n",filenameDst,errno); 
-		fclose(filenameScr);
+		fclose(fpScr);
 		return WV_EFAIL; 
 		} 
 
@@ -358,7 +358,7 @@ WV_S32 WV_FILE_PRINTF_VERSION()
             {
                 fgets(StrLine,128,fp);
                 printf("%s\n",StrLine);
-                return StrLine;
+                return 0;
             }
             fgets(StrLine,128,fp);
             CurrentIndex ++;

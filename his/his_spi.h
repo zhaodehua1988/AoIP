@@ -6,7 +6,7 @@ WV_S32  HIS_SPI_Init();
 WV_S32  HIS_SPI_DeInit();
 WV_S32  HIS_SPI_FpgaWd(WV_U16 addr,WV_U16 data);
 WV_S32  HIS_SPI_FpgaRd(WV_U16 addr,WV_U16 *pData);
-
+WV_S32 HIS_SPI_FpgaRdNum(WV_U16 addr, WV_U16 *pData, WV_U32 dataNum);
 //WV_S32  HIS_SPI_Read(WV_S8 * pbuf,WV_S32 len);
 //WV_S32  HIS_SPI_Write(WV_S8 * pbuf,WV_S32 len);
 
