@@ -5,6 +5,9 @@
 #include "sys_ip.h"
 #include "fpga_conf_json.h"
 #include "fpga_sdp.h"
+#include "PCA9555.h"
+#include "his_dis.h"
+#include "iTE6615_Init.h"
 
 #define FPGA_CONF_FILEPATH_WIN_D "./env/win.ini"
 #define FPGA_CONF_FILEPATH_ETH_D "./env/eth.ini"
@@ -637,7 +640,41 @@ WV_S32 FPGA_CONF_SetTransparency(WV_S32 alpha)
     return WV_EFAIL;
 
 }
-
+/*************************************************
+ * WV_S32 FPGA_CONF_Resolution(WV_S32 Resolution)
+ * ***********************************************/
+WV_S32 FPGA_CONF_Resolution(WV_S32 Resolution)
+{
+    //resolution
+    WV_U16 data;
+    HIS_SPI_FpgaRd(0x600,&data);
+    switch(Resolution)
+    {
+        case 0://3840*2160 p60
+            data = data | 0x40; //50HZ
+            data = data & 0xfeff; //4K
+            HIS_SPI_FpgaWd(0x600,data);
+            break;
+        case 1: //3840*2160 p50
+            data = data | 0x40; //60HZ
+            data = data & 0xfeff; //4K
+            HIS_SPI_FpgaWd(0x600,data);
+            break;
+        case 2://3840*2160 p30
+            data = data & 0xfbff; //30HZ
+            data = data & 0xfeff; //4K
+            HIS_SPI_FpgaWd(0x600,data);        
+            break;
+        case 3: //1920*1080 p60
+            data = data | 0x40; //60HZ
+            data = data & 0xfeff; //1080p
+            HIS_SPI_FpgaWd(0x600,data);    
+            break;
+        default:
+            break;
+    }
+    return HIS_DIS_SetCustomTiming((WV_U32) Resolution);
+}
 /****************************************************************************
 
 WV_S32 FPGA_CONF_SetCmd(WV_S32 argc, WV_S8 **argv,WV_S8 *prfBuff)
@@ -650,7 +687,7 @@ WV_S32 FPGA_CONF_SetCmd(WV_S32 argc, WV_S8 **argv, WV_S8 *prfBuff)
     WV_S32 ret=0;
     if (argc < 1)
     {
-        prfBuff += sprintf(prfBuff, "set fpga <cmd>;//cmd like: wincfg/win/eth/dis\r\n");
+        prfBuff += sprintf(prfBuff, "set fpga <cmd>;//cmd like: wincfg/win/dis\r\n");
         return 0;
     }
 
@@ -746,10 +783,79 @@ WV_S32 FPGA_CONF_SetCmd(WV_S32 argc, WV_S8 **argv, WV_S8 *prfBuff)
         HIS_SPI_FpgaRd(0x604,&winEna);
         winEna |= 1 << id;
         HIS_SPI_FpgaWd(0x604,winEna);
+    }else if (strcmp(argv[0], "dis") == 0 ) {
+
+        if(argc < 2 ){
+            
+            prfBuff += sprintf(prfBuff, "set fpga dis <num>//num(0)4k60 4k50 4k30 1080p60\r\n");
+
+        }
+        ret = WV_STR_S2v(argv[1], &data);
+		if (ret != WV_SOK)
+		{
+			prfBuff += sprintf(prfBuff, "input erro!\r\n");
+			return WV_SOK;
+		}
+        FPGA_CONF_Resolution(data);
     }
     return 0;
 }
 
+/****************************************************************************
+
+WV_S32 FPGA_CONF_GetCmd(WV_S32 argc, WV_S8 **argv,WV_S8 *prfBuff)
+
+****************************************************************************/
+WV_S32 FPGA_CONF_GetCmd(WV_S32 argc, WV_S8 **argv, WV_S8 *prfBuff)
+{
+    if (argc < 1)
+    {
+
+        prfBuff += sprintf(prfBuff, "set fpga <cmd>;//cmd like: win\r\n");
+        return 0;
+    }
+    //设置寄存器
+    if (strcmp(argv[0], "win") == 0)
+    {
+
+        WV_S32  i,ret = 0;
+        WV_U16 baseAddr = 0x0500;
+        WV_U16 regAddr, data = 0;
+        //FPGA_CONF_WIN win;
+        WV_U16 x=0,y=0,w=0,h=0;
+        //config windows location and video info
+        for (i = 0; i < FPGA_CONF_WINNUM_D; i++)
+        {
+            regAddr = ((baseAddr >> 4) + i) << 4;
+            ret += HIS_SPI_FpgaRd(regAddr, &x);
+            ret += HIS_SPI_FpgaRd(regAddr + 1,&y);
+            ret += HIS_SPI_FpgaRd(regAddr + 2, &w);
+            ret += HIS_SPI_FpgaRd(regAddr + 3, &h);
+
+            prfBuff += sprintf(prfBuff,"win[%d]X=%d  ",i,x);
+            prfBuff += sprintf(prfBuff,"Y=%d  ",y);
+            prfBuff += sprintf(prfBuff,"W=%d  ",w);
+            prfBuff += sprintf(prfBuff,"H=%d\n",h);
+        }
+        HIS_SPI_FpgaRd(0x0604,&data);
+        prfBuff += sprintf(prfBuff,"windows enable 0x604= 0x%04x\n",data);
+        
+    }
+    return WV_SOK;
+}
+
+/*******************************************************************
+WV_S32 FPGA_CONF_Reset();
+fpga复位
+*******************************************************************/
+WV_S32 FPGA_CONF_Reset()
+{
+    PCA9555_Clr(0x3,0x2);
+    usleep(100000);
+    PCA9555_Set(0x3,0x2);
+    usleep(100000);
+    return WV_SOK;
+}
 /*******************************************************************
 void FPGA_CONF_Init();
 fpga初始化
@@ -767,10 +873,10 @@ void FPGA_CONF_Init()
             return ;
     }
 #endif
+    FPGA_CONF_Reset();
     gpFpgaConfDev = (FPGA_CONF_DEV *)malloc(sizeof(FPGA_CONF_DEV));
     memset(gpFpgaConfDev,0,sizeof(FPGA_CONF_DEV));
-
-    WV_S32 i;
+    
     HIS_SPI_FpgaWd(0x15,0xff00);
     //HIS_SPI_FpgaWd(0x12,0x189);
     HIS_SPI_FpgaWd(0x600,0x800);
@@ -778,26 +884,12 @@ void FPGA_CONF_Init()
     HIS_SPI_FpgaWd(0x602,0x0);
     HIS_SPI_FpgaWd(0x603,0x0);
     HIS_SPI_FpgaWd(0x605,100);
+    
     //HIS_SPI_FpgaWd(0x15,0xff00);
-   
-    FPGA_CONF_GetVersion(gpFpgaConfDev->fpgaVer);
-    //test set eth
-    
-    if(FPGA_CONF_ReadEthCfgFromFile() == WV_SOK)
-    {
-        for(i=0;i<FPGA_CONF_ETHNUM_D;i++){
-            FPGA_CONF_SetETH(&gpFpgaConfDev->eth[i],i);
-        }
-    }
 
-    if(FPGA_CONF_ReadWinCfgFromFile() == WV_SOK)
-    {
-        FPGA_CONF_SetWin(gpFpgaConfDev->win);
-    }
-    
     WV_CMD_Register("set", "fpga", " set fpga", FPGA_CONF_SetCmd);
 
-    //WV_CMD_Register("get", "fpga", "pca9555 get reg", FPGA_CONF_GetCmd);
+    WV_CMD_Register("get", "fpga", "pca9555 get reg", FPGA_CONF_GetCmd);
 
     return ;
 }
@@ -811,471 +903,3 @@ void FPGA_CONF_DeInit()
     free(gpFpgaConfDev);
     return ;
 }
-#if 0
-
-/****************************************************************************
-
-WV_S32 FPGA_CONF_SetCmd(WV_S32 argc, WV_S8 **argv,WV_S8 *prfBuff)
-
-****************************************************************************/
-WV_S32 FPGA_CONF_SetCmd(WV_S32 argc, WV_S8 **argv, WV_S8 *prfBuff)
-{
-    WV_U32  data,id;
-    WV_S32 ret=0;
-    if (argc < 1)
-    {
-
-        prfBuff += sprintf(prfBuff, "set fpga <cmd>;//cmd like: win/eth\r\n");
-        return 0;
-    }
-    //设置寄存器
-    if (strcmp(argv[0], "win") == 0 )
-    {
-        if(argc < 2 ){
-            prfBuff += sprintf(prfBuff, "set fpga win def //(set win default)\r\n");
-            prfBuff += sprintf(prfBuff, "set fpga win <id> <x> <y> <w> <h> <videoInType> <videoID> <video_ip><audio_ip>\r\n");
-
-        }
-        
-        if (strcmp(argv[1], "def") == 0 )
-        {  
-            FPGA_CONF_SetConfDefault(&gfpgaConfDev);
-            FPGA_CONF_SetWin(gfpgaConfDev.win);
-
-            return WV_SOK;
-        }else if(argc < 6)
-        {
-            prfBuff += sprintf(prfBuff, "set fpga win <id> <x> <y> <w> <h> <videoInType> <videoID> <video_ip><audio_ip>\r\n");
-            return WV_SOK;
-        }
-        //get win.id
-        ret = WV_STR_S2v(argv[1], &id);
-		if (ret != WV_SOK)
-		{
-			prfBuff += sprintf(prfBuff, "input erro!\r\n");
-			return WV_SOK;
-		}
-        if(id >= 16 ){
-            prfBuff += sprintf(prfBuff, "input id err!\r\n");
-			return WV_SOK;
-        }
-        //get win x
-        ret = WV_STR_S2v(argv[2], &data);
-		if (ret != WV_SOK)
-		{
-			prfBuff += sprintf(prfBuff, "input erro!\r\n");
-			return WV_SOK;
-		}
-        gfpgaConfDev.win[id].x = data;
-        //get win y
-        ret = WV_STR_S2v(argv[3], &data);
-		if (ret != WV_SOK)
-		{
-			prfBuff += sprintf(prfBuff, "input erro!\r\n");
-			return WV_SOK;
-		}
-        gfpgaConfDev.win[id].y = data;
-        //get win w
-        ret = WV_STR_S2v(argv[4], &data);
-		if (ret != WV_SOK)
-		{
-			prfBuff += sprintf(prfBuff, "input erro!\r\n");
-			return WV_SOK;
-		}
-        gfpgaConfDev.win[id].w = data;
-        //get win h
-        ret = WV_STR_S2v(argv[5], &data);
-		if (ret != WV_SOK)
-		{
-			prfBuff += sprintf(prfBuff, "input erro!\r\n");
-			return WV_SOK;
-		}
-        gfpgaConfDev.win[id].h = data;
-        if(argc >= 8 ){
-
-            //get video type
-            ret = WV_STR_S2v(argv[6], &data);
-            if (ret != WV_SOK)
-            {
-                prfBuff += sprintf(prfBuff, "input erro!\r\n");
-                return WV_SOK;
-            }     
-            gfpgaConfDev.win[id].video_type = data;
-             //get video id
-            ret = WV_STR_S2v(argv[7], &data);
-            if (ret != WV_SOK)
-            {
-                prfBuff += sprintf(prfBuff, "input erro!\r\n");
-                return WV_SOK;
-            }
-            gfpgaConfDev.win[id].sel_in = data;     
-
-        }
-        if(argc >= 9){
-             //get video id
-            ret = WV_STR_S2v(argv[8], &data);
-            if (ret != WV_SOK)
-            {
-                prfBuff += sprintf(prfBuff, "input erro!\r\n");
-                return WV_SOK;
-            }
-            gfpgaConfDev.win[id].video_ip = data;     
-        }
-        if(argc == 10){
-             //get video id
-            ret = WV_STR_S2v(argv[9], &data);
-            if (ret != WV_SOK)
-            {
-                prfBuff += sprintf(prfBuff, "input erro!\r\n");
-                return WV_SOK;
-            }
-            gfpgaConfDev.win[id].audio_ip = data;     
-        }
-        if(argc > 10 ){
-            prfBuff += sprintf(prfBuff, "input erro!\r\n");
-        }
-
-        WV_U16 baseAddr = 0x0500;
-        WV_U16 regAddr=0,avSel=0;
-
-        regAddr = ((baseAddr >> 4) + id) << 4;
-        ret += HIS_SPI_FpgaWd(regAddr, gfpgaConfDev.win[id].x);
-        ret += HIS_SPI_FpgaWd(regAddr + 1, gfpgaConfDev.win[id].y);
-        ret += HIS_SPI_FpgaWd(regAddr + 2, gfpgaConfDev.win[id].w);
-        ret += HIS_SPI_FpgaWd(regAddr + 3, gfpgaConfDev.win[id].h);
-
-        avSel |= (gfpgaConfDev.win[id].video_type & 0x3) << 10;
-        avSel |= (gfpgaConfDev.win[id].video_ip & 0x3) << 6;
-        avSel |= (gfpgaConfDev.win[id].audio_ip & 0x3) << 2;
-        avSel |= gfpgaConfDev.win[id].sel_in & 0x3;
-        ret += HIS_SPI_FpgaWd(regAddr + 4, avSel);       
-        FPGA_CONF_DisChangeEna();
-        FPGA_CONF_SaveConfToFile();
-    }else if(strcmp(argv[0], "winena") == 0){
-        if(argc != 2  ){
-            prfBuff += sprintf(prfBuff, "input erro!cmd like:set fpga winena <val>\r\n");
-            return WV_SOK;
-        }
-        ret = WV_STR_S2v(argv[1], &data);
-        if (ret != WV_SOK)
-        {
-            prfBuff += sprintf(prfBuff, "input erro!\r\n");
-            return WV_SOK;
-        }
-        gfpgaConfDev.display.valid = data;
-        FPGA_CONF_DisConf(&gfpgaConfDev.display);
-        FPGA_CONF_SaveConfToFile();
-    }else if(strcmp(argv[0], "eth") == 0){
-        if(argc <2 ){
-            prfBuff += sprintf(prfBuff, "cmd like:set fpga eth <cmd> ;//cmd like:def/local/src/des/\r\n");
-            return WV_SOK;
-        }
-        if(strcmp(argv[1], "def") == 0){//set to default
-           FPGA_CONF_NetConf(gfpgaConfDev.eth);
-           prfBuff += sprintf(prfBuff, "set net config to default \r\n");
-        }else if(strcmp(argv[1], "local") == 0){//set local eth ip and mac
-            if(argc <6){
-                prfBuff += sprintf(prfBuff, "cmd like:set fpga eth local <eth_id> <str_ip><str_mask><str_getway><str_mac>\r\n");
-
-                return WV_SOK;              
-            }
-            //get eth num
-            ret = WV_STR_S2v(argv[2], &data);
-            if (ret != WV_SOK || data > 3)
-            {
-                prfBuff += sprintf(prfBuff, "input erro!\r\n");
-                return WV_SOK;
-            }
-            WV_U8 ip[10]={0};
-            WV_U8 mask[10] = {0};
-            WV_U8 getway[10]={0};
-            WV_U8 mac[10]={0};
-            //get ip
-            FPGA_CONF_getIpInt(argv[3],ip);
-  	        prfBuff += sprintf(prfBuff,"eth[%d]ip %d.%d.%d.%d \n",data,ip[0],ip[1],ip[2],ip[3]);  
-            //get  netmask
-            FPGA_CONF_getIpInt(argv[4],mask);
-  	        prfBuff += sprintf(prfBuff,"eth[%d]mask %d.%d.%d.%d \n",data,mask[0],mask[1],mask[2],mask[3]);  
-            //get getway
-            FPGA_CONF_getIpInt(argv[5],getway);
-  	        prfBuff += sprintf(prfBuff,"eth[%d]getway %d.%d.%d.%d \n",data,getway[0],getway[1],getway[2],getway[3]);            
-            if(argc == 7){
-                //get mac
-                FPGA_CONF_getMacInt(argv[6],mac);
-	            prfBuff += sprintf(prfBuff,"eth[%d]mac  %02x:%02x:%02x:%02x:%02x:%02x \n",data,mac[0],mac[1],mac[2],mac[3],mac[4],mac[5]);
-            }
-            WV_S32 i=0,j;
-            j=3;
-            for(i=0;i<4;i++){
-                gfpgaConfDev.eth[data].localAddr.ipv6[i]=ip[j-i];
-                gfpgaConfDev.eth[data].localAddr.subnet_mask[i]=mask[j-i];
-                gfpgaConfDev.eth[data].localAddr.getway[i]=getway[j-i];        
-            }
-            j=5;
-            for(i=0;i<6;i++){
-                gfpgaConfDev.eth[data].localAddr.mac[i]=mac[j-i]; 
-            } 
-            FPGA_CONF_NetConf(gfpgaConfDev.eth);
-            FPGA_CONF_SaveConfToFile();
-            //prfBuff += sprintf(prfBuff, "set net config to default \r\n");
-        }else if(strcmp(argv[1], "src") == 0){//set local eth ip and mac
-            if(argc < 6){
-                prfBuff += sprintf(prfBuff, "cmd like:set fpga eth src <eth_id> <src_id><src_ip><src_port>\r\n");
-                return WV_SOK;   
-            }
-            //get eth id
-            WV_S32 i,j;
-            WV_U32 ethID=0,srcID=0,port;
-            WV_U8 ip[10];
-            ret = WV_STR_S2v(argv[2], &ethID);
-            if (ret != WV_SOK || ethID > 3)
-            {
-                prfBuff += sprintf(prfBuff, "input erro!\r\n");
-                return WV_SOK;
-            }
-            ret = WV_STR_S2v(argv[3], &srcID);
-            if (ret != WV_SOK || srcID > 3)
-            {
-                prfBuff += sprintf(prfBuff, "input erro!\r\n");
-                return WV_SOK;
-            }
-            //get srcport
-            ret = WV_STR_S2v(argv[5], &port);
-            if (ret != WV_SOK )
-            {
-                prfBuff += sprintf(prfBuff, "input erro!\r\n");
-                return WV_SOK;
-            }
-            gfpgaConfDev.eth[ethID].srcAddr[srcID].port = port;
-            //get src ip
-            FPGA_CONF_getIpInt(argv[4],ip);
-            prfBuff += sprintf(prfBuff,"eth[%d][%d] ip %d.%d.%d.%d ,port[%d]\n",ethID,srcID,ip[0],ip[1],ip[2],ip[3],port);  
-            j=3;
-            for(i=0;i<4;i++){
-                gfpgaConfDev.eth[ethID].srcAddr[srcID].ipv6[i] = ip[j-i];
-            }
-
-            FPGA_CONF_NetConf(gfpgaConfDev.eth);
-            FPGA_CONF_SaveConfToFile();
-        }else if(strcmp(argv[1], "des") == 0){
-            WV_U8 ip[10]={0},mac[10] = {0};
-            WV_U32 ethID,desPort,srcPort,sdiID,videoPt,audioPt;
-            WV_S32 i,j;
-            if(argc < 10){
-                prfBuff += sprintf(prfBuff, "cmd like:set fpga eth des <eth_id><sdi_id><src_port><des_ip><des_port><des_mac><videoPt><audioPt>\r\n");
-                return WV_SOK;                 
-            }
-            ret = WV_STR_S2v(argv[2], &ethID);
-            if (ret != WV_SOK || ethID > 3)
-            {
-                prfBuff += sprintf(prfBuff, "input erro!\r\n");
-                return WV_SOK;
-            }
-            ret = WV_STR_S2v(argv[3], &sdiID);
-            if (ret != WV_SOK || sdiID > 3)
-            {
-                prfBuff += sprintf(prfBuff, "input erro!\r\n");
-                return WV_SOK;
-            }
-            ret = WV_STR_S2v(argv[4], &srcPort);
-            if (ret != WV_SOK)
-            {
-                prfBuff += sprintf(prfBuff, "input erro!\r\n");
-                return WV_SOK;
-            }
-            ret = WV_STR_S2v(argv[6], &desPort);
-            if (ret != WV_SOK )
-            {
-                prfBuff += sprintf(prfBuff, "input erro!\r\n");
-                return WV_SOK;
-            }
-            ret = WV_STR_S2v(argv[8], &videoPt);
-            if (ret != WV_SOK )
-            {
-                prfBuff += sprintf(prfBuff, "input erro!\r\n");
-                return WV_SOK;
-            }
-            ret = WV_STR_S2v(argv[9],&audioPt);
-            if (ret != WV_SOK )
-            {
-                prfBuff += sprintf(prfBuff, "input erro!\r\n");
-                return WV_SOK;
-            }
-            FPGA_CONF_getIpInt(argv[5],ip);
-            FPGA_CONF_getMacInt(argv[7],mac);
-            prfBuff += sprintf(prfBuff,"eth[%d],sdi[%d],srcPort[%d],desIP[%d.%d.%d.%d],desPort[%d],desMac[%02x:%02x:%02x:%02x:%02x:%02x]videoPt[%d],audioPt[%d]\n",\
-                        ethID,sdiID,srcPort,ip[0],ip[1],ip[2],ip[3],desPort,mac[0],mac[1],mac[2],mac[3],mac[4],mac[5],videoPt,audioPt);
-
-            gfpgaConfDev.eth[ethID].desAddr.desPort = desPort;
-            j=3;
-
-            for(i=0;i<4;i++){
-                gfpgaConfDev.eth[ethID].desAddr.ipv6[i]=ip[j-i];
-            }
-            j=5;
-            for(i=0;i<5;i++){
-                gfpgaConfDev.eth[ethID].desAddr.mac[i]=mac[j-i];
-            }
-            gfpgaConfDev.eth[ethID].desAddr.srcPort = srcPort;
-            gfpgaConfDev.eth[ethID].desAddr.txSel = sdiID & 0x3;
-            gfpgaConfDev.eth[ethID].desAddr.txCtrl = ((videoPt & 0x7f) << 7) | (audioPt & 0x7f) | 0x4000;
-            
-            FPGA_CONF_NetConf(gfpgaConfDev.eth);
-            FPGA_CONF_SaveConfToFile();
-        }
-    }else if(strcmp(argv[0], "def") == 0){
-
-        FPGA_CONF_NetConf(gfpgaConfDev.eth);
-        FPGA_CONF_SetWin(gfpgaConfDev.win);
-        //FPGA_CONF_SHOW_INFO(&gfpgaConfDev.showInfo);
-        gfpgaConfDev.display.valid = 0xffff;
-        FPGA_CONF_DisConf(&gfpgaConfDev.display);
-        FPGA_CONF_SaveConfToFile();
-        //HIS_SPI_FpgaWd(0x604, gfpgaConfDev.win[id].h);
-        prfBuff += sprintf(prfBuff, "set net config to default \r\n");
-        
-    }  
-    return WV_SOK;
-}
-/****************************************************************************
-
-WV_S32 FPGA_CONF_GetCmd(WV_S32 argc, WV_S8 **argv,WV_S8 *prfBuff)
-
-****************************************************************************/
-WV_S32 FPGA_CONF_GetCmd(WV_S32 argc, WV_S8 **argv, WV_S8 *prfBuff)
-{
-        if (argc < 1)
-    {
-
-        prfBuff += sprintf(prfBuff, "set fpga <cmd>;//cmd like: win/eth\r\n");
-        return 0;
-    }
-    //设置寄存器
-    if (strcmp(argv[0], "win") == 0)
-    {
-
-        WV_S32  i,ret = 0;
-        WV_U16 baseAddr = 0x0500;
-        WV_U16 regAddr, data = 0;
-        FPGA_CONF_WIN win;
-
-        //config windows location and video info
-        for (i = 0; i < FPGA_CONF_WINNUM_D; i++)
-        {
-            regAddr = ((baseAddr >> 4) + i) << 4;
-            ret += HIS_SPI_FpgaRd(regAddr, &win.x);
-            ret += HIS_SPI_FpgaRd(regAddr + 1, &win.y);
-            ret += HIS_SPI_FpgaRd(regAddr + 2, &win.w);
-            ret += HIS_SPI_FpgaRd(regAddr + 3, &win.h);
-            /*
-            avSel |= (pWin[i].video_type & 0x3) << 10;
-            avSel |= (pWin[i].video_ip & 0x3) << 6;
-            avSel |= (pWin[i].audio_ip & 0x3) << 2;
-            avSel |= pWin[i].sel_in & 0x3;
-            ret += HIS_SPI_FpgaWd(regAddr + 4, avSel);*/
-            
-            prfBuff += sprintf(prfBuff,"win[%d]X=%d  ",i,win.x);
-            prfBuff += sprintf(prfBuff,"Y=%d  ",win.y);
-            prfBuff += sprintf(prfBuff,"W=%d  ",win.w);
-            prfBuff += sprintf(prfBuff,"H=%d\n",win.h);
-        }
-        HIS_SPI_FpgaRd(0x0604,&data);
-        prfBuff += sprintf(prfBuff,"windows enable 0x0604= 0x%04x\n",data);
-        
-    }else if(strcmp(argv[0], "eth") == 0){
-
-    
-        WV_S32 i,j;
-        for(i=0;i<FPGA_CONF_ETHNUM_D;i++){
-            //gfpgaConfDev.eth[i].localAddr
-            prfBuff += sprintf(prfBuff,"\n-------------------------------------------------\n");
-            prfBuff += sprintf(prfBuff,"ETH[%d] localAddr[ip:%d.%d.%d.%d netmask:%d.%d.%d.%d getway:%d.%d.%d.%d  mac:%02x:%02x:%02x:%02x:%02x:%02x]\n",\
-                i,\
-                gfpgaConfDev.eth[i].localAddr.ipv6[3],\
-                gfpgaConfDev.eth[i].localAddr.ipv6[2],\
-                gfpgaConfDev.eth[i].localAddr.ipv6[1],\
-                gfpgaConfDev.eth[i].localAddr.ipv6[0],\
-                gfpgaConfDev.eth[i].localAddr.subnet_mask[3],\
-                gfpgaConfDev.eth[i].localAddr.subnet_mask[2],\
-                gfpgaConfDev.eth[i].localAddr.subnet_mask[1],\
-                gfpgaConfDev.eth[i].localAddr.subnet_mask[0],\
-                gfpgaConfDev.eth[i].localAddr.getway[3],\
-                gfpgaConfDev.eth[i].localAddr.getway[2],\
-                gfpgaConfDev.eth[i].localAddr.getway[1],\
-                gfpgaConfDev.eth[i].localAddr.getway[0],\
-                gfpgaConfDev.eth[i].localAddr.mac[5],\
-                gfpgaConfDev.eth[i].localAddr.mac[4],\
-                gfpgaConfDev.eth[i].localAddr.mac[3],\
-                gfpgaConfDev.eth[i].localAddr.mac[2],\
-                gfpgaConfDev.eth[i].localAddr.mac[1],\
-                gfpgaConfDev.eth[i].localAddr.mac[0]);
-
-            prfBuff += sprintf(prfBuff,"ETH[%d]TX,sdi[%d],srcPort[%d],desIP[%d.%d.%d.%d],desPort[%d],desMac[%02x:%02x:%02x:%02x:%02x:%02x]videoPt[%d],audioPt[%d]\n",\
-                i,\
-                gfpgaConfDev.eth[i].desAddr.txSel & 0x3,\
-                gfpgaConfDev.eth[i].desAddr.srcPort,\
-                gfpgaConfDev.eth[i].desAddr.ipv6[3],\
-                gfpgaConfDev.eth[i].desAddr.ipv6[2],\
-                gfpgaConfDev.eth[i].desAddr.ipv6[1],\
-                gfpgaConfDev.eth[i].desAddr.ipv6[0],\
-                gfpgaConfDev.eth[i].desAddr.desPort,\
-                gfpgaConfDev.eth[i].desAddr.mac[5],\
-                gfpgaConfDev.eth[i].desAddr.mac[4],\
-                gfpgaConfDev.eth[i].desAddr.mac[3],\
-                gfpgaConfDev.eth[i].desAddr.mac[2],\
-                gfpgaConfDev.eth[i].desAddr.mac[1],\
-                gfpgaConfDev.eth[i].desAddr.mac[0],\
-                (gfpgaConfDev.eth[i].desAddr.txCtrl>>7) & 0x7f,\
-                gfpgaConfDev.eth[i].desAddr.txCtrl & 0x7f );
-                
-            for(j=0;j<4;j++){
-                prfBuff += sprintf(prfBuff,"ETH[%d]inputSrc[%d] :[ip:%d.%d.%d.%d  port=%d \n",\
-                i,j,\
-                gfpgaConfDev.eth[i].srcAddr[j].ipv6[3],\
-                gfpgaConfDev.eth[i].srcAddr[j].ipv6[2],\
-                gfpgaConfDev.eth[i].srcAddr[j].ipv6[1],\
-                gfpgaConfDev.eth[i].srcAddr[j].ipv6[0],\
-                gfpgaConfDev.eth[i].srcAddr[j].port);
-            }
-            
-        }
-    }
-    return WV_SOK;
-}
-WV_S32 FPGA_CONF_SetWinTotal(FPGA_CONF_WIN_TOTAL_T *winTotal)
-{
-
-}
-
-
-/*****************************************************
-* WV_S32 FPGA_CONF_Init(FPGA_CONF_DEV *pConf);
-*初始化FPGA设置
-*****************************************************/
-void FPGA_CONF_Init()
-{
-    WV_S32 ret=0; 
-    FPGA_VER ver;
-    FPGA_CONF_GetVersion(&ver);
-    ret=FPGA_CONF_ReadConfFromFile();
-
-    FPGA_CONF_NetConf(gfpgaConfDev.eth);
-    FPGA_CONF_SetWin(gfpgaConfDev.win);
-    //FPGA_CONF_SHOW_INFO(&gfpgaConfDev.showInfo);
-    FPGA_CONF_DisConf(&gfpgaConfDev.display);
-    FPGA_CONF_PrintEth();
-    //FPGA_CONF_SaveConfToFile();
-    WV_CMD_Register("set", "fpga", "pca9555 set reg", FPGA_CONF_SetCmd);
-    WV_CMD_Register("get", "fpga", "pca9555 get reg", FPGA_CONF_GetCmd);
-}
-
-/*****************************************************
-* WV_S32 FPGA_CONF_Init(FPGA_CONF_DEV *pConf);
-*初始化FPGA设置
-*****************************************************/
-void FPGA_CONF_DeInit()
-{
-
-}
-#endif
-

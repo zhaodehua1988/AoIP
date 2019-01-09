@@ -111,14 +111,12 @@ void iTE6615_fsm(void)
 {
     iTE6615_TX_IRQ();
     iTE6615_SCDC_IRQ();
-    //iTE6615_DATA.STATES = iTE6615_STATES_RxSenON;
-    //printf("iTE6615_DATA.STATEA = %d \n",iTE6615_DATA.STATES);
+    iTE6615_sys_fsm();//根据最新代码添加
     if(iTE6615_DATA.STATES == iTE6615_STATES_RxSenON)
     {
         iTE6615_vid_fsm();
     }
-   // iTE6615_DATA.STATEV = iTE6615_STATEV_VidOutEnable;
-   // printf("iTE6615_DATA.STATEV = %d \n",iTE6615_DATA.STATEV);
+
     if(iTE6615_DATA.STATEV >= iTE6615_STATEV_VidOutEnable)
     {
         iTE6615_HDCP_IRQ();
@@ -240,10 +238,13 @@ void iTE6615_INIT_Chip(void)
 
     iTE6615_DATA.Flag_EDID_Parser_Ready = 0;
     iTE6615_sys_chg(iTE6615_STATES_Unplug);
+    //iTE6615_sys_chg(iTE6615_STATES_HPDOn);
+    
     printf("iTE6615_SetTX_RCLK end..");
 }
 
 // IRQ
+
 void iTE6615_TX_IRQ(void)
 {
     u8 TxReg0F, TxReg12, TxReg13, TxReg16;
@@ -261,6 +262,13 @@ void iTE6615_TX_IRQ(void)
     if (TxReg12 & BIT0)
     {
         iTE6615_INT_HPD_Chg();
+        u8 reg;
+        reg= hdmitxrd(0x12);
+        if(reg & BIT0)
+        {
+            hdmitxwr(0x12, 0x1);
+        }
+
     }
 
     if (TxReg12 & BIT1)

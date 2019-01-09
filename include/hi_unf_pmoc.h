@@ -33,75 +33,75 @@ extern "C" {
 /** @{ */  /** <!-- [PMOC] */
 
 /**ARM mode*/
-/**CNcomment:ARMËù´¦µÄÄ£Ê½*/
+/**CNcomment:ARMï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä£Ê½*/
 typedef enum hiUNF_PMOC_MODE_E
 {
-    HI_UNF_PMOC_MODE_NORMAL = 0,    /**<Normal*/     /**<CNcomment:ÆÕÍ¨Ä£Ê½ */
-    HI_UNF_PMOC_MODE_SLOW,          /**<Slow*/       /**<CNcomment:ÂýËÙÄ£Ê½ */
-    HI_UNF_PMOC_MODE_DOZE,          /**<Doze*/       /**<CNcomment:µÍËÙÄ£Ê½ */
-    HI_UNF_PMOC_MODE_SLEEP,         /**<Sleep*/      /**<CNcomment:Ë¯ÃßÄ£Ê½ */
+    HI_UNF_PMOC_MODE_NORMAL = 0,    /**<Normal*/     /**<CNcomment:ï¿½ï¿½Í¨Ä£Ê½ */
+    HI_UNF_PMOC_MODE_SLOW,          /**<Slow*/       /**<CNcomment:ï¿½ï¿½ï¿½ï¿½Ä£Ê½ */
+    HI_UNF_PMOC_MODE_DOZE,          /**<Doze*/       /**<CNcomment:ï¿½ï¿½ï¿½ï¿½Ä£Ê½ */
+    HI_UNF_PMOC_MODE_SLEEP,         /**<Sleep*/      /**<CNcomment:Ë¯ï¿½ï¿½Ä£Ê½ */
 
     HI_UNF_PMOC_MODE_BUTT
 }HI_UNF_PMOC_MODE_E;
 
 
 /**standby woken type*/
-/**CNcomment:´ý»ú±»»½ÐÑµÄÀàÐÍ */
+/**CNcomment:ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ñµï¿½ï¿½ï¿½ï¿½ï¿½ */
 typedef enum hiUNF_PMOC_ACTUAL_WKUP_E
 {
-    HI_UNF_PMOC_WKUP_IR = 0,      /**<Woken by the IR module*/                /**<CNcomment:±»IR»½ÐÑ */
-    HI_UNF_PMOC_WKUP_KEYLED,      /**<Woken by the keys on the front panel*/  /**<CNcomment:±»Ç°Ãæ°åKEY»½ÐÑ */
-    HI_UNF_PMOC_WKUP_TIMEOUT,     /**<Woken by the timing interrupt*/         /**<CNcomment:±»¶¨Ê±ÖÐ¶Ï»½ÐÑ */
-    HI_UNF_PMOC_WKUP_ETH,         /**<Woken by the ethernet interrupt*/       /**<CNcomment:±»ÍøÂçÖÐ¶Ï»½ÐÑ */
-    HI_UNF_PMOC_WKUP_USB,         /**<Woken by the USB interrupt*/            /**<CNcomment:±»USBÊó±ê¼üÅÌÖÐ¶Ï»½ÐÑ */
-    HI_UNF_PMOC_WKUP_GPIO,        /**<Woken by the GPIO interrupt*/           /**<CNcomment:±»GPIOÖÐ¶Ï»½ÐÑ */
+    HI_UNF_PMOC_WKUP_IR = 0,      /**<Woken by the IR module*/                /**<CNcomment:ï¿½ï¿½IRï¿½ï¿½ï¿½ï¿½ */
+    HI_UNF_PMOC_WKUP_KEYLED,      /**<Woken by the keys on the front panel*/  /**<CNcomment:ï¿½ï¿½Ç°ï¿½ï¿½ï¿½KEYï¿½ï¿½ï¿½ï¿½ */
+    HI_UNF_PMOC_WKUP_TIMEOUT,     /**<Woken by the timing interrupt*/         /**<CNcomment:ï¿½ï¿½ï¿½ï¿½Ê±ï¿½Ð¶Ï»ï¿½ï¿½ï¿½ */
+    HI_UNF_PMOC_WKUP_ETH,         /**<Woken by the ethernet interrupt*/       /**<CNcomment:ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð¶Ï»ï¿½ï¿½ï¿½ */
+    HI_UNF_PMOC_WKUP_USB,         /**<Woken by the USB interrupt*/            /**<CNcomment:ï¿½ï¿½USBï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð¶Ï»ï¿½ï¿½ï¿½ */
+    HI_UNF_PMOC_WKUP_GPIO,        /**<Woken by the GPIO interrupt*/           /**<CNcomment:ï¿½ï¿½GPIOï¿½Ð¶Ï»ï¿½ï¿½ï¿½ */
     HI_UNF_PMOC_WKUP_BUTT
 }HI_UNF_PMOC_ACTUAL_WKUP_E;
 
 typedef enum hiUNF_PMOC_SCENE_E
 {
-    HI_UNF_PMOC_SCENE_STANDARD = 0,  /**<Standard scenario*/                    /**<CNcomment:±ê×¼³¡¾° */
-    HI_UNF_PMOC_SCENE_ETH,           /**<Forward scenario over the ETH port */  /**<CNcomment:Íø¿Ú×ª·¢³¡¾° */
-    HI_UNF_PMOC_SCENE_PHONE,         /**<Calling scenario*/                     /**<CNcomment:Í¨»°³¡¾° */
+    HI_UNF_PMOC_SCENE_STANDARD = 0,  /**<Standard scenario*/                    /**<CNcomment:ï¿½ï¿½×¼ï¿½ï¿½ï¿½ï¿½ */
+    HI_UNF_PMOC_SCENE_ETH,           /**<Forward scenario over the ETH port */  /**<CNcomment:ï¿½ï¿½ï¿½ï¿½×ªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ */
+    HI_UNF_PMOC_SCENE_PHONE,         /**<Calling scenario*/                     /**<CNcomment:Í¨ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ */
     HI_UNF_PMOC_SCENE_BUTT
 }HI_UNF_PMOC_SCENE_E;
 
 typedef enum hiUNF_PMOC_ETH_E
 {
-    HI_UNF_PMOC_ETH_0 = 0x01,        /**<The first ETH.*/    /**<CNcomment:µÚ1¸öÍø¿Ú*/
-    HI_UNF_PMOC_ETH_1 = 0x02,        /**<The second ETH.*/   /**<CNcomment:µÚ2¸öÍø¿Ú*/
+    HI_UNF_PMOC_ETH_0 = 0x01,        /**<The first ETH.*/    /**<CNcomment:ï¿½ï¿½1ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½*/
+    HI_UNF_PMOC_ETH_1 = 0x02,        /**<The second ETH.*/   /**<CNcomment:ï¿½ï¿½2ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½*/
     HI_UNF_PMOC_ETH_BUTT = 0x04
 }HI_UNF_PMOC_ETH_E;
 
 /**Defines the modules working in smart standby */
-/**CNcomment:ÖÇÄÜ´ý»úÊ±²»ÏÂµçÄ£¿é¶¨Òå */
+/**CNcomment:ï¿½ï¿½ï¿½Ü´ï¿½ï¿½ï¿½Ê±ï¿½ï¿½ï¿½Âµï¿½Ä£ï¿½é¶¨ï¿½ï¿½ */
 typedef enum hiUNF_PMOC_HOLD_MOD_E
 {
-    HI_UNF_PMOC_HOLD_ETH = 0x0001,   /**<Keep eth working */    /**<CNcomment:Íø¿Ú²»ÏÂµç */
-    HI_UNF_PMOC_HOLD_WIFI = 0x0002,  /**<Keep WIFI working */   /**<CNcomment:WIFI²»ÏÂµç */
-    HI_UNF_PMOC_HOLD_USB = 0x0004,   /**<Keep USB working */    /**<CNcomment:USB²»ÏÂµç */
-    HI_UNF_PMOC_HOLD_TUNER = 0x0008, /**<Keep tuner working */  /**<CNcomment:Tuner²»ÏÂµç */
-    HI_UNF_PMOC_HOLD_DEMUX = 0x0010, /**<Keep demux working */  /**<CNcomment:Demux²»ÏÂµç */
-    HI_UNF_PMOC_HOLD_SDIO = 0x0020,  /**<Keep SDIO working */   /**<CNcomment:SD¿¨²»ÏÂµç */
-    HI_UNF_PMOC_HOLD_SCI = 0x0040,   /**<Keep SCI working */    /**<CNcomment:SCI²»ÏÂµç */
-    HI_UNF_PMOC_HOLD_VENC = 0x0080,  /**<Keep VENC working */   /**<CNcomment:VENC²»ÏÂµç */
-    HI_UNF_PMOC_HOLD_PNG = 0x0100,   /**<Keep PNG working */    /**<CNcomment:PNG²»ÏÂµç */
-    HI_UNF_PMOC_HOLD_JPGE = 0x0200,  /**<Keep JPGE working */   /**<CNcomment:JPGE²»ÏÂµç */
-    HI_UNF_PMOC_HOLD_JPEG = 0x0400,  /**<Keep JPEG working */   /**<CNcomment:JPEG²»ÏÂµç */
-    HI_UNF_PMOC_HOLD_WDG = 0x0800,   /**<Keep WDG working */    /**<CNcomment:WDG²»ÏÂµç */
-    HI_UNF_PMOC_HOLD_HDMI = 0x1000,  /**<Keep HDMI working */   /**<CNcomment:HDMI²»ÏÂµç */
-    HI_UNF_PMOC_HOLD_VO = 0x2000,    /**<Keep VO working */     /**<CNcomment:VO²»ÏÂµç */
-    HI_UNF_PMOC_HOLD_DISP = 0x4000,  /**<Keep DISP working */   /**<CNcomment:DISP²»ÏÂµç */
-    HI_UNF_PMOC_HOLD_AO = 0x8000,    /**<Keep AO working */     /**<CNcomment:AO²»ÏÂµç */
-    HI_UNF_PMOC_HOLD_AI = 0x10000,   /**<Keep AI working */     /**<CNcomment:AI²»ÏÂµç */
-    HI_UNF_PMOC_HOLD_ADSP = 0x20000, /**<Keep ADSP working */   /**<CNcomment:ADSP²»ÏÂµç */
-    HI_UNF_PMOC_HOLD_CIPHER = 0x40000, /**<Keep CIPHER working */   /**<CNcomment:CIPHER²»ÏÂµç */
-    HI_UNF_PMOC_HOLD_VDEC = 0x80000, /**<Keep VDEC working */   /**<CNcomment:VDEC²»ÏÂµç */
-    HI_UNF_PMOC_HOLD_VPSS = 0x100000, /**<Keep VPSS working */  /**<CNcomment:VPSS²»ÏÂµç */
-    HI_UNF_PMOC_HOLD_OTP = 0x200000, /**<Keep OTP working */    /**<CNcomment:OTP²»ÏÂµç */
-    HI_UNF_PMOC_HOLD_TDE = 0x400000, /**<Keep TDE working */    /**<CNcomment:TDE²»ÏÂµç */
-    HI_UNF_PMOC_HOLD_I2C = 0x800000, /**<Keep I2C working */    /**<CNcomment:I2C²»ÏÂµç */
-    HI_UNF_PMOC_HOLD_GPIO = 0x1000000,/**<Keep GPIO working */  /**<CNcomment:GPIO²»ÏÂµç */
+    HI_UNF_PMOC_HOLD_ETH = 0x0001,   /**<Keep eth working */    /**<CNcomment:ï¿½ï¿½ï¿½Ú²ï¿½ï¿½Âµï¿½ */
+    HI_UNF_PMOC_HOLD_WIFI = 0x0002,  /**<Keep WIFI working */   /**<CNcomment:WIFIï¿½ï¿½ï¿½Âµï¿½ */
+    HI_UNF_PMOC_HOLD_USB = 0x0004,   /**<Keep USB working */    /**<CNcomment:USBï¿½ï¿½ï¿½Âµï¿½ */
+    HI_UNF_PMOC_HOLD_TUNER = 0x0008, /**<Keep tuner working */  /**<CNcomment:Tunerï¿½ï¿½ï¿½Âµï¿½ */
+    HI_UNF_PMOC_HOLD_DEMUX = 0x0010, /**<Keep demux working */  /**<CNcomment:Demuxï¿½ï¿½ï¿½Âµï¿½ */
+    HI_UNF_PMOC_HOLD_SDIO = 0x0020,  /**<Keep SDIO working */   /**<CNcomment:SDï¿½ï¿½ï¿½ï¿½ï¿½Âµï¿½ */
+    HI_UNF_PMOC_HOLD_SCI = 0x0040,   /**<Keep SCI working */    /**<CNcomment:SCIï¿½ï¿½ï¿½Âµï¿½ */
+    HI_UNF_PMOC_HOLD_VENC = 0x0080,  /**<Keep VENC working */   /**<CNcomment:VENCï¿½ï¿½ï¿½Âµï¿½ */
+    HI_UNF_PMOC_HOLD_PNG = 0x0100,   /**<Keep PNG working */    /**<CNcomment:PNGï¿½ï¿½ï¿½Âµï¿½ */
+    HI_UNF_PMOC_HOLD_JPGE = 0x0200,  /**<Keep JPGE working */   /**<CNcomment:JPGEï¿½ï¿½ï¿½Âµï¿½ */
+    HI_UNF_PMOC_HOLD_JPEG = 0x0400,  /**<Keep JPEG working */   /**<CNcomment:JPEGï¿½ï¿½ï¿½Âµï¿½ */
+    HI_UNF_PMOC_HOLD_WDG = 0x0800,   /**<Keep WDG working */    /**<CNcomment:WDGï¿½ï¿½ï¿½Âµï¿½ */
+    HI_UNF_PMOC_HOLD_HDMI = 0x1000,  /**<Keep HDMI working */   /**<CNcomment:HDMIï¿½ï¿½ï¿½Âµï¿½ */
+    HI_UNF_PMOC_HOLD_VO = 0x2000,    /**<Keep VO working */     /**<CNcomment:VOï¿½ï¿½ï¿½Âµï¿½ */
+    HI_UNF_PMOC_HOLD_DISP = 0x4000,  /**<Keep DISP working */   /**<CNcomment:DISPï¿½ï¿½ï¿½Âµï¿½ */
+    HI_UNF_PMOC_HOLD_AO = 0x8000,    /**<Keep AO working */     /**<CNcomment:AOï¿½ï¿½ï¿½Âµï¿½ */
+    HI_UNF_PMOC_HOLD_AI = 0x10000,   /**<Keep AI working */     /**<CNcomment:AIï¿½ï¿½ï¿½Âµï¿½ */
+    HI_UNF_PMOC_HOLD_ADSP = 0x20000, /**<Keep ADSP working */   /**<CNcomment:ADSPï¿½ï¿½ï¿½Âµï¿½ */
+    HI_UNF_PMOC_HOLD_CIPHER = 0x40000, /**<Keep CIPHER working */   /**<CNcomment:CIPHERï¿½ï¿½ï¿½Âµï¿½ */
+    HI_UNF_PMOC_HOLD_VDEC = 0x80000, /**<Keep VDEC working */   /**<CNcomment:VDECï¿½ï¿½ï¿½Âµï¿½ */
+    HI_UNF_PMOC_HOLD_VPSS = 0x100000, /**<Keep VPSS working */  /**<CNcomment:VPSSï¿½ï¿½ï¿½Âµï¿½ */
+    HI_UNF_PMOC_HOLD_OTP = 0x200000, /**<Keep OTP working */    /**<CNcomment:OTPï¿½ï¿½ï¿½Âµï¿½ */
+    HI_UNF_PMOC_HOLD_TDE = 0x400000, /**<Keep TDE working */    /**<CNcomment:TDEï¿½ï¿½ï¿½Âµï¿½ */
+    HI_UNF_PMOC_HOLD_I2C = 0x800000, /**<Keep I2C working */    /**<CNcomment:I2Cï¿½ï¿½ï¿½Âµï¿½ */
+    HI_UNF_PMOC_HOLD_GPIO = 0x1000000,/**<Keep GPIO working */  /**<CNcomment:GPIOï¿½ï¿½ï¿½Âµï¿½ */
     HI_UNF_PMOC_HOLD_BUTT = 0x80000000,
 }HI_UNF_PMOC_HOLD_MOD_E;
 
@@ -111,65 +111,65 @@ typedef enum hiUNF_PMOC_HOLD_MOD_E
 
 typedef struct hiUNF_PMOC_WAKEUP_FRAME
 {
-    HI_U32  u32MaskBytes;  /**<Mask byte, bitN to control u8Value[N]. 0: invalid, 1: valid*/  /**<CNcomment: ¶ÔÓ¦valueµÄÑÚÂë, bitN¶ÔÓ¦u8Value[N], 0´ú±íÎÞÐ§£¬1´ú±íÓÐÐ§ */
-    HI_U8   u8Offset;      /**<Filter offset, should be bigger than or equal to 12*/          /**<CNcomment: ¹ýÂËÆ÷Æ«ÒÆÁ¿¡£ÐèÒª´óÓÚ»òµÈÓÚ12*/
-    HI_U8   u8Value[FILTER_VALUE_COUNT];   /**<Filter value*/                                 /**<CNcomment: ¹ýÂËÆ÷µÄÖµ*/
-    HI_BOOL bFilterValid;  /**<Valid filter, 0: invalid, 1: valid*/                           /**<CNcomment: ¹ýÂËÆ÷ÊÇ·ñÓÐÐ§£¬0´ú±íÎÞÐ§£¬1´ú±íÓÐÐ§*/
+    HI_U32  u32MaskBytes;  /**<Mask byte, bitN to control u8Value[N]. 0: invalid, 1: valid*/  /**<CNcomment: ï¿½ï¿½Ó¦valueï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, bitNï¿½ï¿½Ó¦u8Value[N], 0ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð§ï¿½ï¿½1ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð§ */
+    HI_U8   u8Offset;      /**<Filter offset, should be bigger than or equal to 12*/          /**<CNcomment: ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ«ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Òªï¿½ï¿½ï¿½Ú»ï¿½ï¿½ï¿½ï¿½12*/
+    HI_U8   u8Value[FILTER_VALUE_COUNT];   /**<Filter value*/                                 /**<CNcomment: ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Öµ*/
+    HI_BOOL bFilterValid;  /**<Valid filter, 0: invalid, 1: valid*/                           /**<CNcomment: ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ç·ï¿½ï¿½ï¿½Ð§ï¿½ï¿½0ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð§ï¿½ï¿½1ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð§*/
 }HI_UNF_PMOC_WAKEUP_FRAME_S, *HI_UNF_WAKEUP_FRAME_S_PTR;
 
 typedef struct hiUNF_PMOC_NETWORK
 {
-    HI_UNF_PMOC_ETH_E          enEthIndex;         /**<Eth index, can set several eth once*/  /**<CNcomment: Íø¿ÚÐòºÅ£¬¿ÉÒÔÍ¬Ê±ÉèÖÃ¶à¸öÍø¿Ú*/
-    HI_BOOL                    bUcPacketEnable;    /**<Single packet enable*/                 /**<CNcomment: µ¥²¥°üÊ¹ÄÜ */
-    HI_BOOL                    bMagicPacketEnable; /**<Magic packet enable*/                  /**<CNcomment: Ä§·¨°üÊ¹ÄÜ*/
-    HI_BOOL                    bWakeupFrameEnable; /**<Wakeup Frame enable*/                  /**<CNcomment: »½ÐÑÖ¡Ê¹ÄÜ */
-    HI_UNF_PMOC_WAKEUP_FRAME_S stFrame[FILTER_COUNT];         /**<Filter frame*/              /**<CNcomment: »½ÐÑÖ¡Êý¾Ý */
+    HI_UNF_PMOC_ETH_E          enEthIndex;         /**<Eth index, can set several eth once*/  /**<CNcomment: ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Å£ï¿½ï¿½ï¿½ï¿½ï¿½Í¬Ê±ï¿½ï¿½ï¿½Ã¶ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½*/
+    HI_BOOL                    bUcPacketEnable;    /**<Single packet enable*/                 /**<CNcomment: ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¹ï¿½ï¿½ */
+    HI_BOOL                    bMagicPacketEnable; /**<Magic packet enable*/                  /**<CNcomment: Ä§ï¿½ï¿½ï¿½ï¿½Ê¹ï¿½ï¿½*/
+    HI_BOOL                    bWakeupFrameEnable; /**<Wakeup Frame enable*/                  /**<CNcomment: ï¿½ï¿½ï¿½ï¿½Ö¡Ê¹ï¿½ï¿½ */
+    HI_UNF_PMOC_WAKEUP_FRAME_S stFrame[FILTER_COUNT];         /**<Filter frame*/              /**<CNcomment: ï¿½ï¿½ï¿½ï¿½Ö¡ï¿½ï¿½ï¿½ï¿½ */
 }HI_UNF_PMOC_NETWORK_S, *HI_UNF_PMOC_NETWORK_S_PTR;
 
 /**Defines the standby wake-up conditions.*/
-/**CNcomment:´ý»ú»½ÐÑµÄÌõ¼þ¶¨Òå*/
+/**CNcomment:ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ñµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½*/
 typedef struct hiUNF_PMOC_WKUP_S
 {
     /**<Number of supported values of the power key. For the raw IR remote control, the number cannot be greater than the maximum key value 6 that is defined by the macro definition PMOC_WKUP_IRKEY_MAXNUM. Only one key value is supported for other remote controls.*/
-    /**<CNcomment:ÄÜ¹»Ö§³Öpower¼üÖµ¸öÊý£¬raw ÐÍºìÍâÒ£¿Ø: ²»ÄÜ³¬Ô½PMOC_WKUP_IRKEY_MAXNUM(<=6)ºê¶¨ÒåËùÊö¸öÊý¼üÖµ£¬ÆäÓàÀàÐÍÖ»ÄÜÖ§³ÖÒ»¸ö¼üÖµ*/
+    /**<CNcomment:ï¿½Ü¹ï¿½Ö§ï¿½ï¿½powerï¿½ï¿½Öµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½raw ï¿½Íºï¿½ï¿½ï¿½Ò£ï¿½ï¿½: ï¿½ï¿½ï¿½Ü³ï¿½Ô½PMOC_WKUP_IRKEY_MAXNUM(<=6)ï¿½ê¶¨ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Öµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö»ï¿½ï¿½Ö§ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½Öµ*/
     HI_U32 u32IrPmocNum;
 
-    HI_U32 u32IrPowerKey0[PMOC_WKUP_IRKEY_MAXNUM];  /**<Lower-bit value of the power key on an IR remote control*/  /**<CNcomment:ºìÍâÒ£¿Ø power µÍÎ»¼üÖµ */
-    HI_U32 u32IrPowerKey1[PMOC_WKUP_IRKEY_MAXNUM];  /**<Upper-bit value of the power key on an IR remote control*/  /**<CNcomment:ºìÍâÒ£¿Ø power ¸ßÎ»¼üÖµ */
-    HI_U32 u32IrSymbol[64];                         /**<Value of the raw power key of IR*/                          /**<CNcomment:ºìÍâÒ£¿Ø»½ÐÑÔ­Ê¼µçÆ½¶Ô */
-    HI_U32 u32KeypadPowerKey;                           /**<Value of the power key*/                                    /**<CNcomment:°´¼ü power¼üÖµ */
-    HI_U32 u32WakeUpTime;                               /**<Preconfigured Wake-up time, in second*/                     /**<CNcomment:»½ÐÑ¶¨Ê±Ê±¼ä ,µ¥Î»Îª Ãë  */
-    HI_UNF_PMOC_NETWORK_S stNetwork;                    /**<Network parameter*/                                         /**<CNcomment:ÍøÂç»½ÐÑ²ÎÊý*/
-    HI_BOOL bMouseKeyboardEnable;                       /**<Mouse and key wake-up enable*/                              /**<CNcomment:Êó±ê¼üÅÌ»½ÐÑÊ¹ÄÜ*/
-    HI_BOOL bResumeResetEnable;                         /**<When resume, reset board enable*/                           /**<CNcomment:´ý»ú»½ÐÑÖØÆôÊ¹ÄÜ*/
-    HI_BOOL bGpioWakeUpEnable;                          /**<Gpio wake up enable */                                      /**<CNcomment:GPIO»½ÐÑÊ¹ÄÜ*/
-    HI_U32 u32GpioNo;                                   /**<Gpio wake up number */                                      /**<CNcomment:GPIO»½ÐÑ¶Ë¿Ú*/
+    HI_U32 u32IrPowerKey0[PMOC_WKUP_IRKEY_MAXNUM];  /**<Lower-bit value of the power key on an IR remote control*/  /**<CNcomment:ï¿½ï¿½ï¿½ï¿½Ò£ï¿½ï¿½ power ï¿½ï¿½Î»ï¿½ï¿½Öµ */
+    HI_U32 u32IrPowerKey1[PMOC_WKUP_IRKEY_MAXNUM];  /**<Upper-bit value of the power key on an IR remote control*/  /**<CNcomment:ï¿½ï¿½ï¿½ï¿½Ò£ï¿½ï¿½ power ï¿½ï¿½Î»ï¿½ï¿½Öµ */
+    HI_U32 u32IrSymbol[64];                         /**<Value of the raw power key of IR*/                          /**<CNcomment:ï¿½ï¿½ï¿½ï¿½Ò£ï¿½Ø»ï¿½ï¿½ï¿½Ô­Ê¼ï¿½ï¿½Æ½ï¿½ï¿½ */
+    HI_U32 u32KeypadPowerKey;                           /**<Value of the power key*/                                    /**<CNcomment:ï¿½ï¿½ï¿½ï¿½ powerï¿½ï¿½Öµ */
+    HI_U32 u32WakeUpTime;                               /**<Preconfigured Wake-up time, in second*/                     /**<CNcomment:ï¿½ï¿½ï¿½Ñ¶ï¿½Ê±Ê±ï¿½ï¿½ ,ï¿½ï¿½Î»Îª ï¿½ï¿½  */
+    HI_UNF_PMOC_NETWORK_S stNetwork;                    /**<Network parameter*/                                         /**<CNcomment:ï¿½ï¿½ï¿½ç»½ï¿½Ñ²ï¿½ï¿½ï¿½*/
+    HI_BOOL bMouseKeyboardEnable;                       /**<Mouse and key wake-up enable*/                              /**<CNcomment:ï¿½ï¿½ï¿½ï¿½ï¿½Ì»ï¿½ï¿½ï¿½Ê¹ï¿½ï¿½*/
+    HI_BOOL bResumeResetEnable;                         /**<When resume, reset board enable*/                           /**<CNcomment:ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¹ï¿½ï¿½*/
+    HI_BOOL bGpioWakeUpEnable;                          /**<Gpio wake up enable */                                      /**<CNcomment:GPIOï¿½ï¿½ï¿½ï¿½Ê¹ï¿½ï¿½*/
+    HI_U32 u32GpioNo;                                   /**<Gpio wake up number */                                      /**<CNcomment:GPIOï¿½ï¿½ï¿½Ñ¶Ë¿ï¿½*/
 }HI_UNF_PMOC_WKUP_S, *HI_UNF_PMOC_WKUP_S_PTR;
 
 /**Configures the time displayed on the front panel in standby mode.*/
-/**CNcomment:´ý»úÊ±µÄÇ°Ãæ°åÏÔÊ¾µÄÊ±¼äÅäÖÃ */
+/**CNcomment:ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½Ç°ï¿½ï¿½ï¿½ï¿½ï¿½Ê¾ï¿½ï¿½Ê±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ */
 typedef struct hiUNF_PMOC_TIME_S
 {
     HI_U32 u32Hour;            /**<Hour*/     /**<CNcomment:Ê± */
-    HI_U32 u32Minute;          /**<Minute*/   /**<CNcomment:·Ö */
-    HI_U32 u32Second;          /**<Second*/   /**<CNcomment:Ãë */
+    HI_U32 u32Minute;          /**<Minute*/   /**<CNcomment:ï¿½ï¿½ */
+    HI_U32 u32Second;          /**<Second*/   /**<CNcomment:ï¿½ï¿½ */
 }HI_UNF_PMOC_TIME_S, *HI_UNF_PMOC_TIME_S_PTR;
 
 /**Configures the display mode of the front panel in standby mode.*/
-/**CNcomment:´ý»úÊ±µÄÇ°Ãæ°åÏÔÊ¾ÅäÖÃ */
+/**CNcomment:ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½Ç°ï¿½ï¿½ï¿½ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½ */
 typedef struct hiUNF_PMOC_STANDBY_MODE_S
 {
-    HI_U32             u32Mode;      /**<0: no display; 1: display the digits represented by u32DispCod; 2: display the time represented by stTimeInfo*/     /**<CNcomment:0 : ÎÞÏÔÊ¾ 1 : ÏÔÊ¾u32DispCode´ú±íµÄÊý×Ö; 2 : ÏÔÊ¾stTimeInfo´ú±íµÄÊ±¼ä. */
-    HI_U32             u32DispCode;  /**<Digits displayed on the front panel when u32Mode is 1, value range from 0000 to 9999, do not support hex */         /**<CNcomment:u32ModeÎª1Ê±£¬Ç°Ãæ°åÏÔÊ¾µÄÊý×Ö£¬È¡Öµ·¶Î§´Ó0000µ½9999£¬²»Ö§³Ö16½øÖÆÊý */
-    HI_UNF_PMOC_TIME_S stTimeInfo; /**<Time displayed on the front panel when u32Mode is 2*/                                                                 /**<CNcomment:u32ModeÎª2Ê±£¬Ç°Ãæ°åÏÔÊ¾µÄÊ±¼ä*/
+    HI_U32             u32Mode;      /**<0: no display; 1: display the digits represented by u32DispCod; 2: display the time represented by stTimeInfo*/     /**<CNcomment:0 : ï¿½ï¿½ï¿½ï¿½Ê¾ 1 : ï¿½ï¿½Ê¾u32DispCodeï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½; 2 : ï¿½ï¿½Ê¾stTimeInfoï¿½ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½. */
+    HI_U32             u32DispCode;  /**<Digits displayed on the front panel when u32Mode is 1, value range from 0000 to 9999, do not support hex */         /**<CNcomment:u32ModeÎª1Ê±ï¿½ï¿½Ç°ï¿½ï¿½ï¿½ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½ï¿½Ö£ï¿½È¡Öµï¿½ï¿½Î§ï¿½ï¿½0000ï¿½ï¿½9999ï¿½ï¿½ï¿½ï¿½Ö§ï¿½ï¿½16ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ */
+    HI_UNF_PMOC_TIME_S stTimeInfo; /**<Time displayed on the front panel when u32Mode is 2*/                                                                 /**<CNcomment:u32ModeÎª2Ê±ï¿½ï¿½Ç°ï¿½ï¿½ï¿½ï¿½ï¿½Ê¾ï¿½ï¿½Ê±ï¿½ï¿½*/
 }HI_UNF_PMOC_STANDBY_MODE_S, *HI_UNF_PMOC_STANDBY_MODE_S_PTR;
 
 /**Type of the device that is woken in standby mode*/
-/**CNcomment:´ý»ú»½ÐÑµÄÉè±¸ÀàÐÍ */
+/**CNcomment:ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ñµï¿½ï¿½è±¸ï¿½ï¿½ï¿½ï¿½ */
 typedef struct hiUNF_PMOC_DEV_TYPE_S
 {
-    HI_UNF_IR_CODE_E     irtype;    /**<Type of the IR remote control*/  /**<CNcomment:ºìÍâÒ£¿ØÀàÐÍ */
-    HI_UNF_KEYLED_TYPE_E kltype;  /**<Type of the front panel*/        /**<CNcomment:Ç°Ãæ°åÀàÐÍ */
+    HI_UNF_IR_CODE_E     irtype;    /**<Type of the IR remote control*/  /**<CNcomment:ï¿½ï¿½ï¿½ï¿½Ò£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ */
+    HI_UNF_KEYLED_TYPE_E kltype;  /**<Type of the front panel*/        /**<CNcomment:Ç°ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ */
 }HI_UNF_PMOC_DEV_TYPE_S, *HI_UNF_PMOC_DEV_TYPE_S_PTR;
 
 /** @} */  /** <!-- ==== Structure Definition End ==== */
@@ -181,15 +181,15 @@ typedef struct hiUNF_PMOC_DEV_TYPE_S
 
 /**
 \brief Starts the power management on chip (PMoC) device.
-CNcomment:\brief ´ò¿ªµÍ¹¦ºÄÄ£¿éÉè±¸¡£CNend
+CNcomment:\brief ï¿½ò¿ªµÍ¹ï¿½ï¿½ï¿½Ä£ï¿½ï¿½ï¿½è±¸ï¿½ï¿½CNend
 
 \attention \n
 The ARM can be switched to another operating mode and then to low-power mode only after the PMoC device is started.\n
-CNcomment:ÔÚ´ò¿ªµÍ¹¦ºÄÄ£¿éÉè±¸ºó£¬²ÅÄÜÇÐ»»ARMµÄ¹¤×÷Ä£Ê½£¬¼Ì¶ø½øÈëµÍ¹¦ºÄ×´Ì¬¡£CNend
+CNcomment:ï¿½Ú´ò¿ªµÍ¹ï¿½ï¿½ï¿½Ä£ï¿½ï¿½ï¿½è±¸ï¿½ó£¬²ï¿½ï¿½ï¿½ï¿½Ð»ï¿½ARMï¿½Ä¹ï¿½ï¿½ï¿½Ä£Ê½ï¿½ï¿½ï¿½Ì¶ï¿½ï¿½ï¿½ï¿½ï¿½Í¹ï¿½ï¿½ï¿½×´Ì¬ï¿½ï¿½CNend
 
-\param N/A                                                               CNcomment:ÎÞ CNend
-\retval HI_SUCCESS Success                                               CNcomment:³É¹¦ CNend
-\retval ::HI_ERR_PMOC_FAILED_INIT  The PMoC device fails to open.        CNcomment:PMoCÉè±¸´ò¿ªÊ§°Ü CNend
+\param N/A                                                               CNcomment:ï¿½ï¿½ CNend
+\retval HI_SUCCESS Success                                               CNcomment:ï¿½É¹ï¿½ CNend
+\retval ::HI_ERR_PMOC_FAILED_INIT  The PMoC device fails to open.        CNcomment:PMoCï¿½è±¸ï¿½ï¿½Ê§ï¿½ï¿½ CNend
 \see \n
 N/A
 */
@@ -197,13 +197,13 @@ HI_S32 HI_UNF_PMOC_Init(HI_VOID);
 
 /**
 \brief Stops the PMoC device.
-CNcomment:\brief ¹Ø±ÕµÍ¹¦ºÄÉè±¸¡£CNend
+CNcomment:\brief ï¿½Ø±ÕµÍ¹ï¿½ï¿½ï¿½ï¿½è±¸ï¿½ï¿½CNend
 
 \attention \n
 N/A
-\param  N/A                                                             CNcomment:ÎÞ CNend
-\retval HI_SUCCESS Success                                              CNcomment:³É¹¦ CNend
-\retval ::HI_ERR_PMOC_NOT_INIT  The PMoC device is not started.         CNcomment:Éè±¸Î´´ò¿ª CNend
+\param  N/A                                                             CNcomment:ï¿½ï¿½ CNend
+\retval HI_SUCCESS Success                                              CNcomment:ï¿½É¹ï¿½ CNend
+\retval ::HI_ERR_PMOC_NOT_INIT  The PMoC device is not started.         CNcomment:ï¿½è±¸Î´ï¿½ï¿½ CNend
 \see \n
 N/A
 */
@@ -211,24 +211,24 @@ HI_S32 HI_UNF_PMOC_DeInit(HI_VOID);
 
 /**
 \brief Sets the mode to which the ARM is switched and obtains the wake-up mode.
-CNcomment:\brief ÉèÖÃARMÒªÇÐ»»µ½µÄÄ£Ê½£¬Í¬Ê±»ñÈ¡ARM»½ÐÑµÄ·½Ê½¡£CNend
+CNcomment:\brief ï¿½ï¿½ï¿½ï¿½ARMÒªï¿½Ð»ï¿½ï¿½ï¿½ï¿½ï¿½Ä£Ê½ï¿½ï¿½Í¬Ê±ï¿½ï¿½È¡ARMï¿½ï¿½ï¿½ÑµÄ·ï¿½Ê½ï¿½ï¿½CNend
 
 \attention \n
 If the ARM enters the HI_UNF_PMOC_MODE_SLEEP mode, programs stop running at once. The subsequent code can be executed only after the ARM is woken up.\n
 Before enabling the standby mode, you must start the IR device, key device on the front panel; otherwise, the interrupts of these devices are masked. As a result, the corresponding wake-up modes cannot be achieved.\n
 Do not access DDRs after the ARM enters the sleep mode. Therefore, the functions of display output, video output, DEMUX input, and audio/video decoding must be disabled.\n
-CNcomment:ARM½øÈëHI_UNF_PMOC_MODE_SLEEPÕæ´ý»úÄ£Ê½ºó³ÌÐòÁ¢¼´Í£Ö¹ÔËÐÐ£¬±ØÐëÔÚ»½ÐÑºó²ÅÄÜ¼ÌÐøÖ´ÐÐºóÃæµÄ´úÂë\n
-½øÈë´ý»úÄ£Ê½Ç°£¬±ØÐë´ò¿ªIR£¨Ò£¿ØÆ÷£©Éè±¸¡¢Ç°Ãæ°åKEYÉè±¸£¬·ñÔò¶ÔÓ¦Ä£¿éµÄÖÐ¶Ï±»ÆÁ±Î£¬²»ÄÜÊµÏÖ¸ÃÖÖÄ£Ê½µÄ»½ÐÑ\n
-½øÈëÕæ´ý»úÊ±£¬±ØÐëÈ·±£²»¶ÔDDR½øÐÐ·ÃÎÊ¡£ËùÒÔ±ØÐë¹Ø±ÕÏÔÊ¾Êä³ö¡¢ÊÓÆµÊä³ö¡¢DEMUXÊäÈë¡¢ÒôÊÓÆµ½âÂëµÈ¡£CNend
+CNcomment:ARMï¿½ï¿½ï¿½ï¿½HI_UNF_PMOC_MODE_SLEEPï¿½ï¿½ï¿½ï¿½ï¿½Ä£Ê½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í£Ö¹ï¿½ï¿½ï¿½Ð£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ú»ï¿½ï¿½Ñºï¿½ï¿½ï¿½Ü¼ï¿½ï¿½ï¿½Ö´ï¿½Ðºï¿½ï¿½ï¿½Ä´ï¿½ï¿½ï¿½\n
+ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä£Ê½Ç°ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½IRï¿½ï¿½Ò£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½è±¸ï¿½ï¿½Ç°ï¿½ï¿½ï¿½KEYï¿½è±¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ó¦Ä£ï¿½ï¿½ï¿½ï¿½Ð¶Ï±ï¿½ï¿½ï¿½ï¿½Î£ï¿½ï¿½ï¿½ï¿½ï¿½Êµï¿½Ö¸ï¿½ï¿½ï¿½Ä£Ê½ï¿½Ä»ï¿½ï¿½ï¿½\n
+ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½È·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½DDRï¿½ï¿½ï¿½Ð·ï¿½ï¿½Ê¡ï¿½ï¿½ï¿½ï¿½Ô±ï¿½ï¿½ï¿½Ø±ï¿½ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æµï¿½ï¿½ï¿½ï¿½ï¿½DEMUXï¿½ï¿½ï¿½ë¡¢ï¿½ï¿½ï¿½ï¿½Æµï¿½ï¿½ï¿½ï¿½È¡ï¿½CNend
 
-\param[in] enSystemMode   Mode of the ARM in low-power mode                CNcomment: ÖÃµÍ¹¦ºÄÏÂARMËù´¦Ä£Ê½¡£CNend
+\param[in] enSystemMode   Mode of the ARM in low-power mode                CNcomment: ï¿½ÃµÍ¹ï¿½ï¿½ï¿½ï¿½ï¿½ARMï¿½ï¿½ï¿½ï¿½Ä£Ê½ï¿½ï¿½CNend
 
 \param[out]  penWakeUpStatus Wake-up mode returned from the HI_UNF_PMOC_MODE_SLEEP mode. For details about the definition, see the description of ::HI_UNF_PMOC_ACTUAL_WKUP_E. \n
-                         CNcomment: ´ÓHI_UNF_PMOC_MODE_SLEEP×´Ì¬·µ»ØÊ±µÄ»½ÐÑ·½Ê½¡£¾ßÌåº¬ÒåÇë²Î¿¼::HI_UNF_PMOC_ACTUAL_WKUP_E CNend
-\retval HI_SUCCESS Success                                                 CNcomment:³É¹¦ CNend
-\retval ::HI_ERR_PMOC_NOT_INIT   The PMoC device is not started.           CNcomment:PMoCÉè±¸Î´´ò¿ª CNend
-\retval ::HI_ERR_PMOC_INVALID_PARA  The parameter is invalid.              CNcomment:·Ç·¨²ÎÊý CNend
-\retval ::HI_ERR_PMOC_FAILED_STANDBY  It fails to enter standby            CNcomment:½øÈë´ý»úÊ§°Ü CNend
+                         CNcomment: ï¿½ï¿½HI_UNF_PMOC_MODE_SLEEP×´Ì¬ï¿½ï¿½ï¿½ï¿½Ê±ï¿½Ä»ï¿½ï¿½Ñ·ï¿½Ê½ï¿½ï¿½ï¿½ï¿½ï¿½åº¬ï¿½ï¿½ï¿½ï¿½Î¿ï¿½::HI_UNF_PMOC_ACTUAL_WKUP_E CNend
+\retval HI_SUCCESS Success                                                 CNcomment:ï¿½É¹ï¿½ CNend
+\retval ::HI_ERR_PMOC_NOT_INIT   The PMoC device is not started.           CNcomment:PMoCï¿½è±¸Î´ï¿½ï¿½ CNend
+\retval ::HI_ERR_PMOC_INVALID_PARA  The parameter is invalid.              CNcomment:ï¿½Ç·ï¿½ï¿½ï¿½ï¿½ï¿½ CNend
+\retval ::HI_ERR_PMOC_FAILED_STANDBY  It fails to enter standby            CNcomment:ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê§ï¿½ï¿½ CNend
 \see \n
 N/A
 */
@@ -236,20 +236,20 @@ HI_S32 HI_UNF_PMOC_SwitchSystemMode(HI_UNF_PMOC_MODE_E enSystemMode, HI_UNF_PMOC
 
 /**
 \brief Sets the wake-up mode of the ARM.
-CNcomment:\brief ÉèÖÃARM»½ÐÑ·½Ê½¡£CNend
+CNcomment:\brief ï¿½ï¿½ï¿½ï¿½ARMï¿½ï¿½ï¿½Ñ·ï¿½Ê½ï¿½ï¿½CNend
 
 \attention \n
 You can query the original IR code values by referring to IR remote manuals.\n
 In addition, you can query the relationships between the keys and key IDs by checking the connection between hardware and chips.\n
-CNcomment:IRÔ­Ê¼ÂëÖµ¿ÉÒÔÍ¨¹ýÒ£¿ØÆ÷µÄÊ¹ÓÃÊÖ²áµÃµ½\n
-°´¼üÓë¼üÖµµÄ¶ÔÓ¦¹ØÏµ¿ÉÒÔÍ¨¹ýÓ²¼þºÍÐ¾Æ¬µÄÁ¬½Ó¹ØÏµµÃµ½¡£CNend
+CNcomment:IRÔ­Ê¼ï¿½ï¿½Öµï¿½ï¿½ï¿½ï¿½Í¨ï¿½ï¿½Ò£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¹ï¿½ï¿½ï¿½Ö²ï¿½Ãµï¿½\n
+ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Öµï¿½Ä¶ï¿½Ó¦ï¿½ï¿½Ïµï¿½ï¿½ï¿½ï¿½Í¨ï¿½ï¿½Ó²ï¿½ï¿½ï¿½ï¿½Ð¾Æ¬ï¿½ï¿½ï¿½ï¿½ï¿½Ó¹ï¿½Ïµï¿½Ãµï¿½ï¿½ï¿½CNend
 
-\param[in] pstAttr  Wake-up mode of the ARM                             CNcomment:ARM»½ÐÑ·½Ê½¡£CNend
-\retval HI_SUCCESS Success                                              CNcomment:³É¹¦ CNend
-\retval ::HI_ERR_PMOC_NOT_INIT  The PMoC device is not started.         CNcomment:PMoCÉè±¸Î´´ò¿ª CNend
-\retval ::HI_ERR_PMOC_INVALID_POINT  The pointer is invalid.            CNcomment:·Ç·¨Ö¸Õë CNend
-\retval ::HI_ERR_PMOC_INVALID_PARA  The parameter is invalid.           CNcomment:·Ç·¨²ÎÊý CNend
-\retval ::HI_ERR_PMOC_FAILED_SETWAKEUPVAL It fails to set power val.    CNcomment:ÉèÖÃ»½ÐÑ·½Ê½Ê§°Ü CNend
+\param[in] pstAttr  Wake-up mode of the ARM                             CNcomment:ARMï¿½ï¿½ï¿½Ñ·ï¿½Ê½ï¿½ï¿½CNend
+\retval HI_SUCCESS Success                                              CNcomment:ï¿½É¹ï¿½ CNend
+\retval ::HI_ERR_PMOC_NOT_INIT  The PMoC device is not started.         CNcomment:PMoCï¿½è±¸Î´ï¿½ï¿½ CNend
+\retval ::HI_ERR_PMOC_INVALID_POINT  The pointer is invalid.            CNcomment:ï¿½Ç·ï¿½Ö¸ï¿½ï¿½ CNend
+\retval ::HI_ERR_PMOC_INVALID_PARA  The parameter is invalid.           CNcomment:ï¿½Ç·ï¿½ï¿½ï¿½ï¿½ï¿½ CNend
+\retval ::HI_ERR_PMOC_FAILED_SETWAKEUPVAL It fails to set power val.    CNcomment:ï¿½ï¿½ï¿½Ã»ï¿½ï¿½Ñ·ï¿½Ê½Ê§ï¿½ï¿½ CNend
 \see \n
 N/A
 */
@@ -257,16 +257,16 @@ HI_S32 HI_UNF_PMOC_SetWakeUpAttr(HI_UNF_PMOC_WKUP_S_PTR pstAttr);
 
 /**
 \brief Gets the wake-up mode of the ARM.
-CNcomment:\brief »ñÈ¡ARM»½ÐÑ·½Ê½¡£CNend
+CNcomment:\brief ï¿½ï¿½È¡ARMï¿½ï¿½ï¿½Ñ·ï¿½Ê½ï¿½ï¿½CNend
 
 \attention \n
 
-\param[out] pstAttr  Wake-up mode of the ARM                            CNcomment:ARM»½ÐÑ·½Ê½¡£CNend
-\retval HI_SUCCESS Success                                              CNcomment:³É¹¦ CNend
-\retval ::HI_ERR_PMOC_NOT_INIT  The PMoC device is not started.         CNcomment:PMoCÉè±¸Î´´ò¿ª CNend
-\retval ::HI_ERR_PMOC_INVALID_POINT  The pointer is invalid.            CNcomment:·Ç·¨Ö¸Õë CNend
-\retval ::HI_ERR_PMOC_INVALID_PARA  The parameter is invalid.           CNcomment:·Ç·¨²ÎÊý CNend
-\retval ::HI_ERR_PMOC_FAILED_GETWAKEUPVAL It fails to set power val.    CNcomment:»ñÈ¡»½ÐÑ·½Ê½Ê§°Ü CNend
+\param[out] pstAttr  Wake-up mode of the ARM                            CNcomment:ARMï¿½ï¿½ï¿½Ñ·ï¿½Ê½ï¿½ï¿½CNend
+\retval HI_SUCCESS Success                                              CNcomment:ï¿½É¹ï¿½ CNend
+\retval ::HI_ERR_PMOC_NOT_INIT  The PMoC device is not started.         CNcomment:PMoCï¿½è±¸Î´ï¿½ï¿½ CNend
+\retval ::HI_ERR_PMOC_INVALID_POINT  The pointer is invalid.            CNcomment:ï¿½Ç·ï¿½Ö¸ï¿½ï¿½ CNend
+\retval ::HI_ERR_PMOC_INVALID_PARA  The parameter is invalid.           CNcomment:ï¿½Ç·ï¿½ï¿½ï¿½ï¿½ï¿½ CNend
+\retval ::HI_ERR_PMOC_FAILED_GETWAKEUPVAL It fails to set power val.    CNcomment:ï¿½ï¿½È¡ï¿½ï¿½ï¿½Ñ·ï¿½Ê½Ê§ï¿½ï¿½ CNend
 \see \n
 N/A
 */
@@ -275,18 +275,18 @@ HI_S32 HI_UNF_PMOC_GetWakeUpAttr(HI_UNF_PMOC_WKUP_S_PTR pstAttr);
 
 /**
 \brief set display content when wake up.
-CNcomment:\brief ÉèÖÃ»½ÐÑÏÔÊ¾ÄÚÈÝ¡£CNend
+CNcomment:\brief ï¿½ï¿½ï¿½Ã»ï¿½ï¿½ï¿½ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½Ý¡ï¿½CNend
 
 \attention \n
 content that the panel display when standby
-CNcomment:´ý»úÊ±Ãæ°åÏÔÊ¾Ö¸¶¨ÄÚÈÝ\n CNend
+CNcomment:ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½ï¿½ï¿½ï¿½Ê¾Ö¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½\n CNend
 
-\param[in] pstStandbyMode  display content:time or channel or no display   CNcomment:ÏÔÊ¾ÄÚÈÝ:Ê±¼ä or ÆµµÀ or ÎÞÏÔÊ¾¡£CNend
-\retval HI_SUCCESS  success                                                CNcomment:³É¹¦ CNend
-\retval ::HI_ERR_PMOC_NOT_INIT  The PMoC device is not started.            CNcomment:PMoCÉè±¸Î´´ò¿ª CNend
-\retval ::HI_ERR_PMOC_INVALID_POINT  The pointer is invalid.               CNcomment:·Ç·¨Ö¸Õë CNend
-\retval ::HI_ERR_PMOC_INVALID_PARA  The parameter is invalid.              CNcomment:·Ç·¨²ÎÊý CNend
-\retval ::HI_ERR_PMOC_FAILED_STANDBY  It fails to set standby display      CNcomment:ÉèÖÃ»½ÐÑÄÚÈÝÊ§°Ü CNend
+\param[in] pstStandbyMode  display content:time or channel or no display   CNcomment:ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½:Ê±ï¿½ï¿½ or Æµï¿½ï¿½ or ï¿½ï¿½ï¿½ï¿½Ê¾ï¿½ï¿½CNend
+\retval HI_SUCCESS  success                                                CNcomment:ï¿½É¹ï¿½ CNend
+\retval ::HI_ERR_PMOC_NOT_INIT  The PMoC device is not started.            CNcomment:PMoCï¿½è±¸Î´ï¿½ï¿½ CNend
+\retval ::HI_ERR_PMOC_INVALID_POINT  The pointer is invalid.               CNcomment:ï¿½Ç·ï¿½Ö¸ï¿½ï¿½ CNend
+\retval ::HI_ERR_PMOC_INVALID_PARA  The parameter is invalid.              CNcomment:ï¿½Ç·ï¿½ï¿½ï¿½ï¿½ï¿½ CNend
+\retval ::HI_ERR_PMOC_FAILED_STANDBY  It fails to set standby display      CNcomment:ï¿½ï¿½ï¿½Ã»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê§ï¿½ï¿½ CNend
 \see \n
 N/A
 */
@@ -294,16 +294,16 @@ HI_S32 HI_UNF_PMOC_SetStandbyDispMode(HI_UNF_PMOC_STANDBY_MODE_S_PTR pstStandbyM
 
 /**
 \brief Obtains the current system mode.
-CNcomment:\brief »ñÈ¡ÏµÍ³µ±Ç°Ä£Ê½¡£CNend
+CNcomment:\brief ï¿½ï¿½È¡ÏµÍ³ï¿½ï¿½Ç°Ä£Ê½ï¿½ï¿½CNend
 
 \attention \n
 This API is abandoned and only used for forward compatible. It always returns normal state.\n
-CNcomment:´Ë½Ó¿ÚÒÑ·ÏÆú£¬Ê¼ÖÕ·µ»ØÆÕÍ¨Ä£Ê½£¬½öÎª¼æÈÝÖ®Ç°°æ±¾Ê¹ÓÃ¡£\n CNend
+CNcomment:ï¿½Ë½Ó¿ï¿½ï¿½Ñ·ï¿½ï¿½ï¿½ï¿½ï¿½Ê¼ï¿½Õ·ï¿½ï¿½ï¿½ï¿½ï¿½Í¨Ä£Ê½ï¿½ï¿½ï¿½ï¿½Îªï¿½ï¿½ï¿½ï¿½Ö®Ç°ï¿½æ±¾Ê¹ï¿½Ã¡ï¿½\n CNend
 
-\param[in] penSystemMode  Mode to be obtained                   CNcomment:ÐèÒª»ñÈ¡µÄÄ£Ê½¡£CNend
-\retval HI_SUCCESS Success                                      CNcomment:³É¹¦ CNend
-\retval ::HI_ERR_PMOC_NOT_INIT  The PMoC device is not started. CNcomment:PMoCÉè±¸Î´´ò¿ª CNend
-\retval ::HI_ERR_PMOC_INVALID_POINT  The pointer is invalid.    CNcomment:·Ç·¨Ö¸Õë CNend
+\param[in] penSystemMode  Mode to be obtained                   CNcomment:ï¿½ï¿½Òªï¿½ï¿½È¡ï¿½ï¿½Ä£Ê½ï¿½ï¿½CNend
+\retval HI_SUCCESS Success                                      CNcomment:ï¿½É¹ï¿½ CNend
+\retval ::HI_ERR_PMOC_NOT_INIT  The PMoC device is not started. CNcomment:PMoCï¿½è±¸Î´ï¿½ï¿½ CNend
+\retval ::HI_ERR_PMOC_INVALID_POINT  The pointer is invalid.    CNcomment:ï¿½Ç·ï¿½Ö¸ï¿½ï¿½ CNend
 \see \n
 N/A
 */
@@ -311,16 +311,16 @@ HI_S32 HI_UNF_PMOC_ReadSystemMode(HI_UNF_PMOC_MODE_E * penSystemMode);
 
 /**
 \brief Sets the operating scenario.
-CNcomment:\brief ÉèÖÃ¹¤×÷³¡¾°¡£CNend
+CNcomment:\brief ï¿½ï¿½ï¿½Ã¹ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½CNend
 
 \attention \n
 Only the standby scenario and the forward scenario are supported currently.\n
-CNcomment:Ä¿Ç°½öÖ§³Ö±ê×¼´ý»ú³¡¾°ºÍÍø¿Ú×ª·¢³¡¾°\n CNend
+CNcomment:Ä¿Ç°ï¿½ï¿½Ö§ï¿½Ö±ï¿½×¼ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½×ªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½\n CNend
 
-\param[in] eScene  Standby scenario                               CNcomment:´ý»ú³¡¾°¡£CNend
-\retval HI_SUCCESS Success                                        CNcomment:³É¹¦ CNend
-\retval ::HI_ERR_PMOC_NOT_INIT    The PMoC device is not started. CNcomment:PMoCÉè±¸Î´´ò¿ª CNend
-\retval ::HI_ERR_PMOC_INVALID_POINT  The parameter is invalid.    CNcomment:·Ç·¨²ÎÊý CNend
+\param[in] eScene  Standby scenario                               CNcomment:ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½CNend
+\retval HI_SUCCESS Success                                        CNcomment:ï¿½É¹ï¿½ CNend
+\retval ::HI_ERR_PMOC_NOT_INIT    The PMoC device is not started. CNcomment:PMoCï¿½è±¸Î´ï¿½ï¿½ CNend
+\retval ::HI_ERR_PMOC_INVALID_POINT  The parameter is invalid.    CNcomment:ï¿½Ç·ï¿½ï¿½ï¿½ï¿½ï¿½ CNend
 \see \n
 N/A
 */
@@ -328,16 +328,16 @@ HI_S32 HI_UNF_PMOC_SetScene(HI_UNF_PMOC_SCENE_E eScene);
 
 /**
 \brief Sets the types of the devices related to standby such as front panel and IR remote control.
-CNcomment:\brief ÉèÖÃÄ¿Ç°Ç°Ãæ°åÍ¬ºìÍâÒ£¿ØµÈ´ý»úÏà¹ØÉè±¸µÄÀàÐÍ¡£CNend
+CNcomment:\brief ï¿½ï¿½ï¿½ï¿½Ä¿Ç°Ç°ï¿½ï¿½ï¿½Í¬ï¿½ï¿½ï¿½ï¿½Ò£ï¿½ØµÈ´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½è±¸ï¿½ï¿½ï¿½ï¿½ï¿½Í¡ï¿½CNend
 
 \attention \n
 
-\param[in] pdevType  Standby device that needs to be supported in standby       CNcomment:´ý»úÊ±ÐèÒªÖ§³ÖµÄ´ý»úÉè±¸¡£CNend
-\retval HI_SUCCESS  success                                                CNcomment:³É¹¦ CNend
-\retval ::HI_ERR_PMOC_NOT_INIT  The PMoC device is not started.            CNcomment:PMoCÉè±¸Î´´ò¿ª CNend
-\retval ::HI_ERR_PMOC_INVALID_POINT  The pointer is invalid.               CNcomment:·Ç·¨Ö¸Õë CNend
-\retval ::HI_ERR_PMOC_INVALID_PARA  The parameter is invalid.              CNcomment:·Ç·¨²ÎÊý CNend
-\retval ::HI_ERR_PMOC_FAILED_STANDBY  It fails to set standby devices.     CNcomment:ÉèÖÃ»½ÐÑÉè±¸Ê§°Ü CNend
+\param[in] pdevType  Standby device that needs to be supported in standby       CNcomment:ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½ÒªÖ§ï¿½ÖµÄ´ï¿½ï¿½ï¿½ï¿½è±¸ï¿½ï¿½CNend
+\retval HI_SUCCESS  success                                                CNcomment:ï¿½É¹ï¿½ CNend
+\retval ::HI_ERR_PMOC_NOT_INIT  The PMoC device is not started.            CNcomment:PMoCï¿½è±¸Î´ï¿½ï¿½ CNend
+\retval ::HI_ERR_PMOC_INVALID_POINT  The pointer is invalid.               CNcomment:ï¿½Ç·ï¿½Ö¸ï¿½ï¿½ CNend
+\retval ::HI_ERR_PMOC_INVALID_PARA  The parameter is invalid.              CNcomment:ï¿½Ç·ï¿½ï¿½ï¿½ï¿½ï¿½ CNend
+\retval ::HI_ERR_PMOC_FAILED_STANDBY  It fails to set standby devices.     CNcomment:ï¿½ï¿½ï¿½Ã»ï¿½ï¿½ï¿½ï¿½è±¸Ê§ï¿½ï¿½ CNend
 \see \n
 N/A
 */
@@ -345,21 +345,21 @@ HI_S32 HI_UNF_PMOC_SetDevType(HI_UNF_PMOC_DEV_TYPE_S_PTR pdevType);
 
 /**
 \brief when standby, GPIO pin control 12v and 5v power,relate to hardware.
-CNcomment:\brief ÓÃÓÚ´ý»úÊ±,GPIO¹Ü½Å¿ØÖÆ12V0ºÍ5V0µçÔ´£¬ÓëÓ²¼þÏà¹Ø¡£CNend
+CNcomment:\brief ï¿½ï¿½ï¿½Ú´ï¿½ï¿½ï¿½Ê±,GPIOï¿½Ü½Å¿ï¿½ï¿½ï¿½12V0ï¿½ï¿½5V0ï¿½ï¿½Ô´ï¿½ï¿½ï¿½ï¿½Ó²ï¿½ï¿½ï¿½ï¿½Ø¡ï¿½CNend
 
 \attention \n
 when standby, the outside power controled by STANDBY_PWROFF pin, the function can be ignored.\n
 when some part of outside power controled by GPIO pin, use this function will decrease standby power.\n
-CNcomment:´ý»úÊ±ÍâÎ§µçÔ´È«²¿ÓÉ¹Ü½ÅSTANDBY_PWROFF¿ØÖÆÊ±£¬²»ÓÃÀí»á¸Ã½Ó¿Ú£»\n
-µ±²¿·ÖÍâÎ§µçÔ´ÓÉGPIO¹Ü½ÅÈ¥¿ØÖÆÊ±,ºÏÀíµ÷ÓÃ¸Ã½Ó¿ÚÓÃÓÚ½µµÍ´ý»ú¹¦ºÄ¡£CNend
+CNcomment:ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½Î§ï¿½ï¿½Ô´È«ï¿½ï¿½ï¿½É¹Ü½ï¿½STANDBY_PWROFFï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ã½Ó¿Ú£ï¿½\n
+ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Î§ï¿½ï¿½Ô´ï¿½ï¿½GPIOï¿½Ü½ï¿½È¥ï¿½ï¿½ï¿½ï¿½Ê±,ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ã¸Ã½Ó¿ï¿½ï¿½ï¿½ï¿½Ú½ï¿½ï¿½Í´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä¡ï¿½CNend
 
-\param[in] u32GpioNo  GPIO pin index, choose the fifth[40,47] CNcomment:GPIO¹Ü½ÅË÷ÒýºÅ,È¡µÚ5×éÎª[40, 47] CNend
-\param[in] bHighOrLow GPIO output control                     CNcomment:GPIO¹Ü½ÅÊä³ö¿ØÖÆ CNend
-\retval HI_SUCCESS  success                                                CNcomment:³É¹¦ CNend
-\retval ::HI_ERR_PMOC_NOT_INIT  The PMoC device is not started.            CNcomment:PMoCÉè±¸Î´´ò¿ª CNend
-\retval ::HI_ERR_PMOC_INVALID_POINT  The pointer is invalid.               CNcomment:·Ç·¨Ö¸Õë CNend
-\retval ::HI_ERR_PMOC_INVALID_PARA  The parameter is invalid.              CNcomment:·Ç·¨²ÎÊý CNend
-\retval ::HI_ERR_PMOC_FAILED_STANDBY  It fails to set standby Gpio.        CNcomment:ÉèÖÃ´ý»úGpio¹Ü½ÅÊ§°Ü CNend
+\param[in] u32GpioNo  GPIO pin index, choose the fifth[40,47] CNcomment:GPIOï¿½Ü½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½,È¡ï¿½ï¿½5ï¿½ï¿½Îª[40, 47] CNend
+\param[in] bHighOrLow GPIO output control                     CNcomment:GPIOï¿½Ü½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ CNend
+\retval HI_SUCCESS  success                                                CNcomment:ï¿½É¹ï¿½ CNend
+\retval ::HI_ERR_PMOC_NOT_INIT  The PMoC device is not started.            CNcomment:PMoCï¿½è±¸Î´ï¿½ï¿½ CNend
+\retval ::HI_ERR_PMOC_INVALID_POINT  The pointer is invalid.               CNcomment:ï¿½Ç·ï¿½Ö¸ï¿½ï¿½ CNend
+\retval ::HI_ERR_PMOC_INVALID_PARA  The parameter is invalid.              CNcomment:ï¿½Ç·ï¿½ï¿½ï¿½ï¿½ï¿½ CNend
+\retval ::HI_ERR_PMOC_FAILED_STANDBY  It fails to set standby Gpio.        CNcomment:ï¿½ï¿½ï¿½Ã´ï¿½ï¿½ï¿½Gpioï¿½Ü½ï¿½Ê§ï¿½ï¿½ CNend
 \see \n
 N/A
 */
@@ -367,15 +367,15 @@ HI_S32 HI_UNF_PMOC_SetPwrOffGpio(HI_U32 u32GpioNo, HI_BOOL bHighOrLow);
 
 /**
 \brief Get the period during standby status.
-CNcomment:\brief »ñÈ¡´Ó´ý»úµ½»½ÐÑ³ÖÐøµÄÊ±¼ä¡£CNend
+CNcomment:\brief ï¿½ï¿½È¡ï¿½Ó´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ñ³ï¿½ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ä¡£CNend
 
 \attention \n
 
-\param[out] pu32Period  The period of standby. CNcomment:´ý»ú³ÖÐøµÄÊ±¼ä CNend
-\retval ::HI_ERR_PMOC_NOT_INIT  The PMoC device is not started.            CNcomment:PMoCÉè±¸Î´´ò¿ª CNend
-\retval ::HI_ERR_PMOC_INVALID_POINT  The pointer is invalid.               CNcomment:·Ç·¨Ö¸Õë CNend
-\retval ::HI_ERR_PMOC_INVALID_PARA  The parameter is invalid.              CNcomment:·Ç·¨²ÎÊý CNend
-\retval ::HI_ERR_PMOC_FAILED_GETPERIOD  It fails to get standby period.    CNcomment:»ñÈ¡´ý»úÊ±¼äÊ§°Ü CNend
+\param[out] pu32Period  The period of standby. CNcomment:ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½ CNend
+\retval ::HI_ERR_PMOC_NOT_INIT  The PMoC device is not started.            CNcomment:PMoCï¿½è±¸Î´ï¿½ï¿½ CNend
+\retval ::HI_ERR_PMOC_INVALID_POINT  The pointer is invalid.               CNcomment:ï¿½Ç·ï¿½Ö¸ï¿½ï¿½ CNend
+\retval ::HI_ERR_PMOC_INVALID_PARA  The parameter is invalid.              CNcomment:ï¿½Ç·ï¿½ï¿½ï¿½ï¿½ï¿½ CNend
+\retval ::HI_ERR_PMOC_FAILED_GETPERIOD  It fails to get standby period.    CNcomment:ï¿½ï¿½È¡ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½Ê§ï¿½ï¿½ CNend
 \see \n
 N/A
 */
@@ -384,13 +384,13 @@ HI_S32 HI_UNF_PMOC_GetStandbyPeriod(HI_U32 *pu32Period);
 
 /**
 \brief Switch to smart standby status.
-CNcomment:\brief ½øÈëÖÇÄÜ´ý»ú×´Ì¬¡£CNend
+CNcomment:\brief ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ü´ï¿½ï¿½ï¿½×´Ì¬ï¿½ï¿½CNend
 
 \attention \n
 
-\param[in] u32HoldModules  The modules working in smart standby .          CNcomment:´ý»úÊ±²»ÏÂµçµÄÄ£¿é CNend
-\retval ::HI_ERR_PMOC_NOT_INIT  The PMoC device is not started.            CNcomment:PMoCÉè±¸Î´´ò¿ª CNend
-\retval ::HI_SUCCESS            Standby success.                           CNcomment:´ý»ú³É¹¦ CNend
+\param[in] u32HoldModules  The modules working in smart standby .          CNcomment:ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½ï¿½Âµï¿½ï¿½Ä£ï¿½ï¿½ CNend
+\retval ::HI_ERR_PMOC_NOT_INIT  The PMoC device is not started.            CNcomment:PMoCï¿½è±¸Î´ï¿½ï¿½ CNend
+\retval ::HI_SUCCESS            Standby success.                           CNcomment:ï¿½ï¿½ï¿½ï¿½ï¿½É¹ï¿½ CNend
 \see \n
 N/A
 */
@@ -398,13 +398,13 @@ HI_S32 HI_UNF_PMOC_EnterSmartStandby(HI_U32 u32HoldModules);
 
 /**
 \brief Quit smart standby status.
-CNcomment:\brief ÍË³öÖÇÄÜ´ý»ú×´Ì¬¡£CNend
+CNcomment:\brief ï¿½Ë³ï¿½ï¿½ï¿½ï¿½Ü´ï¿½ï¿½ï¿½×´Ì¬ï¿½ï¿½CNend
 
 \attention \n
 
-\param  N/A                                                                CNcomment:ÎÞ CNend
-\retval ::HI_ERR_PMOC_NOT_INIT  The PMoC device is not started.            CNcomment:PMoCÉè±¸Î´´ò¿ª CNend
-\retval ::HI_SUCCESS            Quit standby success.                      CNcomment:»½ÐÑ³É¹¦ CNend
+\param  N/A                                                                CNcomment:ï¿½ï¿½ CNend
+\retval ::HI_ERR_PMOC_NOT_INIT  The PMoC device is not started.            CNcomment:PMoCï¿½è±¸Î´ï¿½ï¿½ CNend
+\retval ::HI_SUCCESS            Quit standby success.                      CNcomment:ï¿½ï¿½ï¿½Ñ³É¹ï¿½ CNend
 \see \n
 N/A
 */

@@ -11,4 +11,5 @@ WV_S32  HIS_FB_Close();
 WV_S32  HIS_FB_SurfGet( HI_HANDLE * pScreenSurf);
 WV_S32  HIS_FB_SurfFresh();
 WV_S32  HIS_FB_SetColorKey(WV_U32 ena,WV_U32 colorKey);
+WV_S32  HIS_FB_Cursor();
 #endif

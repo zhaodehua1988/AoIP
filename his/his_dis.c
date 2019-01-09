@@ -468,17 +468,7 @@ WV_S32  HIS_DIS_SetCustomTiming(WV_U32 mode)
 
 	switch(mode)
 	{
-		case 0:
-			custTiming.VFB = 4;//4
-			custTiming.VBB = 29; //29
-			custTiming.VACT= 1092;//1092
-			custTiming.HFB = 176;//176;
-			custTiming.HBB = 384;//384;
-			custTiming.HACT= 3840;
-			custTiming.VPW = 5;//5
-			custTiming.VertFreq = 30000;
-			break;
-		case 1:
+		case 0: //3840*2160 p60
 		  	custTiming.VFB = 8;
 			custTiming.VBB = 82;//80;
 			custTiming.VACT= 2160;//HIS_DIS_HEIGHT;//2172
@@ -490,7 +480,20 @@ WV_S32  HIS_DIS_SetCustomTiming(WV_U32 mode)
 			custTiming.PixFreq = 297000;//148500;//297000;
 			
 			break;
-		case 2:
+		case 1: //3840*2160 p50
+		  	custTiming.VFB = 8;
+			custTiming.VBB = 82;//82;//80;
+			custTiming.VACT= 2160;//HIS_DIS_HEIGHT;//2172
+			custTiming.HFB = 176;//176
+			custTiming.HBB = 544;//384;192
+			custTiming.HACT= 1920;//1920;//3840;r
+			custTiming.VPW = 10;//5	
+			custTiming.VertFreq = 30000;
+			custTiming.PixFreq = 297000;//148500;//297000;
+			
+			break;
+
+		case 2: //3840*2160 p30
 		  	custTiming.VFB = 4;//8
 			custTiming.VBB = 29; //80
 			custTiming.VACT= 2160;//
@@ -501,6 +504,9 @@ WV_S32  HIS_DIS_SetCustomTiming(WV_U32 mode)
 			custTiming.VertFreq = 30000;
 			//custTiming.PixFreq = 297000;	
 			break;
+        case 3: //1920*1080 p60
+        ret = HI_UNF_DISP_SetFormat(HI_UNF_DISPLAY1, HI_UNF_ENC_FMT_1080P_60);
+        return ret;
 		default:
 			return -1;	
 	

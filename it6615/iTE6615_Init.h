@@ -11,6 +11,7 @@
 #ifndef _ITE6615_INIT_H_
 #define _ITE6615_INIT_H_
 
+
 void ITE6615_Open();
 void ITE6615_Close();
 #endif

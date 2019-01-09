@@ -16,7 +16,6 @@
 #include"his_temperature.h" 
 #include"his_gpio.h" 
 #include "his_go.h"
-
  
 typedef struct  HIS_SYS_CONF_S
 {
@@ -61,7 +60,7 @@ WV_S32   HIS_SYS_Init()
   HIS_SND_Init();
   HIS_SO_Init();
   HIS_DEMUX_Init(); 
-  HIS_DIS_Init(gHisConf.disFormat,2);
+  HIS_DIS_Init(gHisConf.disFormat,0);
   HIS_HDMI_Init(gHisConf.disFormat);  
   HIS_AVP_Init();
   HIS_VENC_Init();

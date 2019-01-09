@@ -33,7 +33,7 @@ WV_S32 TSK_GO_GetCmd(WV_S32 argc, WV_S8 **argv,WV_S8 *prfBuff)
 ****************************************************************************/
 WV_S32 TSK_GO_SetCmd(WV_S32 argc, WV_S8 **argv, WV_S8 *prfBuff)
 {
-	WV_U32 color;
+	WV_U32 color,data;
 	WV_S32 ret;
 
 	HI_RECT Rect;
@@ -107,6 +107,41 @@ WV_S32 TSK_GO_SetCmd(WV_S32 argc, WV_S8 **argv, WV_S8 *prfBuff)
 		usleep(100000);
 		TSK_GO_DecOpen(0,name,0,0,3840,2160);
 
+	}else if (strcmp(argv[0], "test") == 0)
+	{
+			if(argc < 2){
+				prfBuff += sprintf(prfBuff, "err!cmd like-> set higo test <w>\r\n");
+				return WV_EFAIL;
+			}
+		
+		ret = WV_STR_S2v(argv[1], &data);
+		if (ret != WV_SOK)
+		{
+			prfBuff += sprintf(prfBuff, "input erro!data=[%d] > 1920\r\n",data);
+			return WV_EFAIL;
+		}
+		if(data > 1920)
+		{
+			prfBuff += sprintf(prfBuff, "input erro!data=[%d] > 1920\r\n",data);
+			return WV_EFAIL;
+		}	
+		int i,j=0;
+		Rect.y=0;
+		Rect.w = 1;
+		Rect.h = 1080;
+		for(i=0;i<data;i++){
+			Rect.x = i;
+			color = 0xff000000 | (j<<16 | j<<8 | j);
+			j++;
+			if(j > 255){
+				j=0;
+			}
+			//printf("x0=%d,x1=%d,color=0x%X",i,i,color);
+			HI_GO_DrawLine(gGoDev.goDev.layerSurfHndl,i,0,i,1080,color);
+			//HI_GO_FillRect(gGoDev.goDev.layerSurfHndl, &Rect, color, HIGO_COMPOPT_NONE);
+		}
+
+		HIS_GO_RefreshLayer(&gGoDev.goDev);	
 	}
 
 	return WV_SOK;
@@ -133,7 +168,7 @@ void *TSK_GO_Proc(void *prm)
 	{
 		
 		fresh = 0;
-		
+		///*
 		for (i = 0; i < TSK_HIGO_ANI_MAX_NUM; i++)
 		{
 
@@ -153,6 +188,8 @@ void *TSK_GO_Proc(void *prm)
 		{
 			usleep(300000);
 		}
+		//HIS_FB_Cursor();
+		//usleep(30000);
 	}
 	pDev->open = 0;
 	pDev->close = 1;

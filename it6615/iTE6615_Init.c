@@ -34,14 +34,15 @@ void *iTE6615_Proc(void *prm)
     ITE6615_DEV *pDev = (ITE6615_DEV *)prm;
     pDev->open = 1;
     pDev->close = 0;
+    //iTE6615_fsm();
+
     while (pDev->open == 1)
     {
 
         usleep(500000);
         // never changed config, auto run.
         iTE6615_fsm();
-
-        // Below Code is example/reference for Customer when you need to change config at run-time
+    // Below Code is example/reference for Customer when you need to change config at run-time
         /*************************************************************************************************
 
     // This example code of combine 6805(HDMI2.x/HDMI1.x input, output TTL)+6615(TTL input, output HDMI2.x/HDMI1.x)
@@ -180,6 +181,7 @@ void *iTE6615_Proc(void *prm)
     }
 *************************************************************************************************/
     }
+    return NULL;
 }
 
 /************************************************************

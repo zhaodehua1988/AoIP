@@ -35,6 +35,7 @@ u8 iTE6615_CheckRX_SCDT(void)
 
 u8 iTE6615_CheckTX_HPD(void)
 {
+    //delay1ms(1000);
     return hdmitxrd(0x07)&BIT1;
 }
 

@@ -70,6 +70,7 @@ WV_S32 FPGA_CONF_SetETH(FPGA_CONF_ETH_T *pEth,WV_S32 ethID);
 WV_S32 FPGA_CONF_GetETH(FPGA_CONF_ETH_T *pEth,WV_S32 ethID);
 
 WV_S32 FPGA_CONF_GetVersion(WV_S8 *pFpgaVer);
+WV_S32 FPGA_CONF_Resolution(WV_S32 Resolution); //Resolution:0 4k60;    1 4k50;     2 4k30;    3 1080p
 
 void FPGA_CONF_Init();
 void FPGA_CONF_DeInit();
