@@ -39,16 +39,16 @@ WV_S32 main()
 
 	
 #ifdef HELLO_DEBUG
+	//PCA9548_Init();
+	//PCA9555_Init();
 	ADV_7619_Init();
 	FPGA_CONF_Init();
 
 	TSK_PLAYER_Open();
-	PCA9548_Init();
-	PCA9555_Init();
-	ITE6805_Open();
-	ITE6615_Open();
 
-	//HIS_CURSOR_Init();
+	//ITE6805_Open();
+	//ITE6615_Open();
+
 	//TI1297_Init();
 	//TSK_FPGA_Open();
 	TSK_GO_Open();
@@ -65,8 +65,8 @@ WV_S32 main()
 #ifdef HELLO_DEBUG
 	TSK_GO_Close();
 	//TSK_FPGA_Close();
-	ITE6615_Close();
-	ITE6805_Close();
+	//ITE6615_Close();
+	//ITE6805_Close();
 	TSK_PLAYER_Close();
 	FPGA_CONF_DeInit();
 #endif

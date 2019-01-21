@@ -253,9 +253,11 @@ WV_S32  HIS_AVP_SetVolume(WV_U32 playerID,WV_S32 volume)
                    				 /**<Decibel gain(bLinearMode is HI_FALSE) , ranging from -70dB to 0dB */ /**<CNcomment: dB����:-70~0*/
 	stGain.s32Gain = volume	;
 	ret=HI_UNF_SND_SetTrackWeight(s_hAudioTrack[playerID], &stGain);
+   
 
 	return WV_SOK;
 }
+
 /********************************************************************************
 
 WV_S32  HIS_AVP_GetVolume(WV_U32 playerID,WV_S32 *pVolume);
@@ -280,6 +282,39 @@ WV_S32  HIS_AVP_GetVolume(WV_U32 playerID,WV_S32 *pVolume)
 	*pVolume = stGain.s32Gain;
 
 	return WV_SOK;
+}
+
+
+/********************************************************************************
+
+WV_S32  HIS_AVP_SetVolume(V_U32 playerID,WV_S32 volume);
+
+********************************************************************************/
+WV_S32  HIS_AVP_SetSampleRate(WV_U32 playerID,WV_U32 rate)
+{
+    return HI_UNF_SND_SetSampleRate  ( 0,  rate); 
+}
+/********************************************************************************
+
+WV_S32  HIS_AVP_SetVolume(V_U32 playerID,WV_S32 volume);
+
+********************************************************************************/
+WV_S32  HIS_AVP_GetSampleRate(WV_U32 playerID,WV_U32 *rate)
+{
+    return HI_UNF_SND_GetSampleRate(0,  rate);
+}
+/********************************************************************************
+
+WV_S32  HIS_AVP_GetStreamInfo(WV_U32 playerID,WV_U32 volBitDepth);
+
+********************************************************************************/
+WV_S32  HIS_AVP_GetStreamInfo(WV_U32 playerID,WV_U32 *volBitDepth)
+{
+    HI_UNF_AVPLAY_STREAM_INFO_S info;
+     HI_UNF_AVPLAY_GetStreamInfo(playerID,&info);
+    *volBitDepth = info.stAudStreamInfo.enBitDepth;
+    return WV_SOK;
+    //return HI_UNF_AVPLAY_GetStreamInfo(HI_HANDLE  hAvplay, HI_UNF_AVPLAY_STREAM_INFO_S *pstStreamInfo);
 }
 
 /********************************************************************************

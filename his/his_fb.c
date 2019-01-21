@@ -197,8 +197,18 @@ WV_S32 HIS_FB_BufDis(HIS_HIFB_DEV_E *pDev)
 }
 
 
-  
-
+/***************************************
+WV_S32  HIS_FB_Reset(); 
+***************************************/
+WV_S32 HIS_FB_Reset(HIS_HIFB_DEV_E *pDev)
+{
+    if (ioctl(pDev->mapped_fd, FBIOPUT_VSCREENINFO, &(pDev->vinfo)) < 0)
+    {
+        WV_ERROR("Unable to set variable screeninfo %s!\n", pDev->name);
+        return WV_EFAIL;
+    }
+    return WV_SOK;
+}
 /***************************************
 WV_S32  HIS_FB_Init(); 
 ***************************************/
@@ -212,6 +222,15 @@ WV_S32 HIS_FB_Init(HIS_HIFB_DEV_E *pDev)
         WV_ERROR("Unable to open %s\n", pDev->name);
         return WV_EFAIL;
     }
+    /*
+        //Determine the current screen depth
+    if (ioctl(pDev->mapped_fd, FBIOGET_VSCREENINFO, &(pDev->vinfo)) < 0)
+    {
+        WV_printf("Couldn't get vscreeninfo %s!\n", pDev->name);
+        ret = WV_EFAIL;
+        goto CLOSEFD;
+    }*/
+    //
     if (ioctl(pDev->mapped_fd, FBIOPUT_VSCREENINFO, &(pDev->vinfo)) < 0)
     {
         WV_ERROR("Unable to set variable screeninfo %s!\n", pDev->name);
@@ -238,6 +257,7 @@ WV_S32 HIS_FB_Init(HIS_HIFB_DEV_E *pDev)
     pDev->screen_stride = pDev->vinfo.xres_virtual * (pDev->vinfo.bits_per_pixel / 8);
     pDev->screen_bufSize = pDev->vinfo.xres * pDev->vinfo.yres * (pDev->vinfo.bits_per_pixel / 8);
     pDev->mapped_phy = (void *)pDev->finfo.smem_start;
+    
     //Determine the current screen depth
     if (ioctl(pDev->mapped_fd, FBIOGET_VSCREENINFO, &(pDev->vinfo)) < 0)
     {

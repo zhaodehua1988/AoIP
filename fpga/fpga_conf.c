@@ -646,29 +646,50 @@ WV_S32 FPGA_CONF_SetTransparency(WV_S32 alpha)
 WV_S32 FPGA_CONF_Resolution(WV_S32 Resolution)
 {
     //resolution
-    WV_U16 data;
+    WV_U16 data=0;
     HIS_SPI_FpgaRd(0x600,&data);
+    
     switch(Resolution)
     {
         case 0://3840*2160 p60
-            data = data | 0x40; //50HZ
-            data = data & 0xfeff; //4K
+            data = data & 0xff;
+            data = data | 0xc00; //60HZ
             HIS_SPI_FpgaWd(0x600,data);
+            HIS_SPI_FpgaWd(0x15,0xcccc);
             break;
         case 1: //3840*2160 p50
-            data = data | 0x40; //60HZ
-            data = data & 0xfeff; //4K
+            data = data & 0xff;
+            data = data | 0xc00; //60HZ
+            //data = data & 0xfdff; //4K
             HIS_SPI_FpgaWd(0x600,data);
+            HIS_SPI_FpgaWd(0x15,0xf0f0);
             break;
         case 2://3840*2160 p30
-            data = data & 0xfbff; //30HZ
-            data = data & 0xfeff; //4K
-            HIS_SPI_FpgaWd(0x600,data);        
+            data =data & 0xff;
+            data =data | 0x800;
+            //data = data & 0xfbff; //30HZ
+            //data = data & 0xfdff; //4K
+            HIS_SPI_FpgaWd(0x600,data); 
+            HIS_SPI_FpgaWd(0x15,0xf0f0);       
             break;
-        case 3: //1920*1080 p60
-            data = data | 0x40; //60HZ
-            data = data & 0xfeff; //1080p
+        case 3: //1920*1080 p60 VSEA
+            data = data & 0xff;
+            data = data | 0x900; //60HZ
+            //data = data & 0xfdff; //1080p
             HIS_SPI_FpgaWd(0x600,data);    
+            HIS_SPI_FpgaWd(0x15,0xf0f0);
+            break;
+        case 4: //1920*1080 i60
+            data = data | 0x900; //60HZ
+            data = data & 0xfdff; //1080p
+            HIS_SPI_FpgaWd(0x600,data); 
+            HIS_SPI_FpgaWd(0x15,0xf0f0);   
+            break;
+        case 5: //1920*1080 i50
+            data = data | 0x900; //60HZ
+            data = data & 0xfdff; //1080p
+            HIS_SPI_FpgaWd(0x600,data); 
+            HIS_SPI_FpgaWd(0x15,0xf0f0);   
             break;
         default:
             break;
@@ -787,8 +808,8 @@ WV_S32 FPGA_CONF_SetCmd(WV_S32 argc, WV_S8 **argv, WV_S8 *prfBuff)
 
         if(argc < 2 ){
             
-            prfBuff += sprintf(prfBuff, "set fpga dis <num>//num(0)4k60 4k50 4k30 1080p60\r\n");
-
+            prfBuff += sprintf(prfBuff, "set fpga dis <num>//num(0)4k60 1<4k50>  2<4k30> 3<1080p60> 4<1080i60> 5<1080i50> 6<1080i30>\r\n");
+            return WV_SOK;
         }
         ret = WV_STR_S2v(argv[1], &data);
 		if (ret != WV_SOK)
@@ -877,13 +898,13 @@ void FPGA_CONF_Init()
     gpFpgaConfDev = (FPGA_CONF_DEV *)malloc(sizeof(FPGA_CONF_DEV));
     memset(gpFpgaConfDev,0,sizeof(FPGA_CONF_DEV));
     
-    HIS_SPI_FpgaWd(0x15,0xff00);
+    //HIS_SPI_FpgaWd(0x15,0xff00);
     //HIS_SPI_FpgaWd(0x12,0x189);
     HIS_SPI_FpgaWd(0x600,0x800);
     HIS_SPI_FpgaWd(0x601,0x0);
     HIS_SPI_FpgaWd(0x602,0x0);
     HIS_SPI_FpgaWd(0x603,0x0);
-    HIS_SPI_FpgaWd(0x605,100);
+    HIS_SPI_FpgaWd(0x605,128);
     
     //HIS_SPI_FpgaWd(0x15,0xff00);
 

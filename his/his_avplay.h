@@ -10,4 +10,7 @@ WV_S32  HIS_AVP_EsOpen(HI_HANDLE *avHandl,HI_UNF_VCODEC_TYPE_E vDecType,WV_U32 p
 WV_S32  HIS_AVP_Close(HI_HANDLE *avHandl,WV_U32 playerID);
 WV_S32  HIS_AVP_SetVolume(WV_U32 playerID,WV_S32 volume);
 WV_S32  HIS_AVP_GetVolume(WV_U32 playerID,WV_S32 *pVolume);
+WV_S32  HIS_AVP_SetSampleRate(WV_U32 playerID,WV_U32 rate);
+WV_S32  HIS_AVP_GetSampleRate(WV_U32 playerID,WV_U32 *rate);
+WV_S32  HIS_AVP_GetStreamInfo(WV_U32 playerID,WV_U32 *volBitDepth);
 #endif

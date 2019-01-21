@@ -182,7 +182,7 @@ WV_S32  HIS_DIS_Init(HI_UNF_ENC_FMT_E disFormat,WV_S32 mode)
         }
      }
 
-	Ret = HI_UNF_DISP_SetVirtualScreen(HI_UNF_DISPLAY1, HIS_FB_VITURE_SCEEN_W, HIS_FB_VITURE_SCEEN_H); 
+	Ret = HI_UNF_DISP_SetVirtualScreen(HI_UNF_DISPLAY1, HIS_FB_VITURE_SCEEN_W, HIS_FB_VITURE_SCEEN_H);//HIS_FB_VITURE_SCEEN_H);//2160);//HIS_FB_VITURE_SCEEN_H); 
     if (Ret != HI_SUCCESS)
     {
         WV_printf("HI_UNF_DISP_SetVirtualScreen failed, Ret=%#x.\n", Ret);
@@ -242,10 +242,6 @@ WV_S32  HIS_DIS_Init(HI_UNF_ENC_FMT_E disFormat,WV_S32 mode)
 			//return Ret;
 		}
 
-	}else{
-        printf("--------set to disFormat=%d\n",disFormat);
-		//HI_UNF_DISP_SetCustomTiming(HI_UNF_DISPLAY1,&custTiming);
-        
 	}
     
      HI_UNF_DISP_TIMING_S  hdmiTims;
@@ -476,9 +472,10 @@ WV_S32  HIS_DIS_SetCustomTiming(WV_U32 mode)
 			custTiming.HBB = 192;//384;192
 			custTiming.HACT= 1920;//1920;//3840;r
 			custTiming.VPW = 10;//5	
+			custTiming.HPW = 88; 
 			custTiming.VertFreq = 30000;
 			custTiming.PixFreq = 297000;//148500;//297000;
-			
+			WV_printf("set resolution 3840*2160 p60\n");
 			break;
 		case 1: //3840*2160 p50
 		  	custTiming.VFB = 8;
@@ -488,9 +485,10 @@ WV_S32  HIS_DIS_SetCustomTiming(WV_U32 mode)
 			custTiming.HBB = 544;//384;192
 			custTiming.HACT= 1920;//1920;//3840;r
 			custTiming.VPW = 10;//5	
+			custTiming.HPW = 88; 
 			custTiming.VertFreq = 30000;
 			custTiming.PixFreq = 297000;//148500;//297000;
-			
+			WV_printf("set resolution 3840*2160 p50\n");
 			break;
 
 		case 2: //3840*2160 p30
@@ -501,28 +499,62 @@ WV_S32  HIS_DIS_SetCustomTiming(WV_U32 mode)
 			custTiming.HBB = 384;
 			custTiming.HACT= 3840;
 			custTiming.VPW = 10;//5	
+			custTiming.HPW = 88; 
 			custTiming.VertFreq = 30000;
-			//custTiming.PixFreq = 297000;	
+			//custTiming.PixFreq = 297000;
+			WV_printf("set resolution 3840*2160 p30\n");	
 			break;
         case 3: //1920*1080 p60
-        ret = HI_UNF_DISP_SetFormat(HI_UNF_DISPLAY1, HI_UNF_ENC_FMT_1080P_60);
-        return ret;
+		  	custTiming.VFB = 4;//8
+			custTiming.VBB = 41; //80
+			custTiming.VACT= 1080;//
+			custTiming.HFB = 88;
+			custTiming.HBB = 192;
+			custTiming.HACT= 1920;
+			custTiming.VPW = 5;//5	
+			custTiming.VertFreq = 60000;
+			custTiming.HPW = 88; 
+			//custTiming.PixFreq = 148500;
+			WV_printf("set resolution 1920*1080 p60\n");
+            break;
+        case 4: //1920*1080 i60 
+            ret = HI_UNF_DISP_SetFormat(HI_UNF_DISPLAY1, HI_UNF_ENC_FMT_1080i_60);             
+            return ret;
+			break; 
+        case 5: //1920*1080 i50 
+            ret = HI_UNF_DISP_SetFormat(HI_UNF_DISPLAY1, HI_UNF_ENC_FMT_1080i_50);             
+            return ret;
+			break; 
+        case 6: //1920*1080 i30
+		  	custTiming.VFB = 4;//8
+			custTiming.VBB = 41; //80
+			custTiming.VACT= 1080;//
+			custTiming.HFB = 88;
+			custTiming.HBB = 192;
+			custTiming.HACT= 1920;
+			custTiming.VPW = 5;//5	
+			custTiming.VertFreq = 30000;
+			custTiming.PixFreq = 148500;
+            custTiming.bInterlace = HI_TRUE;
+            break;
 		default:
 			return -1;	
 	
 	}
-	custTiming.HPW = 88; 
+	
 	custTiming.DataWidth = HI_UNF_DISP_INTF_DATA_WIDTH24; 
 	custTiming.ItfFormat = HI_UNF_DISP_INTF_DATA_FMT_RGB888;
     //custTiming.VertFreq = 60000;
 	
     //custTiming.VertFreq = 30000;
-          
+    ret = HI_UNF_DISP_SetVirtualScreen(HI_UNF_DISPLAY1, HIS_FB_VITURE_SCEEN_W, HIS_FB_VITURE_SCEEN_H);      
+	if(ret != HI_SUCCESS){
+		  WV_printf("HI_UNF_DISP_SetVirtualScreen, Ret=%#x.\n", ret); 
+	}
 	ret = HI_UNF_DISP_SetCustomTiming(HI_UNF_DISPLAY1,&custTiming);
 	if (ret != HI_SUCCESS)
 	 {
 	     WV_printf("HI_UNF_DISP_SetCustomTiming, Ret=%#x.\n", ret); 
-
 	 }
 	return ret;
 
