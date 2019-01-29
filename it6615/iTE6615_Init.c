@@ -184,6 +184,110 @@ void *iTE6615_Proc(void *prm)
     return NULL;
 }
 
+
+/****************************************************************************
+
+WV_S32 iTE6805_GetCmd(WV_S32 argc, WV_S8 **argv,WV_S8 *prfBuff)
+
+****************************************************************************/
+WV_S32 iTE6615_GetCmd(WV_S32 argc, WV_S8 **argv, WV_S8 *prfBuff)
+{
+	WV_U32 regAddr, dataNum;
+	WV_S32 ret=0, i;
+	WV_U8 data;
+	
+	if (argc < 1)
+	{
+
+		prfBuff += sprintf(prfBuff, "get 6615 <cmd> ;cmd like:reg/info\r\n");
+		return 0;
+	}
+
+	if (strcmp(argv[0], "reg") == 0)
+	{
+
+		if (argc < 3)
+		{
+			prfBuff += sprintf(prfBuff, "get 6615 reg <regAddr> <dataNum>\r\n");
+		}
+		ret = WV_STR_S2v(argv[1], &regAddr);
+		if (ret != WV_SOK)
+		{
+			prfBuff += sprintf(prfBuff, "input erro!\r\n");
+			return WV_SOK;
+		}
+		ret = WV_STR_S2v(argv[2], &dataNum);
+		if (ret != WV_SOK)
+		{
+			prfBuff += sprintf(prfBuff, "input erro!\r\n");
+			return WV_SOK;
+		}
+		//get bank num
+		WV_U8 bank = (regAddr>>8) && 0x3;
+		printf("bank = %d \n",bank);
+		PCA9548_IIC_Read(PCA9548A_IIC_SWID_6615_HDMI_OUT, ADDR_HDMITX, 0xf, &data);
+		data = data | bank;
+		ret = PCA9548_IIC_Write(PCA9548A_IIC_SWID_6615_HDMI_OUT, ADDR_HDMITX, 0xf, data);
+		if (ret != 0)
+			return WV_SOK;
+		for (i = 0; i < dataNum; i++)
+		{
+			PCA9548_IIC_Read(PCA9548A_IIC_SWID_6615_HDMI_OUT, ADDR_HDMITX, regAddr + i, &data);
+			prfBuff += sprintf(prfBuff, "get 0x%X = 0x%X\r\n", regAddr + i, data);
+		}
+	}
+	
+	
+
+	return WV_SOK;
+}
+
+/****************************************************************************
+
+WV_S32 iTE6805_SetCmd(WV_S32 argc, WV_S8 **argv,WV_S8 *prfBuff)
+
+****************************************************************************/
+WV_S32 iTE6615_SetCmd(WV_S32 argc, WV_S8 **argv, WV_S8 *prfBuff)
+{
+	WV_U32 cmd, regAddr, data;
+	WV_S32 ret;
+	if (argc < 1)
+	{
+
+		prfBuff += sprintf(prfBuff, "set 6805 <cmd>;//cmd like: reg/mode/\r\n");
+		return 0;
+	}
+	//设置寄存器
+	if (strcmp(argv[0], "reg") == 0)
+	{
+		if (argc < 3)
+		{
+			prfBuff += sprintf(prfBuff, "set 6805 reg <regAddr> <data>\r\n");
+			return 0;
+		}
+
+		ret = WV_STR_S2v(argv[1], &regAddr);
+		if (ret != WV_SOK)
+		{
+			prfBuff += sprintf(prfBuff, "input erro!\r\n");
+			return WV_SOK;
+		}
+		ret = WV_STR_S2v(argv[2], &data);
+		if (ret != WV_SOK)
+		{
+			prfBuff += sprintf(prfBuff, "input erro!\r\n");
+			return WV_SOK;
+		}
+		PCA9548_IIC_Write(PCA9548A_IIC_SWID_6615_HDMI_OUT, ADDR_HDMITX, (WV_U8)regAddr, (WV_U8)data);
+		prfBuff += sprintf(prfBuff, "set 0x%X = 0x%X\r\n", regAddr, data);
+	}else
+	{
+		prfBuff += sprintf(prfBuff, "input erro!\r\n");
+	}
+
+	return WV_SOK;
+}
+
 /************************************************************
  * void ITE6615_Close()
  * *********************************************************/
@@ -196,6 +300,9 @@ void ITE6615_Open()
     PCA9555_Set(PCA9555_OUT_PORT0_REG, PCA9555_PIN_P02);
     sleep(1);
     iTE6615_INIT_Chip();
+
+    WV_CMD_Register("set", "6615", "pca9555 set reg", iTE6615_SetCmd);
+    WV_CMD_Register("get", "6615", "pca9555 get reg", iTE6615_GetCmd); 
 
     WV_THR_Create(&gITE6615Dev.thrHndl, iTE6615_Proc, WV_THR_PRI_DEFAULT, WV_THR_STACK_SIZE_DEFAULT, &gITE6615Dev);
     printf("ite6615 init end \n");

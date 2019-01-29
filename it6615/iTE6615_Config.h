@@ -90,7 +90,7 @@
 #define AUDIO_TYPE      LPCM    // LPCM, NLPCM, DSD, HBR
 #define AUDIO_SELECT    I2S     // I2S or SPDIF
     // I2S Option
-    #define I2S_WORD_LENGTH         3       //  0: 16 bits, 1: 18 bits, 2: 20 bits, 3: 24 bits
+    #define I2S_WORD_LENGTH         0       //  0: 16 bits, 1: 18 bits, 2: 20 bits, 3: 24 bits
     #define I2S_FMT_0               1       //  0: standard I2s, 1 : 32-bit I2s
     #define I2S_FMT_1               0       //  0: Left-justified, 1: Right-justified
     #define I2S_FMT_2               0       //  0: Data delay 1T correspond to WS, // 1: No data delay correspond to WS

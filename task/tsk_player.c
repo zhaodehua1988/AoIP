@@ -240,7 +240,6 @@ WV_S32 TSK_Player_SetVolCmd(WV_S32 argc, WV_S8 **argv, WV_S8 *prfBuff)
         HIS_AVP_SetVolume(0,data);
     }
 
-
     return WV_SOK;
 
 }

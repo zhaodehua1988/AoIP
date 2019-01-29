@@ -112,7 +112,7 @@ WV_S32 FPGA_CONF_WinAnalysisJson(char *json,FPGA_CONF_WIN_T *gWin)
 	if(root){
 		//enaJson = cJSON_GetObjectItem( root, "ena");
 		//ena = enaJson->valueint;
-		printf("success=%d\n",cJSON_GetObjectItem( root, "success")->valueint);
+		//printf("success=%d\n",cJSON_GetObjectItem( root, "success")->valueint);
 		dataJson = cJSON_GetObjectItem( root, "data");
 		winJson = cJSON_GetObjectItem( dataJson, "win");
 		if(winJson != NULL){
@@ -128,6 +128,7 @@ WV_S32 FPGA_CONF_WinAnalysisJson(char *json,FPGA_CONF_WIN_T *gWin)
 				gWin[i].h = cJSON_GetObjectItem( client_list , "h")->valueint;
 	
 				sprintf(gWin[i].type,"%s",cJSON_GetObjectItem( client_list , "type")->valuestring);
+				//printf("win[%d]type=%s",i,gWin[i].type);
 				gWin[i].channel = cJSON_GetObjectItem( client_list , "channel")->valueint;
 				
 				gWin[i].video_ipv6_ena = cJSON_GetObjectItem( client_list , "videoIpv6Ena")->valueint;

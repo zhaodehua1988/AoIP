@@ -95,7 +95,6 @@ WV_S32  HIS_DIS_StartCast(HI_HANDLE handlCast)
 WV_S32  HIS_DIS_EndCast(HI_HANDLE handlCast)
 
 **********************************************************************************************/
-
 WV_S32  HIS_DIS_EndCast(HI_HANDLE handlCast)
 {
    WV_S32 ret =0;
@@ -519,11 +518,9 @@ WV_S32  HIS_DIS_SetCustomTiming(WV_U32 mode)
             break;
         case 4: //1920*1080 i60 
             ret = HI_UNF_DISP_SetFormat(HI_UNF_DISPLAY1, HI_UNF_ENC_FMT_1080i_60);             
-            return ret;
 			break; 
         case 5: //1920*1080 i50 
             ret = HI_UNF_DISP_SetFormat(HI_UNF_DISPLAY1, HI_UNF_ENC_FMT_1080i_50);             
-            return ret;
 			break; 
         case 6: //1920*1080 i30
 		  	custTiming.VFB = 4;//8
@@ -537,6 +534,9 @@ WV_S32  HIS_DIS_SetCustomTiming(WV_U32 mode)
 			custTiming.PixFreq = 148500;
             custTiming.bInterlace = HI_TRUE;
             break;
+		case 7: //1920*1080  p30
+ 			ret = HI_UNF_DISP_SetFormat(HI_UNF_DISPLAY1, HI_UNF_ENC_FMT_1080P_30);   
+			break;
 		default:
 			return -1;	
 	

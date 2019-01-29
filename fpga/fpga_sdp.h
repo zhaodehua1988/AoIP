@@ -90,7 +90,7 @@ typedef struct FPGA_SDP_Info{
     unsigned short video_pt;
     unsigned short audio_pt;
     unsigned short audio_depth;
-    char audio_chl[64];
+    char audio_chl[128];
 
 }FPGA_SDP_Info;
 struct sdp_payload *sdp_parse(const char *payload);
@@ -99,5 +99,5 @@ void sdp_dump(struct sdp_payload *sdp);
 
 char *sdp_get_attr(char **attr, size_t nattr, char *key);
 int sdp_has_flag_attr(char **attr, size_t nattr, char *flag);
-int FPGA_SDP_SetInfo(FPGA_SDP_Info *pSetInfo,WV_U16 type,WV_U16 eth, WV_U16 channel);
+int FPGA_SDP_SetInfo(FPGA_SDP_Info *pSetInfo,WV_U16 eth, WV_U16 channel);
 #endif

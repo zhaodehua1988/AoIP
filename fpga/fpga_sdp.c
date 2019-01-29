@@ -6,7 +6,7 @@
 #include "fpga_sdp.h"
 #include "his_spi.h"
 
-#define FPGA_CONF_DEBUG
+//#define FPGA_SDP_DEBUG
 static char *load_next_entry(char *p, char *key, char **value)
 {
     char *endl;
@@ -678,6 +678,75 @@ int FPGA_SDP_GetInfo(struct sdp_payload *sdp, FPGA_SDP_Info *pGetInfo)
 
     return 0;
 }
+
+/**********************************************************
+ * int strstr_cnt(const char *string ,const char *substring)
+ * 查询某个字符串在另外一个字符串中出现的次数
+**********************************************************/
+int strstr_cnt(const char *string ,const char *substring)
+{
+
+     int i,j,k,count=0;
+     for(i=0;string[i];i++){
+        for(j=i,k=0;string[j]==substring[k];j++,k++){
+            if(j==strlen(string) ) break;
+        
+            if(!substring[k+1]){
+                count++;
+            }
+        }
+        
+     }
+
+     return(count);
+}
+/**********************************************************
+ * int fpga_sdp_getAudioChlNum(char *pAudioChlIn)
+ * 查询sdp音频声道数量
+**********************************************************/
+int fpga_sdp_getAudioChlNum(char *pAudioChlIn)
+{
+    //printf();
+    //audiochl = "ST,51"
+    int chlNum = 0;
+    int undefinedChl=0,i=0;
+    int M=0,DM=0,ST=0,LtRt=0,_51=0,_71=0,_222=0,SGRP=0,U=0;
+    M    = strstr_cnt(pAudioChlIn,"M")-strstr_cnt(pAudioChlIn,"DM");
+    DM   = strstr_cnt(pAudioChlIn,"DM")*2;
+    ST   = strstr_cnt(pAudioChlIn,"ST")*2;
+    LtRt = strstr_cnt(pAudioChlIn,"LtRt")*2;
+    _51  = strstr_cnt(pAudioChlIn,"51")*6;
+    _71  = strstr_cnt(pAudioChlIn,"71")*8;
+    _222 = strstr_cnt(pAudioChlIn,"222")*24;
+    SGRP = strstr_cnt(pAudioChlIn,"SGRP")*4;
+
+    undefinedChl=strstr_cnt(pAudioChlIn,"U");
+    
+    char *p=strstr(pAudioChlIn,"U");
+
+    for(i=0;i<undefinedChl;i++)
+    {
+
+        if(strlen(p)>=3)
+        {
+            int num;
+            if (sscanf(&p[1], "%d", &num) != 1)
+            {
+                //printf("can not get the item(%s) val(uint)\n", pItem);
+                return -1;
+            }else{
+                //printf("U%02d = %d |",num,num);
+                U+=num;
+            }            
+        }
+
+    }
+    chlNum=M + DM + ST + LtRt + _51 + _71 +_222 + SGRP + U;
+ #ifdef FPGA_SDP_DEBUG   
+    printf("\r\nchlNum=%d,M=%d, DM=%d, ST=%d, LtRt=%d, 51=%d, 71=%d, 222=%d,SGPR=%d,U=%d\n",chlNum,M,DM,ST,LtRt,_51,_71,_222,SGRP,U);
+#endif
+    return chlNum;
+}
 /**********************************************************************************
  * int FPGA_SDP_SetInfo(FPGA_SDP_Info *pSetInfo,unsigned short eth,unsigned short channel)
  * 功能：配置网络接收的sdp信息
@@ -687,7 +756,7 @@ int FPGA_SDP_GetInfo(struct sdp_payload *sdp, FPGA_SDP_Info *pGetInfo)
  * eth:网卡id【0～3】
  * channel:第几个ip地址
  * *******************************************************************************/
-int FPGA_SDP_SetInfo(FPGA_SDP_Info *pSetInfo,WV_U16 type,WV_U16 eth, WV_U16 channel)
+int FPGA_SDP_SetInfo(FPGA_SDP_Info *pSetInfo,WV_U16 eth, WV_U16 channel)
 {
     WV_S32 ret=0;
     WV_U16 baseAddr; 
@@ -821,36 +890,47 @@ int FPGA_SDP_SetInfo(FPGA_SDP_Info *pSetInfo,WV_U16 type,WV_U16 eth, WV_U16 chan
     5               71              8                   7.1 Surround            L, R, C, LFE, Lss, Rss, Lrs, Rrs
     6               222             24                  22.2 Surround           Order shall be per SMPTE ST 2036-2,
     7               SGRP            4                   One SDI audio group     1 , 2, 3, 4
-
     */
    //audio chl 因为fpga文档没有更新，暂时保留
 
+    WV_S32 chl=fpga_sdp_getAudioChlNum(pSetInfo->audio_chl);
+
+    audioInfo = 0xff & chl;
    //audio_depth
    if(8 == pSetInfo->audio_depth){
-       audioInfo |= 0x0 << 6;
+       audioInfo |= 0x0 << 8;
    }else if(16 == pSetInfo->audio_depth){
-       audioInfo |= 0x1 << 6;
+       audioInfo |= 0x1 << 8;
    }else{
-       audioInfo |= 0x0 << 6;
+       audioInfo |= 0x0 << 8;
    }
     /****************video width /hight***********************************************/
     videoWidth = pSetInfo->video_width;
     videoHight = pSetInfo->video_height;
-
+    //avPt
+    avPt = (pSetInfo->video_pt << 8) | (pSetInfo->audio_pt & 0xff);
     baseAddr = 0x100;
-    regAddr = ((baseAddr >> 2) + eth) << 2;
-    //printf("sdp reg addr = %d \n",regAddr);
+    regAddr = ((baseAddr >> 8) + eth) << 8;
+
     ret+=HIS_SPI_FpgaWd(regAddr + 0x46 +channel*5,videoInfo);
     ret+=HIS_SPI_FpgaWd(regAddr + 0x47 +channel*5,videoWidth);
     ret+=HIS_SPI_FpgaWd(regAddr + 0x48 +channel*5,videoHight);
     ret+=HIS_SPI_FpgaWd(regAddr + 0x49 +channel*5,avPt);
     ret+=HIS_SPI_FpgaWd(regAddr + 0x4a +channel*5,audioInfo);
+
+
     if(ret != 0 ){
         WV_printf("set sdp info err \n");
     }
+
 #ifdef FPGA_SDP_DEBUG
-
-
+    printf("--------------sdp---------------------------\n");
+    printf("set spi  0x%04x  0x%04x\n",regAddr + 0x46 +channel*5,videoInfo);
+    printf("set spi  0x%04x  0x%04x\n",regAddr + 0x47 +channel*5,videoWidth);
+    printf("set spi  0x%04x  0x%04x\n",regAddr + 0x48 +channel*5,videoHight);
+    printf("set spi  0x%04x  0x%04x\n",regAddr + 0x49 +channel*5,avPt);
+    printf("set spi  0x%04x  0x%04x\n",regAddr + 0x4a +channel*5,audioInfo);
+    
 #endif
     return ret;
 

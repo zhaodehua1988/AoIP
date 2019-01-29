@@ -62,15 +62,90 @@ typedef struct FPGA_CONF_DEV
 
 } FPGA_CONF_DEV;
 
+//查询fpga版本号
+WV_S32 FPGA_CONF_GetVersion(WV_S8 *pFpgaVer);
 
-WV_S32 FPGA_CONF_SetWin(FPGA_CONF_WIN_T *pWin);
-WV_S32 FPGA_CONF_GetWin(FPGA_CONF_WIN_T *pWin);
+//设置16个窗口的信息，必须时一次设置16个窗口
+WV_S32 FPGA_CONF_SetWin(FPGA_CONF_WIN_T winArray[]);
+//查询16个窗口的信息
+WV_S32 FPGA_CONF_GetWin(FPGA_CONF_WIN_T winArray[]);
 
+//WV_S32 FPGA_CONF_SetWin(FPGA_CONF_WIN_T *pWin);
+//WV_S32 FPGA_CONF_GetWin(FPGA_CONF_WIN_T *pWin);
+
+//设置fpga万兆网卡信息
 WV_S32 FPGA_CONF_SetETH(FPGA_CONF_ETH_T *pEth,WV_S32 ethID);
+//查询fpga万兆网卡信息
 WV_S32 FPGA_CONF_GetETH(FPGA_CONF_ETH_T *pEth,WV_S32 ethID);
 
-WV_S32 FPGA_CONF_GetVersion(WV_S8 *pFpgaVer);
-WV_S32 FPGA_CONF_Resolution(WV_S32 Resolution); //Resolution:0 4k60;    1 4k50;     2 4k30;    3 1080p
+/*************************************************************
+ * WV_S32 FPGA_CONF_Resolution(WV_S32 resolution);
+ * 函数说明:设置视频输出参数(分辨率，输出色位宽，色彩空间)
+ * 参数说明:
+ *     Resolution(分辨率):     0 4k60;    1 4k50;     2 4k30;    3 1080p   其他:不支持
+ *     colorDepth(输出色位宽):  0 8bit;    1 10bit;    其他:不支持
+ *     colorSpace(色彩空间):    0 709;     1 2020;     其他:不支持
+ * 返回值： 0代表成功，其他代表失败      
+*************************************************************/
+WV_S32 FPGA_CONF_Resolution(WV_S32 resolution);
+
+/**************************************************************************
+ * WV_S32 FPGA_CONF_SetOutPutDisColorDepth(WV_S32 colorDepth,WV_S32 colorSpace);
+ * 函数说明:设置输出颜色位宽
+ * 参数说明:
+ *     colorDepth(输出色位宽):  0 10bit;    1 8bit;    其他:不支持
+ * ************************************************************************/
+void FPGA_CONF_SetOutPutDisColorDepth(WV_S32 colorDepth);
+
+
+/**************************************************************************
+ * WV_S32 FPGA_CONF_SetOutPutDiscolorSpace(WV_S32 colorDepth,WV_S32 colorSpace);
+ * 函数说明:设置输出色彩空间
+ * 参数说明:
+ *     colorSpace(色彩空间):    0 709;     1 2020;     其他:不支持
+ * ************************************************************************/
+void FPGA_CONF_SetOutPutDisColorSpace(WV_S32 colorSpace);
+
+
+/**************************************************************************
+ * WV_S32 FPGA_CONF_SetOutPutDisColorInfo(WV_S32 colorDepth,WV_S32 colorSpace);
+ * 函数说明:设置输出颜色位宽和色彩空间
+ * 参数说明:
+ *     colorDepth(输出色位宽):  0 10bit;    1 8bit;    其他:不支持
+ * ************************************************************************/
+void FPGA_CONF_SetOutPutDisColorInfo(WV_S32 colorDepth);
+
+
+/*************************************************************
+ * void FPGA_CONF_SetOutPutAudioSel(WV_S32 audioSel，WV_S32 audioChl);
+ * 函数说明:设置音频输出参数(选通哪一路窗口)
+ * 参数说明:
+ *    audioSel(选择哪个窗口): 取值范围[0~15]
+ *    audioChl(选择第几个声道输出)  :声道信息来自该窗口查询的sdp信息的audiochl
+ *        例如" M,M,ST,51"，选择51声道 audioChl=3
+ * ***********************************************************/
+void FPGA_CONF_SetOutPutAudioSel(WV_S32 audioSel,WV_S32 audioChl);
+
+
+/*****************************************************************
+ * void FPGA_CONF_SetOutPutVolume(WV_S32 volume);
+ * 函数说明:设置输音量大小
+ * 参数说明:
+ *     volume(输出音量):取值范围[0~100],0静音，100最大
+ * ***************************************************************/
+void FPGA_CONF_SetOutPutVolume(WV_S32 volume);
+
+
+
+/*****************************************************************
+ * void FPGA_CONF_SetDisAlpha(WV_S32 alpha);
+ * 函数说明:设置输出显示音量等信息的透明度
+ * 参数说明:
+ *     alpha(显示信息叠加透明度):取值范围[0~128],0是完全透明，128时完全显示
+ * ***************************************************************/
+void FPGA_CONF_SetDisAlpha(WV_S32 alpha);
+
+
 
 void FPGA_CONF_Init();
 void FPGA_CONF_DeInit();

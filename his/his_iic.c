@@ -28,20 +28,6 @@ WV_S32 HIS_IIC_GetReg(WV_S32 argc, WV_S8 **argv, WV_S8 *prfBuff)
   WV_U8 buf[255] = {0};
   WV_S32 ret, i;
 
-  if(argc == 1){
-    WV_U8 data=0;
-    prfBuff += sprintf(prfBuff, "get iic dev\r\n");
-    for(i=0;i<255;i++)
-    {
-      //ret = HI_UNF_I2C_Read(2, i, 0x0, 1, buf, 1);
-      ret = HIS_IIC_Read(2, i, 0, &data);
-      if(ret == 0){
-        prfBuff += sprintf(prfBuff, "devAddr=0x%02x,reg0x0=0x%02x\r\n",i,data);
-      }
-    }
-      return 0;
-  }
-
   if (argc < 5)
   {
     prfBuff += sprintf(prfBuff, "get iic <BusId> <DevAddr> <RegAddr> <addrcnt>  <dataLen>\r\n");
