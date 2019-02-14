@@ -254,7 +254,7 @@ WV_S32 iTE6615_SetCmd(WV_S32 argc, WV_S8 **argv, WV_S8 *prfBuff)
 	if (argc < 1)
 	{
 
-		prfBuff += sprintf(prfBuff, "set 6805 <cmd>;//cmd like: reg/mode/\r\n");
+		prfBuff += sprintf(prfBuff, "set 6615 <cmd>;//cmd like: reg/exit\r\n");
 		return 0;
 	}
 	//设置寄存器
@@ -280,9 +280,10 @@ WV_S32 iTE6615_SetCmd(WV_S32 argc, WV_S8 **argv, WV_S8 *prfBuff)
 		}
 		PCA9548_IIC_Write(PCA9548A_IIC_SWID_6615_HDMI_OUT, ADDR_HDMITX, (WV_U8)regAddr, (WV_U8)data);
 		prfBuff += sprintf(prfBuff, "set 0x%X = 0x%X\r\n", regAddr, data);
-	}else
+	}else if(strcmp(argv[0], "exit") == 0)
 	{
-		prfBuff += sprintf(prfBuff, "input erro!\r\n");
+        ITE6615_Close();
+		prfBuff += sprintf(prfBuff, "6615 exit!\r\n");
 	}
 
 	return WV_SOK;
@@ -294,7 +295,7 @@ WV_S32 iTE6615_SetCmd(WV_S32 argc, WV_S8 **argv, WV_S8 *prfBuff)
 void ITE6615_Open()
 {
 
-    printf("6615 init start 1.....\n");
+    printf("6615 init start .....\n");
     PCA9555_Clr(PCA9555_OUT_PORT0_REG, PCA9555_PIN_P02);
     sleep(1);
     PCA9555_Set(PCA9555_OUT_PORT0_REG, PCA9555_PIN_P02);
@@ -320,5 +321,5 @@ void ITE6615_Close()
             ;
         WV_THR_Destroy(&gITE6615Dev.thrHndl);
     }
-    printf("ite68051 deinit ok..");
+    printf("ite6615 deinit ok..");
 }

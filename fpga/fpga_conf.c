@@ -408,7 +408,10 @@ WV_S32 FPGA_CONF_SetWin(FPGA_CONF_WIN_T winArray[])
 
     WV_S32 i, ret = 0;
     WV_U16 baseAddr = 0x0500;
-    WV_U16 regAddr,winEna=0;
+    WV_U16 regAddr,winEna=0,reg12;
+    //HIS_SPI_FpgaRd(0x12,&reg12);
+    //HIS_SPI_FpgaWd(0x12,0);
+    //HIS_SPI_FpgaWd(0x604,0);
     //set src ip
     ret +=fpga_conf_SetWinIpAndSdp(winArray);
     //设置窗口位置信息
@@ -425,7 +428,7 @@ WV_S32 FPGA_CONF_SetWin(FPGA_CONF_WIN_T winArray[])
     }
     //设置窗口使能
     ret +=fpga_conf_DisChangeEna(winEna);
-   
+    
     if(ret == 0){
         FPGA_printf("set windows ok \n");
         memcpy(gpFpgaConfDev->win,winArray,sizeof(FPGA_CONF_WIN_T)*FPGA_CONF_WINNUM_D);
@@ -433,7 +436,7 @@ WV_S32 FPGA_CONF_SetWin(FPGA_CONF_WIN_T winArray[])
     }else{
         WV_ERROR("FPGA_CONF_SetWin err\n");
     }
-    
+    HIS_SPI_FpgaWd(0x12,reg12);
     return ret;
 }
 
@@ -663,46 +666,73 @@ WV_S32 FPGA_CONF_Resolution(WV_S32 resolution)
 {
     //resolution
     WV_U16 data=0;
+    WV_U16 winEna=0;
     HIS_SPI_FpgaRd(0x600,&data);
+    HIS_SPI_FpgaRd(0x604,&winEna);
     WV_printf("resolution = %d \n",resolution);
     switch(resolution)
     {
         case 0://3840*2160 p60
             data &= 0xff;
             data |= 0xc00; //60HZ
+            //HIS_SPI_FpgaWd(0x12,0);
+            //HIS_SPI_FpgaWd(0x604,0);
+            HIS_SPI_FpgaWd(0x15,0xcccc);            
             HIS_SPI_FpgaWd(0x600,data);
             HIS_SPI_FpgaWd(0x15,0xcccc);
+            HIS_SPI_FpgaWd(0x12,0x20b);
+            //HIS_SPI_FpgaWd(0x604,winEna);
             break;
         case 1: //3840*2160 p50
             data = data & 0xff;
             data = data | 0xc00; //60HZ
+            //HIS_SPI_FpgaWd(0x12,0);
+            //HIS_SPI_FpgaWd(0x604,0);
             HIS_SPI_FpgaWd(0x600,data);
             HIS_SPI_FpgaWd(0x15,0xf0f0);
+            HIS_SPI_FpgaWd(0x12,0x20b);
+            //HIS_SPI_FpgaWd(0x604,winEna);
             break;
         case 2://3840*2160 p30
             data =data & 0xff;
             data =data | 0x800;
+            //HIS_SPI_FpgaWd(0x12,0);
+            //HIS_SPI_FpgaWd(0x604,0);
             HIS_SPI_FpgaWd(0x600,data); 
-            HIS_SPI_FpgaWd(0x15,0xf0f0);       
+            HIS_SPI_FpgaWd(0x15,0xf0f0);   
+            HIS_SPI_FpgaWd(0x12,0x0b);    
+            //HIS_SPI_FpgaWd(0x604,winEna);
             break;
         case 3: //1920*1080 p60 VSEA
             data = data & 0xff;
             data = data | 0x900; //60HZ
             //data = data & 0xfdff; //1080p
+            //HIS_SPI_FpgaWd(0x12,0);
+            //HIS_SPI_FpgaWd(0x604,0);
             HIS_SPI_FpgaWd(0x600,data);    
             HIS_SPI_FpgaWd(0x15,0xf0f0);
+            HIS_SPI_FpgaWd(0x12,0x0b);
+            //HIS_SPI_FpgaWd(0x604,winEna);
             break;
         case 4: //1920*1080 i60
+            //HIS_SPI_FpgaWd(0x12,0);
+            //HIS_SPI_FpgaWd(0x604,0);
             data = data | 0x900; //60HZ
             data = data & 0xfdff; //1080p
             HIS_SPI_FpgaWd(0x600,data); 
-            HIS_SPI_FpgaWd(0x15,0xf0f0);   
+            HIS_SPI_FpgaWd(0x15,0xf0f0);  
+            HIS_SPI_FpgaWd(0x12,0x0b); 
+            //HIS_SPI_FpgaWd(0x604,winEna);
             break;
         case 5: //1920*1080 i50
             data = data | 0x900; //60HZ
             data = data & 0xfdff; //1080p
+            //HIS_SPI_FpgaWd(0x12,0);
+            //HIS_SPI_FpgaWd(0x604,0);
             HIS_SPI_FpgaWd(0x600,data); 
-            HIS_SPI_FpgaWd(0x15,0xf0f0);   
+            HIS_SPI_FpgaWd(0x15,0xf0f0);  
+            HIS_SPI_FpgaWd(0x12,0x0b); 
+            //HIS_SPI_FpgaWd(0x604,winEna);
             break;
         default:
             break;

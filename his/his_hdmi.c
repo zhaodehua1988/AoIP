@@ -121,7 +121,29 @@ HI_VOID HIS_HDMI_CallBack(HI_UNF_HDMI_EVENT_TYPE_E event, HI_VOID *pPrivateData)
 WV_S32  HIS_HDMI_Init(HI_UNF_ENC_FMT_E disFormat)
 
 **********************************************************************************************/
+WV_S32  HIS_HDMI_SetCmd(WV_S32 argc, WV_S8 **argv, WV_S8 *prfBuff)
+{
+    if (argc < 1)
+    {
+        prfBuff += sprintf(prfBuff, "set hdmi <cmd>;//cmd like: start/stop\r\n");
+        return 0;
+    }
 
+    if(strcmp(argv[0], "start") == 0 ){
+        HI_UNF_HDMI_Start(HI_UNF_HDMI_ID_0);
+
+    }else if(strcmp(argv[0], "stop") == 0 ){
+        HI_UNF_HDMI_Stop(HI_UNF_HDMI_ID_0);
+    }
+
+    return WV_SOK;
+}
+
+/**********************************************************************************************
+
+WV_S32  HIS_HDMI_Init(HI_UNF_ENC_FMT_E disFormat)
+
+**********************************************************************************************/
 WV_S32  HIS_HDMI_Init(HI_UNF_ENC_FMT_E hdmiFormat)
 {
     
@@ -200,11 +222,13 @@ WV_S32  HIS_HDMI_Init(HI_UNF_ENC_FMT_E hdmiFormat)
     {
         WV_printf("HI_UNF_HDMI_Start:%#x\n",Ret);
         HI_UNF_HDMI_Close(enHDMIId);
-	HI_UNF_HDMI_UnRegCallbackFunc(enHDMIId, &g_stCallbackFunc);;
+	    HI_UNF_HDMI_UnRegCallbackFunc(enHDMIId, &g_stCallbackFunc);;
         HI_UNF_HDMI_DeInit();
         return HI_FAILURE;
     } 
     
+    WV_CMD_Register("set", "hdmi", "set hdmi ", HIS_HDMI_SetCmd);
+
    return WV_SOK; 
 }
 
@@ -214,7 +238,6 @@ WV_S32  HIS_HDMI_Init(HI_UNF_ENC_FMT_E hdmiFormat)
 WV_S32  HIS_HDMI_DeInit()
 
 **********************************************************************************************/
-
 WV_S32  HIS_HDMI_DeInit()
 {
  
@@ -232,4 +255,5 @@ WV_S32  HIS_HDMI_DeInit()
     return WV_SOK;
  
 }
+
 

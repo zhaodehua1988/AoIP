@@ -122,7 +122,7 @@ void FPGA_CONF_SetOutPutDisColorInfo(WV_S32 colorDepth);
  * 参数说明:
  *    audioSel(选择哪个窗口): 取值范围[0~15]
  *    audioChl(选择第几个声道输出)  :声道信息来自该窗口查询的sdp信息的audiochl
- *        例如" M,M,ST,51"，选择51声道 audioChl=3
+ *        例如"M,M,ST,51"，选择51声道 audioChl=3
  * ***********************************************************/
 void FPGA_CONF_SetOutPutAudioSel(WV_S32 audioSel,WV_S32 audioChl);
 

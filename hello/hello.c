@@ -34,10 +34,8 @@ WV_S32 main()
 	WV_TTY_Create();
 	WV_TEL_Open();
 	HIS_SYS_Init();
-	//SYS_DATE_Init();
 	SYS_IP_Init();
 
-	
 #ifdef HELLO_DEBUG
 	PCA9548_Init();
 	PCA9555_Init();
@@ -50,7 +48,6 @@ WV_S32 main()
 	ITE6615_Open();
 
 	//TI1297_Init();
-	//TSK_FPGA_Open();
 	TSK_GO_Open();
 #endif
 	//system("./MultiViewer > /dev/null");
@@ -64,7 +61,6 @@ WV_S32 main()
 	}
 #ifdef HELLO_DEBUG
 	TSK_GO_Close();
-	//TSK_FPGA_Close();
 	ITE6615_Close();
 	ITE6805_Close();
 	TSK_PLAYER_Close();
@@ -72,7 +68,6 @@ WV_S32 main()
 #endif
 
 	SYS_IP_DeInit();
-	//SYS_DATE_DeInit();
 	HIS_SYS_DeInit();
 	WV_TEL_Close();
 	WV_TTY_Destroy();
