@@ -22,11 +22,9 @@ typedef struct FPGA_CONF_WIN
     WV_S8 type[16];  //"eth" /"sdi" /"hdmi"
     WV_U16 channel;  //代表第几路输入
     WV_U16 video_ipv6_ena;  //0 ipv4;  1 ipv6;
-    //WV_U16 video_sel_in; //根据video_type 类别选择不同输入源的某一路输入网卡/SDI 
     WV_S8  video_ip[FPGA_CONF_IPLEN]; 
     WV_U16 video_port;   
     WV_U16 audio_ipv6_ena;//0 ipv4;1 ipv6
-    //WV_U16 audio_sel_in; //根据video_type 类别选择不同输入源的某一路输入网卡/SDI 
     WV_S8  audio_ip[FPGA_CONF_IPLEN];
     WV_U16 audio_port;
     WV_U16 sdp_ena;   //sdp是否有效
@@ -120,22 +118,20 @@ void FPGA_CONF_SetOutPutDisColorInfo(WV_S32 colorDepth);
  * void FPGA_CONF_SetOutPutAudioSel(WV_S32 audioSel，WV_S32 audioChl);
  * 函数说明:设置音频输出参数(选通哪一路窗口)
  * 参数说明:
- *    audioSel(选择哪个窗口): 取值范围[0~15]
+ *    winID(选择哪个窗口): 取值范围[0~15]
  *    audioChl(选择第几个声道输出)  :声道信息来自该窗口查询的sdp信息的audiochl
  *        例如"M,M,ST,51"，选择51声道 audioChl=3
  * ***********************************************************/
-void FPGA_CONF_SetOutPutAudioSel(WV_S32 audioSel,WV_S32 audioChl);
+void FPGA_CONF_SetOutPutAudioSel(WV_S32 winID,WV_S32 audioChl);
 
 
 /*****************************************************************
  * void FPGA_CONF_SetOutPutVolume(WV_S32 volume);
- * 函数说明:设置输音量大小
+ * 函数说明:设置输音量放大倍数
  * 参数说明:
- *     volume(输出音量):取值范围[0~100],0静音，100最大
+ *     volume(输出音量):取值范围[0~15],0静音，最大支持15倍放大
  * ***************************************************************/
 void FPGA_CONF_SetOutPutVolume(WV_S32 volume);
-
-
 
 /*****************************************************************
  * void FPGA_CONF_SetDisAlpha(WV_S32 alpha);
@@ -145,7 +141,28 @@ void FPGA_CONF_SetOutPutVolume(WV_S32 volume);
  * ***************************************************************/
 void FPGA_CONF_SetDisAlpha(WV_S32 alpha);
 
+/*****************************************************************
+ * WV_S32 FPGA_CONF_GetSdpInfo(WV_S32 winID,FPGA_SDP_Info *pSdpInfoOut);
+ * 函数说明:获取窗口的sdp信息
+ * 参数说明:
+ *    winID 窗口ID
+ *    pSdpInfoOut 获取到的sdp信息
+ * 返回值 0:代表获取sdp信息成功
+ *      -1:获取sdp信息失败
+ * ***************************************************************/
+WV_S32 FPGA_CONF_GetSdpInfo(WV_S32 winID,FPGA_SDP_Info *pSdpInfoOut);
 
+
+/*****************************************************************
+ * WV_S32 FPGA_CONF_SetSdpInfo(WV_S32 winID,FPGA_SDP_Info *pSdpInfoIn);
+ * 函数说明:设置窗口的sdp信息
+ * 参数说明:
+ *    winID 窗口ID
+ *    pSdpInfoOut 设置的sdp信息
+ * 返回值  0:代表设置sdp信息成功
+ *       -1:代表设置sdp信息失败
+ * ***************************************************************/
+WV_S32 FPGA_CONF_SetSdpInfo(WV_S32 winID,FPGA_SDP_Info *pSdpInfoIn);
 
 void FPGA_CONF_Init();
 void FPGA_CONF_DeInit();

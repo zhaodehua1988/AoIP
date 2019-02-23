@@ -9,21 +9,34 @@
 #include "his_dis.h"
 #include "iTE6615_Init.h"
 
-#define FPGA_CONF_FILEPATH_WIN_D "./env/win.ini"
-#define FPGA_CONF_FILEPATH_ETH_D "./env/eth.ini"
-#define FPGA_CONF_FILEPATH_ALPHA_D "./env/volAlpha.ini"
+#define _FPGA_CONF_FILEPATH_WIN_D "./env/win.ini"
+#define _FPGA_CONF_FILEPATH_ETH_D "./env/eth.ini"
+#define _FPGA_CONF_FILEPATH_ALPHA_D "./env/volAlpha.ini"
 
-#define FPGA_FILE_MUTEX_ENA_D 0
+#define _FPGA_FILE_MUTEX_ENA_D 0
+//查询fpga警告信息的频率 单位秒
+#define _FPGA_GET_WARN_INFO_TIMES_D  (1) 
 
 #define FPGA_DEBUG
-FPGA_CONF_DEV *gpFpgaConfDev;
 
-#if FPGA_FILE_MUTEX_ENA_D
+
+#if _FPGA_FILE_MUTEX_ENA_D
 pthread_mutex_t gMutexWin;
 pthread_mutex_t gMutexEth;
 pthread_mutex_t gMutexAlpha;
 #endif
 
+FPGA_CONF_DEV *gpFpgaConfDev;
+
+typedef struct _FPGA_CONF_WIN_INFO_T
+{
+    WV_U16 type; //0:eth 1:sdi 2:hdmi
+    WV_U16 ethChl;  //第几路输入,例如第几路网卡，第几路sdi
+    WV_U16 ipSel;  //这个只针对网卡，当前窗口属于第几个ip
+
+}_FPGA_CONF_WIN_INFO_T;
+
+static _FPGA_CONF_WIN_INFO_T gWinInfo[FPGA_CONF_WINNUM_D];//这里主要保存由ip地址转换为第几路网卡第几个ip用
 /*******************************************************************
 WV_S32 fpga_conf_getMacInt(WV_S8 *pSrc,WV_S8* pMac);
 *******************************************************************/
@@ -48,7 +61,6 @@ WV_S32 fpga_conf_getMacInt(WV_S8 *pSrc,WV_S8* pMac)
 			k*=16;
 		
 		}else{
-			//#define FPGA_DEBUG
 			k=1;
 			data = 0;
 		
@@ -101,6 +113,71 @@ WV_S32 fpga_conf_getIpInt(WV_S8 *pSrc,WV_S8* pIp)
 	return WV_SOK;	
 }
 
+/****************************************************
+ * WV_S32 FPGA_CONF_GetWinFreeze(WV_S32 winID)
+ * 查询窗口的视频值
+ * 返回值 视频R值的叠加
+ * *************************************************/
+WV_U32 FPGA_CONF_GetWinFreeze(WV_S32 winID)
+{
+    if(winID<0 || winID > 15) return 0;
+    WV_U16 baseAddr,regAddr,data=0;
+    WV_U32 video_r_sum=0;
+
+    baseAddr = 0x500;
+    regAddr = 0x5;
+   
+    baseAddr = ((baseAddr >> 4) | winID) << 4;
+    regAddr |=baseAddr;
+    
+
+    HIS_SPI_FpgaRd(regAddr,&data);
+    video_r_sum |= data << 16;
+    HIS_SPI_FpgaRd(regAddr+1,&data);
+    video_r_sum |= data;
+    //WV_printf("video_r_sum=0x%X\n",video_r_sum);
+/*
+    if(video_r_sum == gWarnInfo.video_r_sum[winID]){//如果查询到的video_r_sum值跟之前保存的值一样，则说明当前画面静帧了
+        freeze = 1;
+        
+    }else if(video_r_sum > gWarnInfo.video_r_sum[winID]){
+        //(video_r_sum -_FPGA_VIDEO_FREEZE_LIMIT) <= 
+    }else if(video_r_sum < gWarnInfo.video_r_sum[winID]){
+
+    }else{
+        gWarnInfo.video_r_sum[winID] = video_r_sum;
+        freeze = 0;
+    }
+*/
+    return video_r_sum;
+}
+
+/****************************************************
+ * WV_S32 FPGA_CONF_GetWinStream(WV_S32 winID)
+ * 查询窗口是否有视频流
+ * 返回值 0:无视频流
+ *       1:有视频流
+ *      -1:查询错误，包括输入窗口id超出范围，id范围[0~15]
+ * *************************************************/
+WV_S32 FPGA_CONF_GetWinStream(WV_S32 winID)
+{
+    if(winID<0 || winID > 15) return -1;
+    WV_U16 regAddr,data=0;
+    WV_S32 videoStreamEffective;//视频流是否有效
+
+    regAddr = 0x18;
+    
+    HIS_SPI_FpgaRd(regAddr,&data);
+    if(((1<<winID) & data) != 0 )
+    {
+        videoStreamEffective = 1;
+    }else{
+        videoStreamEffective = 0;
+    }
+
+    return videoStreamEffective;
+}
+
 /*****************************************************
 WV_S32 fpga_conf_DisChangeEna(WV_U16 winena)
 *设置视频输出更新（包括窗口坐标更新生效）
@@ -108,15 +185,12 @@ WV_S32 fpga_conf_DisChangeEna(WV_U16 winena)
 WV_S32 fpga_conf_DisChangeEna(WV_U16 winena)
 {
    
-    //WV_U16 temp=0;
     WV_S32 ret=0;
     ret +=HIS_SPI_FpgaWd(0x604,winena);
-    /*
-    ret +=HIS_SPI_FpgaRd(0x600,&temp);
-    temp |= 1<<12;
-    ret+=HIS_SPI_FpgaWd(0x600,temp);*/
     return ret;
 }
+
+
 /*******************************************************************
 WV_S32 fpga_conf_SetWinIpAndSdp(FPGA_CONF_WIN_T *pWin);
 解析窗口ip,sdp并设置
@@ -141,13 +215,17 @@ WV_S32 fpga_conf_SetWinIpAndSdp(FPGA_CONF_WIN_T pWin[])
         }
         if(strcmp(pWin[i].type,"net") == 0){
             video_type = 0;
+            gWinInfo[i].type = 0;
             av_sel[i]|= 0 << 10;
+
         }else if(strcmp(pWin[i].type,"sdi") == 0){
             video_type = 1;
+            gWinInfo[i].type = 1;
             av_sel[i]|= 1 << 10;
             av_sel[i]|= pWin[i].channel & 0x3;
         }else if(strcmp(pWin[i].type,"hdmi") == 0){
             video_type = 2;
+            gWinInfo[i].type = 2;
             av_sel[i]|= 2 << 10;
         }
         
@@ -165,6 +243,7 @@ WV_S32 fpga_conf_SetWinIpAndSdp(FPGA_CONF_WIN_T pWin[])
                 {
                     av_sel[i]|= (j & 0xf) << 6; //查询srcAddr列表，如果对应的网卡已经接收这个ip地址，则指定该窗口选择这个ip地址
                     av_sel[i] |= (pWin[i].channel &0x3);
+                    
                     //printf("video ip 匹配到合适的值src[%d][%d]\n",pWin[i].channel,j);
                     break;
                 }
@@ -180,6 +259,8 @@ WV_S32 fpga_conf_SetWinIpAndSdp(FPGA_CONF_WIN_T pWin[])
                             srcAddr[pWin[i].channel][k].port = pWin[i].video_port;
                             av_sel[i] |= (k & 0xf) << 6; //查询srcAddr列表，如果对应的网卡已经接收这个ip地址，则指定该窗口选择这个ip地址
                             av_sel[i] |= (pWin[i].channel &0x3);                        
+                            gWinInfo[i].ethChl = pWin[i].channel;
+                            gWinInfo[i].ipSel = k;
                             break;
                         }
                         if(3==k) {
@@ -261,7 +342,7 @@ WV_S32 fpga_conf_SetWinIpAndSdp(FPGA_CONF_WIN_T pWin[])
             srcAddrIpv4OrIpv6 = (srcAddr[i][j].ipv4OrIpv6 & 1)<< j;
         }
         ret += HIS_SPI_FpgaWd(regAddr + 0x1f, srcAddrIpv4OrIpv6); //设置接收源ipv4Oripv6 
-        //printf("reg[%X]=%X\n",regAddr + 0x1f,srFPGA_FILE_MUTEX_ENA_DcAddrIpv4OrIpv6);
+        //printf("reg[%X]=%X\n",regAddr + 0x1f,sr_FPGA_FILE_MUTEX_ENA_DcAddrIpv4OrIpv6);
         
         for (j = 0; j < 4; j++)
         { 
@@ -276,8 +357,10 @@ WV_S32 fpga_conf_SetWinIpAndSdp(FPGA_CONF_WIN_T pWin[])
             
         }   
     }
-    
+
     //设置sdp信息
+
+
     for(i=0;i<FPGA_CONF_ETHNUM_D;i++){
         for(j=0;j<4;j++){
             if(srcAddr[i][j].ena ==0)continue;
@@ -300,6 +383,8 @@ WV_S32 fpga_conf_SetWinIpAndSdp(FPGA_CONF_WIN_T pWin[])
         }
 
     }
+
+
     //设置视频源选通选项
      baseAddr = 0x0500;
     //config windows location and video info
@@ -336,21 +421,21 @@ WV_S32 fpga_conf_SaveWinCfgToFile();
 WV_S32 fpga_conf_SaveWinCfgToFile()
 {
 
-#if FPGA_FILE_MUTEX_ENA_D    
+#if _FPGA_FILE_MUTEX_ENA_D    
     if(pthread_mutex_trylock(&gMutexWin) != 0 ){
         return WV_EFAIL;
     }
 #endif
     WV_S32 ret=0;
     FILE *fp;
-    fp=fopen(FPGA_CONF_FILEPATH_WIN_D,"wb");
+    fp=fopen(_FPGA_CONF_FILEPATH_WIN_D,"wb");
     if(fp == NULL){
-        FPGA_printf("save wincfg err:open file %s err\n",FPGA_CONF_FILEPATH_WIN_D);
+        FPGA_printf("save wincfg err:open file %s err\n",_FPGA_CONF_FILEPATH_WIN_D);
         ret = -1;
     }
     else if(fwrite((WV_S8 *)gpFpgaConfDev->win,1,sizeof(FPGA_CONF_WIN_T)*FPGA_CONF_WINNUM_D,fp) != sizeof(FPGA_CONF_WIN_T)*FPGA_CONF_WINNUM_D)
     {
-        FPGA_printf("save wincfg err:fwrite file %s err\n",FPGA_CONF_FILEPATH_WIN_D);
+        FPGA_printf("save wincfg err:fwrite file %s err\n",_FPGA_CONF_FILEPATH_WIN_D);
         fclose(fp);
         ret = -1;
     }else{
@@ -358,7 +443,7 @@ WV_S32 fpga_conf_SaveWinCfgToFile()
     }
     
 
-#if FPGA_FILE_MUTEX_ENA_D   
+#if _FPGA_FILE_MUTEX_ENA_D   
     pthread_mutex_unlock(&gMutexWin);
 #endif
     return WV_SOK;
@@ -370,28 +455,28 @@ WV_S32 fpga_conf_ReadWinCfgFromFile();
 WV_S32 fpga_conf_ReadWinCfgFromFile()
 {
 
-#if FPGA_FILE_MUTEX_ENA_D    
+#if _FPGA_FILE_MUTEX_ENA_D    
     if(pthread_mutex_trylock(&gMutexWin) != 0 ){
         return WV_EFAIL;
     }
 #endif
     WV_S32 ret = 0;
     FILE *fp;
-    fp=fopen(FPGA_CONF_FILEPATH_WIN_D,"rb");
+    fp=fopen(_FPGA_CONF_FILEPATH_WIN_D,"rb");
     if(fp == NULL){
-        FPGA_printf("read wincfg err:open file %s err\n",FPGA_CONF_FILEPATH_WIN_D);
+        FPGA_printf("read wincfg err:open file %s err\n",_FPGA_CONF_FILEPATH_WIN_D);
         ret = -1;
     }
     else if(fread((WV_S8 *)gpFpgaConfDev->win,1,sizeof(FPGA_CONF_WIN_T)*FPGA_CONF_WINNUM_D,fp) != sizeof(FPGA_CONF_WIN_T)*FPGA_CONF_WINNUM_D)
     {
-        FPGA_printf("read wincfg err:fwrite file %s err\n",FPGA_CONF_FILEPATH_WIN_D);
+        FPGA_printf("read wincfg err:fwrite file %s err\n",_FPGA_CONF_FILEPATH_WIN_D);
         fclose(fp);
         ret = -1;;
     }else{
         fclose(fp);
     }
 
-#if FPGA_FILE_MUTEX_ENA_D   
+#if _FPGA_FILE_MUTEX_ENA_D   
     pthread_mutex_unlock(&gMutexWin);
 #endif
     return WV_SOK;
@@ -408,10 +493,8 @@ WV_S32 FPGA_CONF_SetWin(FPGA_CONF_WIN_T winArray[])
 
     WV_S32 i, ret = 0;
     WV_U16 baseAddr = 0x0500;
-    WV_U16 regAddr,winEna=0,reg12;
-    //HIS_SPI_FpgaRd(0x12,&reg12);
-    //HIS_SPI_FpgaWd(0x12,0);
-    //HIS_SPI_FpgaWd(0x604,0);
+    WV_U16 regAddr,winEna=0;
+
     //set src ip
     ret +=fpga_conf_SetWinIpAndSdp(winArray);
     //设置窗口位置信息
@@ -436,7 +519,6 @@ WV_S32 FPGA_CONF_SetWin(FPGA_CONF_WIN_T winArray[])
     }else{
         WV_ERROR("FPGA_CONF_SetWin err\n");
     }
-    HIS_SPI_FpgaWd(0x12,reg12);
     return ret;
 }
 
@@ -457,28 +539,28 @@ WV_S32 fpga_conf_SaveEthCfgToFile();
 *******************************************************************/
 WV_S32 fpga_conf_SaveEthCfgToFile()
 {
-#if FPGA_FILE_MUTEX_ENA_D    
+#if _FPGA_FILE_MUTEX_ENA_D    
     if(pthread_mutex_trylock(&gMutexEth) != 0 ){
         return WV_EFAIL;
     }
 #endif
     WV_S32 ret=0;
     FILE *fp;
-    fp=fopen(FPGA_CONF_FILEPATH_ETH_D,"wb");
+    fp=fopen(_FPGA_CONF_FILEPATH_ETH_D,"wb");
     if(fp == NULL){
-        FPGA_printf("save ethcfg err:open file %s err\n",FPGA_CONF_FILEPATH_ETH_D);
+        FPGA_printf("save ethcfg err:open file %s err\n",_FPGA_CONF_FILEPATH_ETH_D);
         ret = -1;
     
     }else if(fwrite((WV_S8 *)gpFpgaConfDev->eth,1,sizeof(FPGA_CONF_ETH_T)*FPGA_CONF_ETHNUM_D,fp) != sizeof(FPGA_CONF_ETH_T)*FPGA_CONF_ETHNUM_D){
         
-        FPGA_printf("save ethcfg err:fwrite file %s err\n",FPGA_CONF_FILEPATH_ETH_D);
+        FPGA_printf("save ethcfg err:fwrite file %s err\n",_FPGA_CONF_FILEPATH_ETH_D);
         fclose(fp);
         ret = -1;
     }else{
         fclose(fp);
     }
 
-#if FPGA_FILE_MUTEX_ENA_D   
+#if _FPGA_FILE_MUTEX_ENA_D   
     pthread_mutex_unlock(&gMutexEth);
 #endif
     return ret;
@@ -489,27 +571,27 @@ WV_S32 fpga_conf_ReadEthCfgFromFile();
 *******************************************************************/
 WV_S32 fpga_conf_ReadEthCfgFromFile()
 {
-#if FPGA_FILE_MUTEX_ENA_D    
+#if _FPGA_FILE_MUTEX_ENA_D    
     if(pthread_mutex_trylock(&gMutexEth) != 0 ){
         return WV_EFAIL;
     }
 #endif   
     WV_S32 ret=0;
     FILE *fp;
-    fp=fopen(FPGA_CONF_FILEPATH_ETH_D,"rb");
+    fp=fopen(_FPGA_CONF_FILEPATH_ETH_D,"rb");
     if(fp == NULL){
-        FPGA_printf("read ethcfg err:open file %s err\n",FPGA_CONF_FILEPATH_ETH_D);
+        FPGA_printf("read ethcfg err:open file %s err\n",_FPGA_CONF_FILEPATH_ETH_D);
         ret = -1;
     
     }else if(fread((WV_S8 *)gpFpgaConfDev->eth,1,sizeof(FPGA_CONF_ETH_T)*FPGA_CONF_ETHNUM_D,fp) != sizeof(FPGA_CONF_ETH_T)*FPGA_CONF_ETHNUM_D){
-        FPGA_printf("read ethcfg err:fwrite file %s err\n",FPGA_CONF_FILEPATH_ETH_D);
+        FPGA_printf("read ethcfg err:fwrite file %s err\n",_FPGA_CONF_FILEPATH_ETH_D);
         fclose(fp);
         ret = -1;
     }else{
         fclose(fp);
     }
 
-#if FPGA_FILE_MUTEX_ENA_D   
+#if _FPGA_FILE_MUTEX_ENA_D   
     pthread_mutex_unlock(&gMutexEth);
 #endif
     return WV_SOK;
@@ -617,48 +699,6 @@ WV_S32 FPGA_CONF_GetVersion(WV_S8 *pFpgaVer)
     return WV_SOK;
 }
 
-/**************************************************************
-* WV_S32 FPGA_CONF_SetTransparency(WV_S32 alpha);
-*设置音量显示透明度
-*************************************************************/
-WV_S32 FPGA_CONF_SetTransparency(WV_S32 alpha)
-{
-
-#if FPGA_FILE_MUTEX_ENA_D    
-    if(pthread_mutex_trylock(&gMutexAlpha) != 0 ){
-        return WV_EFAIL;
-    }
-#endif 
-    WV_S32 ret = 0;
-    if(alpha >= 128 || alpha < 0){
-        FPGA_printf("save alpha err!alpha=%d, [0< alpha <=128)\n",alpha);
-        ret = -1;       
-    }else{
-
-        FILE *fp;
-        fp=fopen(FPGA_CONF_FILEPATH_ALPHA_D,"wb");
-        if(fp == NULL){
-            FPGA_printf("fopen file [%s]err\n",FPGA_CONF_FILEPATH_ALPHA_D);
-            ret = -1;
-        }
-        else if(fwrite((WV_S8*)&alpha,1,4,fp) != sizeof(alpha))
-        {
-            FPGA_printf("save alpha to file err\n");
-            fclose(fp);
-            ret= -1;
-        }else{
-            fclose(fp);
-        }
-
-
-    }
-
-#if FPGA_FILE_MUTEX_ENA_D   
-    pthread_mutex_unlock(&gMutexAlpha);
-#endif
-    return WV_EFAIL;
-
-}
 /******************************************************************************
  * WV_S32 FPGA_CONF_SetResolution(WV_S32 resolution)
  * ***************************************************************************/
@@ -751,8 +791,6 @@ void FPGA_CONF_SetOutPutDisColorDepth(WV_S32 colorDepth)
     colorDepth &= 0x1;
     data |= colorDepth <<9;
     HIS_SPI_FpgaRd(0x600,&data);
-
-
 }
 
 /*****************************************************************************
@@ -782,25 +820,25 @@ void FPGA_CONF_SetDisAlpha(WV_S32 alpha)
 }
 /****************************************************************************
 
-void FPGA_CONF_SetOutPutAudioSel(WV_S32 audioSel,WV_S32 audioChl) 
+void FPGA_CONF_SetOutPutAudioSel(WV_S32 winID,WV_S32 audioChl) 
 //设置输出声音来自那个窗口,第几个声道
 ****************************************************************************/
-void FPGA_CONF_SetOutPutAudioSel(WV_S32 audioSel,WV_S32 audioChl) 
+void FPGA_CONF_SetOutPutAudioSel(WV_S32 winID,WV_S32 audioChl) 
 {
-    if(audioSel > 15 || audioChl < 0 ) return; //audioSel取值范围[0~15]
+    if(winID > 15 || audioChl < 0 ) return; //audioSel取值范围[0~15]
     if(audioChl > 8 || audioChl < 0 ) return; //audioChl取值范围[0~16]
-    if(gpFpgaConfDev->win[audioSel].win_ena == 0) return; //如果窗口未使能，则返回错误
+    if(gpFpgaConfDev->win[winID].win_ena == 0) return; //如果窗口未使能，则返回错误
 
     
     //WV_U16 data;
-    if(strcmp(gpFpgaConfDev->win[audioSel].type,"eth") == 0){
+    if(strcmp(gpFpgaConfDev->win[winID].type,"eth") == 0){
         //HIS_SPI_FpgaRd(0x600,&data);
         //data |= (audioChl & 0xf);
             
-    }else if(strcmp(gpFpgaConfDev->win[audioSel].type,"sdi") == 0){
+    }else if(strcmp(gpFpgaConfDev->win[winID].type,"sdi") == 0){
 
 
-    }if(strcmp(gpFpgaConfDev->win[audioSel].type,"hdmi") == 0)
+    }if(strcmp(gpFpgaConfDev->win[winID].type,"hdmi") == 0)
     {
 
     }
@@ -808,18 +846,41 @@ void FPGA_CONF_SetOutPutAudioSel(WV_S32 audioSel,WV_S32 audioChl)
 /****************************************************************************
 
 void FPGA_CONF_SetOutPutVolume(WV_S32 volume)
-//设置输出音量的大小
+//设置输出音量的大小 【0～15】
 ****************************************************************************/
 void FPGA_CONF_SetOutPutVolume(WV_S32 volume)
 {
-
+    
 }
 
 /****************************************************************************
 
-void FPGA_CONF_SetAudioSel(WV_S32 audioSel,WV_S32 audioChl)
-//设置输出音量的大小
+WV_S32 FPGA_CONF_GetSdpInfo(WV_S32 winID,FPGA_SDP_Info *pSdpInfoOut);
+//查询窗口sdp信息
 ****************************************************************************/
+WV_S32 FPGA_CONF_GetSdpInfo(WV_S32 winID,FPGA_SDP_Info *pSdpInfoOut)
+{
+    WV_S32 ret=-1;
+    if(strcmp(gpFpgaConfDev->win[winID].type,"eth") == 0){
+        
+        ret=FPGA_SDP_ReadFromFpga(gWinInfo[winID].ethChl,gWinInfo[winID].ipSel,pSdpInfoOut);
+    }
+    return ret;
+}
+/****************************************************************************
+
+WV_S32 FPGA_CONF_GetSdpInfo(WV_S32 winID,FPGA_SDP_Info *pSdpInfoOut);
+//设置窗口sdp信息
+****************************************************************************/
+WV_S32 FPGA_CONF_SetSdpInfo(WV_S32 winID,FPGA_SDP_Info *pSdpInfoIn)
+{
+    WV_S32 ret=-1;
+    if(strcmp(gpFpgaConfDev->win[winID].type,"eth") == 0){
+        
+        ret=FPGA_SDP_SetInfo(pSdpInfoIn,gWinInfo[winID].ethChl,gWinInfo[winID].ipSel);
+    }
+    return ret;
+}
 
 /****************************************************************************
 
@@ -984,28 +1045,24 @@ WV_S32 FPGA_CONF_GetCmd(WV_S32 argc, WV_S8 **argv, WV_S8 *prfBuff)
     //设置寄存器
     if (strcmp(argv[0], "win") == 0)
     {
+        WV_U16 winEna;
 
-        WV_S32  i,ret = 0;
-        WV_U16 baseAddr = 0x0500;
-        WV_U16 regAddr, data = 0;
-        //FPGA_CONF_WIN win;
-        WV_U16 x=0,y=0,w=0,h=0;
-        //config windows location and video info
-        for (i = 0; i < FPGA_CONF_WINNUM_D; i++)
-        {
-            regAddr = ((baseAddr >> 4) + i) << 4;
-            ret += HIS_SPI_FpgaRd(regAddr, &x);
-            ret += HIS_SPI_FpgaRd(regAddr + 1,&y);
-            ret += HIS_SPI_FpgaRd(regAddr + 2, &w);
-            ret += HIS_SPI_FpgaRd(regAddr + 3, &h);
-
-            prfBuff += sprintf(prfBuff,"win[%d]X=%d  ",i,x);
-            prfBuff += sprintf(prfBuff,"Y=%d  ",y);
-            prfBuff += sprintf(prfBuff,"W=%d  ",w);
-            prfBuff += sprintf(prfBuff,"H=%d\n",h);
+        HIS_SPI_FpgaRd(0x604,&winEna);
+        WV_S32 i;
+        for(i=0;i<FPGA_CONF_WINNUM_D;i++){
+            if( ((1<<i) & winEna) != 0){
+                if(FPGA_CONF_GetWinStream(i) == 1)
+                {
+                    prfBuff += sprintf(prfBuff, "win[%d] video stream is ok\r\n",i);
+                    //if(FPGA_CONF_GetWinFreeze(i) == 1){
+                        prfBuff += sprintf(prfBuff, "win[%d] video stream r sum=0x%X\r\n",i,FPGA_CONF_GetWinFreeze(i));
+                    //}
+                }else{
+                    prfBuff += sprintf(prfBuff, "win[%d] video stream is error\r\n",i);
+                }
+            }
         }
-        HIS_SPI_FpgaRd(0x0604,&data);
-        prfBuff += sprintf(prfBuff,"windows enable 0x604= 0x%04x\n",data);
+
         
     }
     return WV_SOK;
@@ -1029,7 +1086,7 @@ fpga初始化
 *******************************************************************/
 void FPGA_CONF_Init()
 {
-#if FPGA_FILE_MUTEX_ENA_D    
+#if _FPGA_FILE_MUTEX_ENA_D    
 
     if (pthread_mutex_init(&gMutexWin, NULL) != 0 \
         || pthread_mutex_init(&gMutexEth, NULL) != 0 \
@@ -1044,23 +1101,27 @@ void FPGA_CONF_Init()
     gpFpgaConfDev = (FPGA_CONF_DEV *)malloc(sizeof(FPGA_CONF_DEV));
     memset(gpFpgaConfDev,0,sizeof(FPGA_CONF_DEV));
     
+    //memset(&gWarnInfo,0,sizeof(gWarnInfo));
+
     HIS_SPI_FpgaWd(0x601,0x0);
     HIS_SPI_FpgaWd(0x602,0x0);
     HIS_SPI_FpgaWd(0x603,0x0);
-
+    //sdp init
+    FPGA_SDP_Init();
     WV_CMD_Register("set", "fpga", " set fpga", FPGA_CONF_SetCmd);
-
     WV_CMD_Register("get", "fpga", "pca9555 get reg", FPGA_CONF_GetCmd);
-
+    
     return ;
 }
 void FPGA_CONF_DeInit()
 {
-#if FPGA_FILE_MUTEX_ENA_D 
+#if _FPGA_FILE_MUTEX_ENA_D 
     pthread_mutex_destroy(&gMutexEth);
     pthread_mutex_destroy(&gMutexWin);
     pthread_mutex_destroy(&gMutexAlpha);
 #endif
     free(gpFpgaConfDev);
+    //sdp init
+    FPGA_SDP_DeInit();
     return ;
 }

@@ -99,5 +99,10 @@ void sdp_dump(struct sdp_payload *sdp);
 
 char *sdp_get_attr(char **attr, size_t nattr, char *key);
 int sdp_has_flag_attr(char **attr, size_t nattr, char *flag);
-int FPGA_SDP_SetInfo(FPGA_SDP_Info *pSetInfo,WV_U16 eth, WV_U16 channel);
+//int FPGA_SDP_SetInfo(FPGA_SDP_Info *pSetInfo,WV_U16 eth, WV_U16 channel);
+int FPGA_SDP_SetInfo(FPGA_SDP_Info *pSetInfo,WV_U16 eth, WV_U16 ipSel);
+WV_S32 FPGA_SDP_ReadFromFpga(WV_U16 eth,WV_U16 chl,FPGA_SDP_Info *pGetInfo);
+void FPGA_SDP_Init();
+void FPGA_SDP_DeInit();
+
 #endif

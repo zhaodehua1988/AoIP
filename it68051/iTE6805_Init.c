@@ -227,7 +227,7 @@ WV_S32 iTE6805_GetCmd(WV_S32 argc, WV_S8 **argv, WV_S8 *prfBuff)
 		iTE6805_Show_AVIInfoFrame_Info();
 		
 		iTE6805_Show_VID_Info();
-		//printf("11111111111111111111111111111");
+		
 	}
 
 	return WV_SOK;
