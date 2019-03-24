@@ -64,6 +64,7 @@ void W25QXX_Erase_Sector(WV_U32 Dst_Addr);	//扇区擦除
 void W25QXX_Wait_Busy(void);           	//等待空闲
 void W25QXX_PowerDown(void);        	//进入掉电模式
 void W25QXX_WAKEUP(void);				//唤醒
+void W25QXX_Erase_Block(WV_U32 Dst_Addr); //擦除块64k，传入的块地址
 #endif
 
 

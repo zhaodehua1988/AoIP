@@ -36,7 +36,7 @@ WV_S32   WV_FILE_OpenDir(WV_S8 *filename)
 }
 /****************************************************************
 
-WV_S32   WV_FILE_GetLen((WV_S8 *filename,WV_S32 *pLen)
+WV_S32   WV_FILE_GetLen((WV_S8 *filename,WV_U32 *pLen)
 
 ****************************************************************/
 WV_S32   WV_FILE_GetLen(WV_S8 *filenameAll,WV_S32 * pLen)

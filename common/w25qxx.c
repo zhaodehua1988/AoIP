@@ -139,7 +139,7 @@ void W25QXX_Read(WV_U8 *pBuffer, WV_U32 ReadAddr, WV_U16 NumByteToRead)
 	// }
 	// W25QXX_CS=1;
 
-	WV_S32 i,j, ReadTimes, readEndNum;
+	WV_S32 i, ReadTimes, readEndNum;
 	ReadTimes = NumByteToRead / W25QXX_READ_PERNUM;
 	readEndNum = NumByteToRead % W25QXX_READ_PERNUM;
 	WV_U32 addr = ReadAddr;
@@ -200,16 +200,12 @@ void W25QXX_Write_Page(WV_U8 *pBuffer, WV_U32 WriteAddr, WV_U16 NumByteToWrite)
 	WV_U32 writeEndNum = NumByteToWrite % writeNumOneTime;
 	WV_U8 writeBuf[64 + 8] = {0};
 	WV_U32 addr;
-	WV_S32 i,j;
-	// for(i=0;i<64;i++){
-	// 	writeBuf[i+4] = i;
-	// }
+	WV_S32 i;
 	//写使能
 	W25QXX_Write_Enable();
 	for (i = 0; i < writeTimes; i++)
 	{
 		W25QXX_Write_Enable();
-		//WV_printf("写次数=%d,addr =0x%X，\n",writeTimes,addr);
 		memset(writeBuf, 0xff, 64 + 8);
 		addr = WriteAddr + i * writeNumOneTime;
 		writeBuf[0] = W25X_PageProgram;
@@ -220,12 +216,6 @@ void W25QXX_Write_Page(WV_U8 *pBuffer, WV_U32 WriteAddr, WV_U16 NumByteToWrite)
 		memcpy(&writeBuf[4], &pBuffer[i * writeNumOneTime], writeNumOneTime);
 		HIS_SPI_Write(writeBuf, 4 + writeNumOneTime);
 		W25QXX_Wait_Busy();
-		//  WV_printf("i=%d,writeTime=%d,addr =0x%X\n",i,writeTimes,addr);
-		//  WV_printf("\nwrite times[%d]------------------------[%d]--------------------------\n",writeTimes,i);
-		//   WV_printf("addr = %X\n",addr);
-		//   for(j=0;j<writeNumOneTime;j++){ 
-		//   	WV_printf("%02x ",writeBuf[4+j]);
-		//   }
 		W25QXX_Write_Disable();
 		
 	}
@@ -293,12 +283,8 @@ void W25QXX_Write(WV_U8 *pBuffer, WV_U32 WriteAddr, WV_U16 NumByteToWrite)
 	secpos = WriteAddr / 4096; //扇区地址
 	secoff = WriteAddr % 4096; //在扇区内的偏移
 	secremain = 4096 - secoff; //扇区剩余空间大小
-	//printf("ad:%X,nb:%X\r\n",WriteAddr,NumByteToWrite);//测试用
 	if (NumByteToWrite <= secremain)
 		secremain = NumByteToWrite; //不大于4096个字节
-	// WV_printf("secpos = %d[%X]\n",secpos,secpos);
-	// WV_printf("secoff = %d[%X]\n",secoff,secoff);
-	// WV_printf("secremain = %d \n",secremain);
 	while (1)
 	{
 		W25QXX_Read(W25QXX_BUF, secpos * 4096, 4096); //读出整个扇区的内容
