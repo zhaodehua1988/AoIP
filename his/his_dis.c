@@ -461,6 +461,10 @@ WV_S32  HIS_DIS_SetCustomTiming(WV_U32 mode)
 	WV_S32 ret=-1;
 	memset(&custTiming,0,sizeof(HI_UNF_DISP_TIMING_S));
 
+    ret = HI_UNF_DISP_SetVirtualScreen(HI_UNF_DISPLAY1, HIS_FB_VITURE_SCEEN_W, HIS_FB_VITURE_SCEEN_H);      
+	if(ret != HI_SUCCESS){
+		  WV_printf("HI_UNF_DISP_SetVirtualScreen, Ret=%#x.\n", ret); 
+	}
 	switch(mode)
 	{
 		case 0: //3840*2160 p60
@@ -518,10 +522,10 @@ WV_S32  HIS_DIS_SetCustomTiming(WV_U32 mode)
             break;
         case 4: //1920*1080 i60 
             ret = HI_UNF_DISP_SetFormat(HI_UNF_DISPLAY1, HI_UNF_ENC_FMT_1080i_60);             
-			break; 
+			return 0; 
         case 5: //1920*1080 i50 
             ret = HI_UNF_DISP_SetFormat(HI_UNF_DISPLAY1, HI_UNF_ENC_FMT_1080i_50);             
-			break; 
+			return 0; 
         case 6: //1920*1080 i30
 		  	custTiming.VFB = 4;//8
 			custTiming.VBB = 41; //80
@@ -536,7 +540,7 @@ WV_S32  HIS_DIS_SetCustomTiming(WV_U32 mode)
             break;
 		case 7: //1920*1080  p30
  			ret = HI_UNF_DISP_SetFormat(HI_UNF_DISPLAY1, HI_UNF_ENC_FMT_1080P_30);   
-			break;
+			return 0;
 		default:
 			return -1;	
 	
@@ -547,10 +551,6 @@ WV_S32  HIS_DIS_SetCustomTiming(WV_U32 mode)
     //custTiming.VertFreq = 60000;
 	
     //custTiming.VertFreq = 30000;
-    ret = HI_UNF_DISP_SetVirtualScreen(HI_UNF_DISPLAY1, HIS_FB_VITURE_SCEEN_W, HIS_FB_VITURE_SCEEN_H);      
-	if(ret != HI_SUCCESS){
-		  WV_printf("HI_UNF_DISP_SetVirtualScreen, Ret=%#x.\n", ret); 
-	}
 	ret = HI_UNF_DISP_SetCustomTiming(HI_UNF_DISPLAY1,&custTiming);
 	if (ret != HI_SUCCESS)
 	 {

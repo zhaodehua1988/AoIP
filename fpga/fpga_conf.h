@@ -164,6 +164,24 @@ WV_S32 FPGA_CONF_GetSdpInfo(WV_S32 winID,FPGA_SDP_Info *pSdpInfoOut);
  * ***************************************************************/
 WV_S32 FPGA_CONF_SetSdpInfo(WV_S32 winID,FPGA_SDP_Info *pSdpInfoIn);
 
+
+/****************************************************
+ * WV_S32 FPGA_CONF_GetWinFreezeVal(WV_S32 winID)
+ * 查询窗口的视频值
+ * 返回值 视频R值的叠加（需要保留上次的R值，跟这次的做对比，来查询是否信号静帧）
+ * *************************************************/
+WV_U32 FPGA_CONF_GetWinFreezeVal(WV_S32 winID);
+
+/****************************************************
+ * WV_S32 FPGA_CONF_GetWinStream(WV_S32 winID)
+ * 查询窗口是否有视频流
+ * 返回值 0:无视频流
+ *       1:有视频流
+ *      -1:查询错误，包括输入窗口id超出范围，id范围[0~15]
+ * *************************************************/
+WV_S32 FPGA_CONF_GetWinStream(WV_S32 winID);
+
+
 void FPGA_CONF_Init();
 void FPGA_CONF_DeInit();
 

@@ -38,87 +38,87 @@ extern "C" {
 
 
 /**defines the ROTATION type.*/
-/**CNcomment:¶¨ÒåÊÓÆµÐý×ª½Ç¶È*/
+/**CNcomment:ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æµï¿½ï¿½×ªï¿½Ç¶ï¿½*/
 typedef enum hiUNF_VO_ROTATION_E
 {
-    HI_UNF_VO_ROTATION_0, /**< 0 degree rotation*//**<CNcomment: 0¶ÈÐý×ª*/
-    HI_UNF_VO_ROTATION_90, /**< 90 degree rotation*//**<CNcomment: 90¶ÈÐý×ª*/
-    HI_UNF_VO_ROTATION_180, /**< 180 degree rotation*//**<CNcomment: 180¶ÈÐý×ª*/
-    HI_UNF_VO_ROTATION_270, /**< 270 degree rotation*//**<CNcomment: 270¶ÈÐý×ª*/
+    HI_UNF_VO_ROTATION_0, /**< 0 degree rotation*//**<CNcomment: 0ï¿½ï¿½ï¿½ï¿½×ª*/
+    HI_UNF_VO_ROTATION_90, /**< 90 degree rotation*//**<CNcomment: 90ï¿½ï¿½ï¿½ï¿½×ª*/
+    HI_UNF_VO_ROTATION_180, /**< 180 degree rotation*//**<CNcomment: 180ï¿½ï¿½ï¿½ï¿½×ª*/
+    HI_UNF_VO_ROTATION_270, /**< 270 degree rotation*//**<CNcomment: 270ï¿½ï¿½ï¿½ï¿½×ª*/
     HI_UNF_VO_ROTATION_BUTT
 }HI_UNF_VO_ROTATION_E;
 
 
 /**conversion mode of AspectRatio.*/
-/**CNcomment:¿í¸ß±È×ª»»Ä£Ê½*/
+/**CNcomment:ï¿½ï¿½ß±ï¿½×ªï¿½ï¿½Ä£Ê½*/
 typedef enum hiUNF_VO_ASPECT_CVRS_E
 {
     HI_UNF_VO_ASPECT_CVRS_IGNORE = 0x0,
-    HI_UNF_VO_ASPECT_CVRS_LETTERBOX,      /**<Add black borders*//**<CNcomment: ¼ÓºÚ±ß*/
-    HI_UNF_VO_ASPECT_CVRS_PAN_SCAN,      /**<Clip the picture*//**<CNcomment: ²Ã¼õ*/
-    HI_UNF_VO_ASPECT_CVRS_COMBINED,       /**<Add black borders and clip the picture*//**<CNcomment: ¼ÓºÚ±ßºÍ²Ã¼õ»ìºÏ*/
+    HI_UNF_VO_ASPECT_CVRS_LETTERBOX,      /**<Add black borders*//**<CNcomment: ï¿½ÓºÚ±ï¿½*/
+    HI_UNF_VO_ASPECT_CVRS_PAN_SCAN,      /**<Clip the picture*//**<CNcomment: ï¿½Ã¼ï¿½*/
+    HI_UNF_VO_ASPECT_CVRS_COMBINED,       /**<Add black borders and clip the picture*//**<CNcomment: ï¿½ÓºÚ±ßºÍ²Ã¼ï¿½ï¿½ï¿½ï¿½*/
 
-    HI_UNF_VO_ASPECT_CVRS_HORIZONTAL_FULL,  /**<keep picture's HORIZONTAL be full*//**<CNcomment: ±£³ÖË®Æ½·½ÏòÆÌÂú*/
-    HI_UNF_VO_ASPECT_CVRS_VERTICAL_FULL,    /**<keep picture's VERTICAL be full*//**<CNcomment: ±£³Ö´¹Ö±·½ÏòÆÌÂú*/
+    HI_UNF_VO_ASPECT_CVRS_HORIZONTAL_FULL,  /**<keep picture's HORIZONTAL be full*//**<CNcomment: ï¿½ï¿½ï¿½ï¿½Ë®Æ½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½*/
+    HI_UNF_VO_ASPECT_CVRS_VERTICAL_FULL,    /**<keep picture's VERTICAL be full*//**<CNcomment: ï¿½ï¿½ï¿½Ö´ï¿½Ö±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½*/
     HI_UNF_VO_ASPECT_CVRS_BUTT,
 } HI_UNF_VO_ASPECT_CVRS_E;
 
 /** AspectRatio attribute.*/
-/**CNcomment:¿í¸ß±ÈÊôÐÔ*/
+/**CNcomment:ï¿½ï¿½ß±ï¿½ï¿½ï¿½ï¿½ï¿½*/
 typedef struct hiUNF_WINDOW_ASPECT_ATTR_S
 {
-    HI_UNF_VO_ASPECT_CVRS_E   enAspectCvrs;  /**<the method to the aspect ratio transfer.\n*//**<CNcomment: ´°¿ÚµÄ¿í¸ß×ª»»·½Ê½ */
+    HI_UNF_VO_ASPECT_CVRS_E   enAspectCvrs;  /**<the method to the aspect ratio transfer.\n*//**<CNcomment: ï¿½ï¿½ï¿½ÚµÄ¿ï¿½ï¿½×ªï¿½ï¿½ï¿½ï¿½Ê½ */
     HI_BOOL                   bUserDefAspectRatio;  /**<use or not user define aspectratio. \n
                                                      if this is true, u32UserAspectWidth and u32UserAspectHeight will be effective.\n*/
-                                                    /**<CNcomment: ÊÇ·ñÊ¹ÓÃÓÃ»§Éè¶¨µÄ¿í¸ß±È, ÎªTRUEÊ±£¬u32UserAspectWidthºÍu32UserAspectHeightÉúÐ§*/
+                                                    /**<CNcomment: ï¿½Ç·ï¿½Ê¹ï¿½ï¿½ï¿½Ã»ï¿½ï¿½è¶¨ï¿½Ä¿ï¿½ß±ï¿½, ÎªTRUEÊ±ï¿½ï¿½u32UserAspectWidthï¿½ï¿½u32UserAspectHeightï¿½ï¿½Ð§*/
     HI_U32                    u32UserAspectWidth; /**<aspect width of user \n
                                                     this value should be in 0~3840 \n
                                                     zero indicate using video resolution.*/
-                                                  /**<CNcomment: ÓÃ»§ÆÚÍûÏÔÊ¾µÄÊÓÆµ¿í¶È \n
-                                                   ÉèÖÃÖµ·¶Î§ÔÚ0~3840Ö®¼ä \n
-                                                   0´ú±íÊ¹ÓÃÊÓÆµÔ´·Ö±æÂÊ*/
+                                                  /**<CNcomment: ï¿½Ã»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½Æµï¿½ï¿½ï¿½ \n
+                                                   ï¿½ï¿½ï¿½ï¿½Öµï¿½ï¿½Î§ï¿½ï¿½0~3840Ö®ï¿½ï¿½ \n
+                                                   0ï¿½ï¿½ï¿½ï¿½Ê¹ï¿½ï¿½ï¿½ï¿½ÆµÔ´ï¿½Ö±ï¿½ï¿½ï¿½*/
     HI_U32                    u32UserAspectHeight; /**<aspect height of user \n
                                                     this value should be in 0~3840 \n
                                                     zero indicate using video resolution.*/
-                                                    /**<CNcomment: ÓÃ»§ÆÚÍûÏÔÊ¾µÄÊÓÆµ¸ß¶È \n
-                                                    ÉèÖÃÖµ·¶Î§ÐèÒªÔÚ0~3840µÄ·¶Î§ÄÚ \n
-                                                    0´ú±íÊ¹ÓÃÊÓÆµÔ´·Ö±æÂÊ*/
+                                                    /**<CNcomment: ï¿½Ã»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½Æµï¿½ß¶ï¿½ \n
+                                                    ï¿½ï¿½ï¿½ï¿½Öµï¿½ï¿½Î§ï¿½ï¿½Òªï¿½ï¿½0~3840ï¿½Ä·ï¿½Î§ï¿½ï¿½ \n
+                                                    0ï¿½ï¿½ï¿½ï¿½Ê¹ï¿½ï¿½ï¿½ï¿½ÆµÔ´ï¿½Ö±ï¿½ï¿½ï¿½*/
 } HI_UNF_WINDOW_ASPECT_ATTR_S;
 
 /**define the attribution of window.*/
-/**CNcomment:¶¨ÒåWINDOWÊôÐÔ*/
+/**CNcomment:ï¿½ï¿½ï¿½ï¿½WINDOWï¿½ï¿½ï¿½ï¿½*/
 typedef struct hiUNF_WINDOW_ATTR_S
 {
-    HI_UNF_DISP_E             enDisp;          /**<the display channel where window locate in. can not be modified.\n*//**<CNcomment: ´°¿ÚËùÔÚµÄÏÔÊ¾Í¨µÀ, ´´½¨ºó²»¿ÉÐÞ¸Ä */
-    HI_BOOL                   bVirtual;      /**< whether is virtual window or not. can not be modified.\n*//**<CNcomment: ÊÇ·ñÎªÐéÄâ´°¿Ú£¬´´½¨ºó²»¿ÉÐÞ¸Ä */
-    HI_UNF_VIDEO_FORMAT_E     enVideoFormat; /**<the data format of virtual window.\n*//**<CNcomment: ÐéÄâ´°¿ÚÊý¾Ý¸ñÊ½ */
-    HI_UNF_WINDOW_ASPECT_ATTR_S     stWinAspectAttr;  /**<the AspectRatio of window.\n*//**<CNcomment:  ´°¿ÚµÄ¿í¸ß±ÈÊôÐÔ*/
+    HI_UNF_DISP_E             enDisp;          /**<the display channel where window locate in. can not be modified.\n*//**<CNcomment: ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Úµï¿½ï¿½ï¿½Ê¾Í¨ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½ï¿½ó²»¿ï¿½ï¿½Þ¸ï¿½ */
+    HI_BOOL                   bVirtual;      /**< whether is virtual window or not. can not be modified.\n*//**<CNcomment: ï¿½Ç·ï¿½Îªï¿½ï¿½ï¿½â´°ï¿½Ú£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ó²»¿ï¿½ï¿½Þ¸ï¿½ */
+    HI_UNF_VIDEO_FORMAT_E     enVideoFormat; /**<the data format of virtual window.\n*//**<CNcomment: ï¿½ï¿½ï¿½â´°ï¿½ï¿½ï¿½ï¿½ï¿½Ý¸ï¿½Ê½ */
+    HI_UNF_WINDOW_ASPECT_ATTR_S     stWinAspectAttr;  /**<the AspectRatio of window.\n*//**<CNcomment:  ï¿½ï¿½ï¿½ÚµÄ¿ï¿½ß±ï¿½ï¿½ï¿½ï¿½ï¿½*/
     HI_BOOL                   bUseCropRect;     /**<cut video frame as stCropRect struct or as stInputRect struct \n
                                                     if this is TRUE, stCropRect will be effective \n
                                                     if this is false, stInputRect will be effective.*/
-                                                   /**<CNcomment: ÊÇ·ñÊ¹ÓÃstCropRect¶ÔÊÓÆµÊäÈë½øÐÐ²Ã¼ô \n
-                                                    ÎªTRUEÊ±£¬stCropRectÉèÖÃÉúÐ§ \n
-                                                    ÎªFALSEÊ±£¬stInputRectÉèÖÃÉúÐ§*/
+                                                   /**<CNcomment: ï¿½Ç·ï¿½Ê¹ï¿½ï¿½stCropRectï¿½ï¿½ï¿½ï¿½Æµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð²Ã¼ï¿½ \n
+                                                    ÎªTRUEÊ±ï¿½ï¿½stCropRectï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð§ \n
+                                                    ÎªFALSEÊ±ï¿½ï¿½stInputRectï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð§*/
 
     HI_UNF_CROP_RECT_S        stCropRect;   /**<clip window of user define ,clip pix num of top,buttom,left,right.\n*/
-                                            /**<CNcomment: ÓÃ»§¶¨ÒåµÄÊÓÆµ²Ã¼ô½á¹¹ÌåÀàÐÍ, ÉÏÏÂ×óÓÒ²Ã¼ôµÄÏñËØ¸öÊý*/
+                                            /**<CNcomment: ï¿½Ã»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æµï¿½Ã¼ï¿½á¹¹ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò²Ã¼ï¿½ï¿½ï¿½ï¿½ï¿½Ø¸ï¿½ï¿½ï¿½*/
 
     HI_RECT_S                 stInputRect;       /**<the crop area .\n
                                                   all values are zero indicate outputing whole video stream \n
                                                   if the value is bigger than video frame, the whole video frame will be displayed \n
                                                   width and height should not be less than 64.\n*/
-                                                 /**<CNcomment: ´°¿ÚµÄ²Ã¼õÇøÓò  \n
-                                                  ËùÓÐÖµÎª0´ú±íÏÔÊ¾Õû¸öÊÓÆµÍ¼Ïñ \n
-                                                  ´óÓÚÊÓÆµÔ´´óÐ¡µÄÉèÖÃ, ÏÔÊ¾Õû¸öÊÓÆµÍ¼Ïñ¡£\n
-                                                  ¿í¶ÈºÍ¸ß¶È²»ÄÜÐ¡ÓÚ64£¬½«ÏÞÖÆµ½64*64*/
+                                                 /**<CNcomment: ï¿½ï¿½ï¿½ÚµÄ²Ã¼ï¿½ï¿½ï¿½ï¿½ï¿½  \n
+                                                  ï¿½ï¿½ï¿½ï¿½ÖµÎª0ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ÆµÍ¼ï¿½ï¿½ \n
+                                                  ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ÆµÔ´ï¿½ï¿½Ð¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½, ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ÆµÍ¼ï¿½ï¿½\n
+                                                  ï¿½ï¿½ÈºÍ¸ß¶È²ï¿½ï¿½ï¿½Ð¡ï¿½ï¿½64ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æµï¿½64*64*/
 
     HI_RECT_S                 stOutputRect;  /**<the window display area on the virtual screen. \n
                                                 The width and height of display area should not larger than virtual screen,\n
                                                 and all parameters are zero means to fill whole virtual screen.\n
                                                 The area could move out of virtual screen, and the outside part will not display.\n*/
-                                                /**<CNcomment: ´°¿ÚÔÚÐéÄâÆÁÄ»ÉÏµÄÏÔÊ¾ÇøÓò¡£\n
-                                                ÏÔÊ¾ÇøÓòµÄ¿í¶ÈÓë¸ß¶È²»ÄÜ´óÓÚÐéÄâÆÁÄ»µÄ¿í¶ÈºÍ¸ß¶È£¬È«²¿Îª0±íÊ¾ÌîÂúÐéÄâÆÁÄ»¡£\n
-                                                ÏÔÊ¾ÇøÓò¿ÉÒÔÒÆ³öÐéÄâÆÁÄ»£¬ÒÆ³öÆÁÄ»²¿·Ö²»ÏÔÊ¾*/
+                                                /**<CNcomment: ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä»ï¿½Ïµï¿½ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½\n
+                                                ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½Ä¿ï¿½ï¿½ï¿½ï¿½ß¶È²ï¿½ï¿½Ü´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä»ï¿½Ä¿ï¿½ÈºÍ¸ß¶È£ï¿½È«ï¿½ï¿½Îª0ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä»ï¿½ï¿½\n
+                                                ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Æ³ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä»ï¿½ï¿½ï¿½Æ³ï¿½ï¿½ï¿½Ä»ï¿½ï¿½ï¿½Ö²ï¿½ï¿½ï¿½Ê¾*/
 
 
 
@@ -126,44 +126,44 @@ typedef struct hiUNF_WINDOW_ATTR_S
 
 
 /**define user buffer management attribute.*/
-/**CNcomment:¶¨ÒåÓÃ»§»º³åÇø¹ÜÀíÊôÐÔ*/
+/**CNcomment:ï¿½ï¿½ï¿½ï¿½ï¿½Ã»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½*/
 typedef struct hiUNF_BUFFER_ATTR_S
 {
-    HI_S32              s32Stride;          /**<the stride of the buffer.*//**<CNcomment: »º³åÇø²½³¤*/
-    HI_U32              u32PhyAddr[16];     /**<start physics addrss of the buffer.*//**<CNcomment: »º³åÇøÎïÀíÆðÊ¼µØÖ·*/
-    HI_U32              u32BuffIndex[16];   /**<Stride of the buffer.*//**<CNcomment: »º³åÇøË÷Òý±àºÅ*/
-    HI_S32              s32BuffNum;         /**<the number of the buffer.*//**<CNcomment: »º³åÇø¸öÊý*/
+    HI_S32              s32Stride;          /**<the stride of the buffer.*//**<CNcomment: ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½*/
+    HI_U32              u32PhyAddr[16];     /**<start physics addrss of the buffer.*//**<CNcomment: ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¼ï¿½ï¿½Ö·*/
+    HI_U32              u32BuffIndex[16];   /**<Stride of the buffer.*//**<CNcomment: ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½*/
+    HI_S32              s32BuffNum;         /**<the number of the buffer.*//**<CNcomment: ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½*/
 } HI_UNF_BUFFER_ATTR_S;
 
 /** the running mode of vo*/
-/**CNcomment:VOÉè±¸µÄÔËÐÐÄ£Ê½ */
+/**CNcomment:VOï¿½è±¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä£Ê½ */
 typedef enum hiUNF_VO_DEV_MODE_E
 {
     HI_UNF_VO_DEV_MODE_NORMAL,  /**<normal mode:
                                   3716 V100/V200 :no more than 2 windows to be created.
                                   3716 v300:no more than 3 windows to be created.
                                   3712 v300:no more than 1 windows to be created.*/
-                                  /**<CNcomment: Õý³£Ä£Ê½£¬
-                                   3716 V100/V200:Ö»ÄÜ´´½¨2¸öWINDOW
-                                   3716 v300: Ö»ÄÜ´´½¨3¸öWINDOW
-                                   3712 v300: Ö»ÄÜ´´½¨1¸öWINDOW*/
+                                  /**<CNcomment: ï¿½ï¿½ï¿½ï¿½Ä£Ê½ï¿½ï¿½
+                                   3716 V100/V200:Ö»ï¿½Ü´ï¿½ï¿½ï¿½2ï¿½ï¿½WINDOW
+                                   3716 v300: Ö»ï¿½Ü´ï¿½ï¿½ï¿½3ï¿½ï¿½WINDOW
+                                   3712 v300: Ö»ï¿½Ü´ï¿½ï¿½ï¿½1ï¿½ï¿½WINDOW*/
     HI_UNF_VO_DEV_MODE_MOSAIC,  /**<mosaic mode: can create more than 2 windows.
                                  3712 v300: not support*/
-                                /**<CNcomment: ÂíÈü¿ËÄ£Ê½£¬¿ÉÒÔ´´½¨¶à¸öWINDOW
-                                 3712 v300: ²»Ö§³Ö*/
+                                /**<CNcomment: ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä£Ê½ï¿½ï¿½ï¿½ï¿½ï¿½Ô´ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½WINDOW
+                                 3712 v300: ï¿½ï¿½Ö§ï¿½ï¿½*/
     HI_UNF_VO_DEV_MODE_STANDALONE,  /**<seperate mode,only 1 window can be created,and  the aspect ratio set seperately.
                                         3716 v300: not support*/
-                                    /**<CNcomment: standaloneÄ£Ê½£¬¸ß±êÇåÏÔÊ¾¿í¸ß±È×ª»»µ¥¶À´¦ÀíÄ£Ê½
-                                     3716 v300 : ²»Ö§³Ö*/
+                                    /**<CNcomment: standaloneÄ£Ê½ï¿½ï¿½ï¿½ß±ï¿½ï¿½ï¿½ï¿½ï¿½Ê¾ï¿½ï¿½ß±ï¿½×ªï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä£Ê½
+                                     3716 v300 : ï¿½ï¿½Ö§ï¿½ï¿½*/
     HI_UNF_VO_DEV_MODE_BUTT
 } HI_UNF_VO_DEV_MODE_E;
 
 /**define the freeze mode enumeration.*/
-/**CNcomment:¶¨ÒåFreezeÄ£Ê½Ã¶¾Ù*/
+/**CNcomment:ï¿½ï¿½ï¿½ï¿½FreezeÄ£Ê½Ã¶ï¿½ï¿½*/
 typedef enum hiUNF_WINDOW_FREEZE_MODE_E
 {
-    HI_UNF_WINDOW_FREEZE_MODE_LAST = 0,   /**<display the last frame when freeze.*//**<CNcomment: freezeÊ±ÏÔÊ¾×îºóÒ»Ö¡*/
-    HI_UNF_WINDOW_FREEZE_MODE_BLACK = 1,  /**<display a black frame when freeze.*//**<CNcomment: freezeÊ±ÏÔÊ¾ºóºÚÆÁ*/
+    HI_UNF_WINDOW_FREEZE_MODE_LAST = 0,   /**<display the last frame when freeze.*//**<CNcomment: freezeÊ±ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½Ò»Ö¡*/
+    HI_UNF_WINDOW_FREEZE_MODE_BLACK = 1,  /**<display a black frame when freeze.*//**<CNcomment: freezeÊ±ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½ï¿½*/
     HI_UNF_WINDOW_FREEZE_MODE_BUTT
 } HI_UNF_WINDOW_FREEZE_MODE_E;
 
@@ -175,542 +175,542 @@ typedef enum hiUNF_WINDOW_FREEZE_MODE_E
 /** @{ */  /** <!-- [VO] */
 
 /**
-\brief  init vo module.CNcomment:³õÊ¼»¯VOÄ£¿é CNend
+\brief  init vo module.CNcomment:ï¿½ï¿½Ê¼ï¿½ï¿½VOÄ£ï¿½ï¿½ CNend
 \attention \n
 call this func before any other vo funcs .
-CNcomment:µ÷ÓÃVOÄ£¿éÒªÇóÊ×ÏÈµ÷ÓÃ±¾½Ó¿Ú CNend
-\param[in]   enDevMode  the vo running mode.  CNcomment:VOÄ£¿éµÄÔËÐÐÄ£Ê½ CNend
-\retval ::HI_SUCCESS successs.CNcomment:³É¹¦ CNend
-\retval ::HI_ERR_VO_DEV_NOT_EXIST  vo device not exist. CNcomment:VOÉè±¸²»´æÔÚ CNend
-\retval ::HI_ERR_VO_NOT_DEV_FILE   not vo device. CNcomment:VO·ÇÉè±¸ CNend
-\retval ::HI_ERR_VO_DEV_OPEN_ERR   open vo failed. CNcomment:VO´ò¿ªÊ§°Ü CNend
-\retval ::HI_ERR_VO_INVALID_PARA   illegal param. CNcomment:ÊäÈë²ÎÊý·Ç·¨ CNend
+CNcomment:ï¿½ï¿½ï¿½ï¿½VOÄ£ï¿½ï¿½Òªï¿½ï¿½ï¿½ï¿½ï¿½Èµï¿½ï¿½Ã±ï¿½ï¿½Ó¿ï¿½ CNend
+\param[in]   enDevMode  the vo running mode.  CNcomment:VOÄ£ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä£Ê½ CNend
+\retval ::HI_SUCCESS successs.CNcomment:ï¿½É¹ï¿½ CNend
+\retval ::HI_ERR_VO_DEV_NOT_EXIST  vo device not exist. CNcomment:VOï¿½è±¸ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ CNend
+\retval ::HI_ERR_VO_NOT_DEV_FILE   not vo device. CNcomment:VOï¿½ï¿½ï¿½è±¸ CNend
+\retval ::HI_ERR_VO_DEV_OPEN_ERR   open vo failed. CNcomment:VOï¿½ï¿½Ê§ï¿½ï¿½ CNend
+\retval ::HI_ERR_VO_INVALID_PARA   illegal param. CNcomment:ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ç·ï¿½ CNend
 \see \n
-CNcomment:ÎÞ CNend
+CNcomment:ï¿½ï¿½ CNend
 */
 HI_S32 HI_UNF_VO_Init(HI_UNF_VO_DEV_MODE_E enDevMode);
 
 /**
-\brief  deinit vo module.CNcomment:È¥³õÊ¼»¯VOÄ£¿é CNend
+\brief  deinit vo module.CNcomment:È¥ï¿½ï¿½Ê¼ï¿½ï¿½VOÄ£ï¿½ï¿½ CNend
 \attention \n
 before calling this func ,you should call HI_UNF_VO_Close to close all the windows first.
-CNcomment:ÔÚµ÷ÓÃ::HI_UNF_VO_Close½Ó¿Ú¹Ø±ÕËùÓÐ´ò¿ªµÄVOºóµ÷ÓÃ±¾½Ó¿Ú CNend
-\param CNcomment:ÎÞ CNend
-\retval ::HI_SUCCESS  success.CNcomment:³É¹¦ CNend
-\retval ::HI_ERR_VO_DEV_CLOSE_ERR  vo deinited failed. CNcomment:VO¹Ø±ÕÊ§°Ü CNend
+CNcomment:ï¿½Úµï¿½ï¿½ï¿½::HI_UNF_VO_Closeï¿½Ó¿Ú¹Ø±ï¿½ï¿½ï¿½ï¿½Ð´ò¿ªµï¿½VOï¿½ï¿½ï¿½ï¿½Ã±ï¿½ï¿½Ó¿ï¿½ CNend
+\param CNcomment:ï¿½ï¿½ CNend
+\retval ::HI_SUCCESS  success.CNcomment:ï¿½É¹ï¿½ CNend
+\retval ::HI_ERR_VO_DEV_CLOSE_ERR  vo deinited failed. CNcomment:VOï¿½Ø±ï¿½Ê§ï¿½ï¿½ CNend
 \see \n
-CNcomment:ÎÞ CNend
+CNcomment:ï¿½ï¿½ CNend
 */
 HI_S32 HI_UNF_VO_DeInit(HI_VOID);
 
 /**
-\brief create the window.CNcomment:´´½¨WINDOW CNend
+\brief create the window.CNcomment:ï¿½ï¿½ï¿½ï¿½WINDOW CNend
 \attention \n
-CNcomment:ÎÞ CNend
-\param[in] pWinAttr   a pointer typeof HI_UNF_WINDOW_ATTR_S.CNcomment:WINDOÊôÐÔ½á¹¹Ö¸Õë CNend
-\param[in] phWindow   the window handler to be created.CNcomment:´´½¨µÄWINDOW¾ä±ú CNend
-\retval ::HI_SUCCESS CNcomment:³É¹¦ CNend
-\retval ::HI_ERR_VO_NO_INIT    VO not inited.CNcomment:VOÎ´³õÊ¼»¯ CNend
-\retval ::HI_ERR_VO_INVALID_PARA   illegal params.CNcomment:ÊäÈë²ÎÊý·Ç·¨ CNend
-\retval ::HI_ERR_VO_NULL_PTR       null pointer.CNcomment:ÊäÈëÖ¸ÕëÎª¿Õ CNend
-\retval ::HI_ERR_VO_INVALID_OPT    illegal operation.CNcomment:²Ù×÷·Ç·¨ CNend
-\retval ::HI_ERR_VO_CREATE_ERR     CNcomment:´´½¨Ê§°Ü CNend
+CNcomment:ï¿½ï¿½ CNend
+\param[in] pWinAttr   a pointer typeof HI_UNF_WINDOW_ATTR_S.CNcomment:WINDOï¿½ï¿½ï¿½Ô½á¹¹Ö¸ï¿½ï¿½ CNend
+\param[in] phWindow   the window handler to be created.CNcomment:ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½WINDOWï¿½ï¿½ï¿½ CNend
+\retval ::HI_SUCCESS CNcomment:ï¿½É¹ï¿½ CNend
+\retval ::HI_ERR_VO_NO_INIT    VO not inited.CNcomment:VOÎ´ï¿½ï¿½Ê¼ï¿½ï¿½ CNend
+\retval ::HI_ERR_VO_INVALID_PARA   illegal params.CNcomment:ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ç·ï¿½ CNend
+\retval ::HI_ERR_VO_NULL_PTR       null pointer.CNcomment:ï¿½ï¿½ï¿½ï¿½Ö¸ï¿½ï¿½Îªï¿½ï¿½ CNend
+\retval ::HI_ERR_VO_INVALID_OPT    illegal operation.CNcomment:ï¿½ï¿½ï¿½ï¿½ï¿½Ç·ï¿½ CNend
+\retval ::HI_ERR_VO_CREATE_ERR     CNcomment:ï¿½ï¿½ï¿½ï¿½Ê§ï¿½ï¿½ CNend
 \see \n
-CNcomment:ÎÞ CNend
+CNcomment:ï¿½ï¿½ CNend
 */
 HI_S32 HI_UNF_VO_CreateWindow(const HI_UNF_WINDOW_ATTR_S *pWinAttr, HI_HANDLE *phWindow);
 
 /**
-\brief create the window.CNcomment:´´½¨²ÉÓÃÎïÀí×ø±êÏµµÄWINDOW CNend
+\brief create the window.CNcomment:ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ïµï¿½ï¿½WINDOW CNend
 \attention \n
-CNcomment:ÎÞ CNend
-\param[in] pWinAttr   a pointer typeof HI_UNF_WINDOW_ATTR_S.CNcomment:WINDOÊôÐÔ½á¹¹Ö¸Õë CNend
-\param[in] phWindow   the window handler to be created.CNcomment:´´½¨µÄWINDOW¾ä±ú CNend
-\param[in] bVirtScreen   flag indicates whether creating with virtscreen coordinate.CNcomment:ÊÇ·ñ²ÉÓÃÐéÄâ×ø±êÏµ CNend
-\retval ::HI_SUCCESS CNcomment:³É¹¦ CNend
-\retval ::HI_ERR_VO_NO_INIT    VO not inited.CNcomment:VOÎ´³õÊ¼»¯ CNend
-\retval ::HI_ERR_VO_INVALID_PARA   illegal params.CNcomment:ÊäÈë²ÎÊý·Ç·¨ CNend
-\retval ::HI_ERR_VO_NULL_PTR       null pointer.CNcomment:ÊäÈëÖ¸ÕëÎª¿Õ CNend
-\retval ::HI_ERR_VO_INVALID_OPT    illegal operation.CNcomment:²Ù×÷·Ç·¨ CNend
-\retval ::HI_ERR_VO_CREATE_ERR     CNcomment:´´½¨Ê§°Ü CNend
+CNcomment:ï¿½ï¿½ CNend
+\param[in] pWinAttr   a pointer typeof HI_UNF_WINDOW_ATTR_S.CNcomment:WINDOï¿½ï¿½ï¿½Ô½á¹¹Ö¸ï¿½ï¿½ CNend
+\param[in] phWindow   the window handler to be created.CNcomment:ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½WINDOWï¿½ï¿½ï¿½ CNend
+\param[in] bVirtScreen   flag indicates whether creating with virtscreen coordinate.CNcomment:ï¿½Ç·ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ïµ CNend
+\retval ::HI_SUCCESS CNcomment:ï¿½É¹ï¿½ CNend
+\retval ::HI_ERR_VO_NO_INIT    VO not inited.CNcomment:VOÎ´ï¿½ï¿½Ê¼ï¿½ï¿½ CNend
+\retval ::HI_ERR_VO_INVALID_PARA   illegal params.CNcomment:ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ç·ï¿½ CNend
+\retval ::HI_ERR_VO_NULL_PTR       null pointer.CNcomment:ï¿½ï¿½ï¿½ï¿½Ö¸ï¿½ï¿½Îªï¿½ï¿½ CNend
+\retval ::HI_ERR_VO_INVALID_OPT    illegal operation.CNcomment:ï¿½ï¿½ï¿½ï¿½ï¿½Ç·ï¿½ CNend
+\retval ::HI_ERR_VO_CREATE_ERR     CNcomment:ï¿½ï¿½ï¿½ï¿½Ê§ï¿½ï¿½ CNend
 \see \n
-CNcomment:ÎÞ CNend
+CNcomment:ï¿½ï¿½ CNend
 */
 HI_S32 HI_UNF_VO_CreateWindowExt(const HI_UNF_WINDOW_ATTR_S* pWinAttr,
                                   HI_HANDLE *phWindow,
                                   HI_BOOL bVirtScreen);
 
 /**
-\brief  destroy the given window.CNcomment:Ïú»ÙWINDOW CNend
+\brief  destroy the given window.CNcomment:ï¿½ï¿½ï¿½ï¿½WINDOW CNend
 \attention \n
 user should disable window before call this func
-CNcomment:ÇëÏÈµ÷ÓÃ½Ó¿Údisable´°¿Ú£¬ ÔÙµ÷ÓÃ´Ë½Ó¿Ú CNend
-\param[in] hWindow    the input window handler. CNcomment:WINDOW¾ä±ú CNend
-\retval ::HI_SUCCESS CNcomment:³É¹¦ CNend
-\retval ::HI_ERR_VO_NO_INIT   VO not inited. CNcomment:VOÎ´³õÊ¼»¯ CNend
-\retval ::HI_ERR_VO_INVALID_PARA   illegal params.CNcomment:ÊäÈë²ÎÊý·Ç·¨ CNend
-\retval ::HI_ERR_VO_NULL_PTR       null pointer.CNcomment:ÊäÈëÖ¸ÕëÎª¿Õ CNend
-\retval ::HI_ERR_VO_INVALID_OPT    illegal operation.CNcomment:²Ù×÷·Ç·¨ CNend
-\retval ::HI_ERR_VO_WIN_NOT_EXIST  windows not exist.CNcomment:´°¿Ú²»´æÔÚ CNend
+CNcomment:ï¿½ï¿½ï¿½Èµï¿½ï¿½Ã½Ó¿ï¿½disableï¿½ï¿½ï¿½Ú£ï¿½ ï¿½Ùµï¿½ï¿½Ã´Ë½Ó¿ï¿½ CNend
+\param[in] hWindow    the input window handler. CNcomment:WINDOWï¿½ï¿½ï¿½ CNend
+\retval ::HI_SUCCESS CNcomment:ï¿½É¹ï¿½ CNend
+\retval ::HI_ERR_VO_NO_INIT   VO not inited. CNcomment:VOÎ´ï¿½ï¿½Ê¼ï¿½ï¿½ CNend
+\retval ::HI_ERR_VO_INVALID_PARA   illegal params.CNcomment:ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ç·ï¿½ CNend
+\retval ::HI_ERR_VO_NULL_PTR       null pointer.CNcomment:ï¿½ï¿½ï¿½ï¿½Ö¸ï¿½ï¿½Îªï¿½ï¿½ CNend
+\retval ::HI_ERR_VO_INVALID_OPT    illegal operation.CNcomment:ï¿½ï¿½ï¿½ï¿½ï¿½Ç·ï¿½ CNend
+\retval ::HI_ERR_VO_WIN_NOT_EXIST  windows not exist.CNcomment:ï¿½ï¿½ï¿½Ú²ï¿½ï¿½ï¿½ï¿½ï¿½ CNend
 \see \n
-CNcomment:ÎÞ CNend
+CNcomment:ï¿½ï¿½ CNend
 */
 HI_S32 HI_UNF_VO_DestroyWindow(HI_HANDLE hWindow);
 
 
 /**
-\brief to enable or disable the given window.CNcomment:Ê¹ÄÜ/½ûÖ¹WINDOW CNend
+\brief to enable or disable the given window.CNcomment:Ê¹ï¿½ï¿½/ï¿½ï¿½Ö¹WINDOW CNend
 \attention \n
 Window can only be disabled after the corresponding avplay is stopped, else data will overflow.
-CNcomment:Ö»ÓÐÏÈ½«AVPLAYµÄVIDÍ¨µÀstopºó£¬²ÅÄÜ½ûÖ¹window£¬·ñÔò½«ÒýÆðÊý¾ÝµÄÒç³ö CNend
-\param[in] hWindow     the input window handler.CNcomment:WINDOW¾ä±ú CNend
-\param[in] bEnable     the flag  of enable or disable window. CNcomment:Ê¹ÄÜ/½ûÖ¹±êÖ¾ CNend
-\retval ::HI_SUCCESS CNcomment:³É¹¦ CNend
-\retval ::HI_ERR_VO_NO_INIT    VO not inited.CNcomment:VOÎ´³õÊ¼»¯ CNend
-\retval ::HI_ERR_VO_INVALID_PARA   illegal params.CNcomment:ÊäÈë²ÎÊý·Ç·¨ CNend
-\retval ::HI_ERR_VO_NULL_PTR       null pointer.CNcomment:ÊäÈëÖ¸ÕëÎª¿Õ CNend
-\retval ::HI_ERR_VO_INVALID_OPT    illegal operation.CNcomment:²Ù×÷·Ç·¨ CNend
-\retval ::HI_ERR_VO_WIN_NOT_EXIST  windows not exist.CNcomment:´°¿Ú²»´æÔÚ CNend
+CNcomment:Ö»ï¿½ï¿½ï¿½È½ï¿½AVPLAYï¿½ï¿½VIDÍ¨ï¿½ï¿½stopï¿½ó£¬²ï¿½ï¿½Ü½ï¿½Ö¹windowï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ýµï¿½ï¿½ï¿½ï¿½ CNend
+\param[in] hWindow     the input window handler.CNcomment:WINDOWï¿½ï¿½ï¿½ CNend
+\param[in] bEnable     the flag  of enable or disable window. CNcomment:Ê¹ï¿½ï¿½/ï¿½ï¿½Ö¹ï¿½ï¿½Ö¾ CNend
+\retval ::HI_SUCCESS CNcomment:ï¿½É¹ï¿½ CNend
+\retval ::HI_ERR_VO_NO_INIT    VO not inited.CNcomment:VOÎ´ï¿½ï¿½Ê¼ï¿½ï¿½ CNend
+\retval ::HI_ERR_VO_INVALID_PARA   illegal params.CNcomment:ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ç·ï¿½ CNend
+\retval ::HI_ERR_VO_NULL_PTR       null pointer.CNcomment:ï¿½ï¿½ï¿½ï¿½Ö¸ï¿½ï¿½Îªï¿½ï¿½ CNend
+\retval ::HI_ERR_VO_INVALID_OPT    illegal operation.CNcomment:ï¿½ï¿½ï¿½ï¿½ï¿½Ç·ï¿½ CNend
+\retval ::HI_ERR_VO_WIN_NOT_EXIST  windows not exist.CNcomment:ï¿½ï¿½ï¿½Ú²ï¿½ï¿½ï¿½ï¿½ï¿½ CNend
 \see \n
-CNcomment:ÎÞ CNend
+CNcomment:ï¿½ï¿½ CNend
 */
 HI_S32 HI_UNF_VO_SetWindowEnable(HI_HANDLE hWindow, HI_BOOL bEnable);
 
 /**
-\brief get the status of the given window: enable or not.CNcomment:»ñÈ¡WINDOWµÄÊ¹ÄÜ×´Ì¬ CNend
+\brief get the status of the given window: enable or not.CNcomment:ï¿½ï¿½È¡WINDOWï¿½ï¿½Ê¹ï¿½ï¿½×´Ì¬ CNend
 \attention \n
-CNcomment:ÎÞ CNend
-\param[in] hWindow     the input window handler.CNcomment:WINDOW¾ä±ú CNend
-\param[in] pbEnable    the status of window:enable or disable.CNcomment:Ê¹ÄÜ/½ûÖ¹±êÖ¾. CNend
-\retval ::HI_SUCCESS CNcomment:³É¹¦ CNend
-\retval ::HI_ERR_VO_NO_INIT    VO not inited.CNcomment:VOÎ´³õÊ¼»¯ CNend
-\retval ::HI_ERR_VO_INVALID_PARA   illegal params.CNcomment:ÊäÈë²ÎÊý·Ç·¨ CNend
-\retval ::HI_ERR_VO_NULL_PTR       null pointer.CNcomment:ÊäÈëÖ¸ÕëÎª¿Õ CNend
-\retval ::HI_ERR_VO_INVALID_OPT    illegal operation.CNcomment:²Ù×÷·Ç·¨ CNend
-\retval ::HI_ERR_VO_WIN_NOT_EXIST  windows not exist.CNcomment:´°¿Ú²»´æÔÚ CNend
+CNcomment:ï¿½ï¿½ CNend
+\param[in] hWindow     the input window handler.CNcomment:WINDOWï¿½ï¿½ï¿½ CNend
+\param[in] pbEnable    the status of window:enable or disable.CNcomment:Ê¹ï¿½ï¿½/ï¿½ï¿½Ö¹ï¿½ï¿½Ö¾. CNend
+\retval ::HI_SUCCESS CNcomment:ï¿½É¹ï¿½ CNend
+\retval ::HI_ERR_VO_NO_INIT    VO not inited.CNcomment:VOÎ´ï¿½ï¿½Ê¼ï¿½ï¿½ CNend
+\retval ::HI_ERR_VO_INVALID_PARA   illegal params.CNcomment:ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ç·ï¿½ CNend
+\retval ::HI_ERR_VO_NULL_PTR       null pointer.CNcomment:ï¿½ï¿½ï¿½ï¿½Ö¸ï¿½ï¿½Îªï¿½ï¿½ CNend
+\retval ::HI_ERR_VO_INVALID_OPT    illegal operation.CNcomment:ï¿½ï¿½ï¿½ï¿½ï¿½Ç·ï¿½ CNend
+\retval ::HI_ERR_VO_WIN_NOT_EXIST  windows not exist.CNcomment:ï¿½ï¿½ï¿½Ú²ï¿½ï¿½ï¿½ï¿½ï¿½ CNend
 \see \n
-CNcomment:ÎÞ CNend
+CNcomment:ï¿½ï¿½ CNend
 */
 HI_S32 HI_UNF_VO_GetWindowEnable(HI_HANDLE hWindow, HI_BOOL *pbEnable);
 
 /**
-\brief set the attribution of the given window.CNcomment:ÉèÖÃWINDOWÊôÐÔ CNend
+\brief set the attribution of the given window.CNcomment:ï¿½ï¿½ï¿½ï¿½WINDOWï¿½ï¿½ï¿½ï¿½ CNend
 \attention \n
 the two members of pWinAttr:enDisp and bVirtual are fixed when window created, and they can't be modified here.
 Each value as HI_UNF_WINDOW_ATTR_S Definition
-CNcomment:enDispºÍbVirtual²ÎÊýÒ»µ©´´½¨ºó¾Í²»ÄÜÔÙ½øÐÐÐÞ¸Ä¡£²ÎÊýÐÞ¸Ä²ÎÕÕHI_UNF_WINDOW_ATTR_SµÄ²ÎÊýËµÃ÷¡£ CNend
-\param[in] hWindow    the input window handler.CNcomment:WINDOW¾ä±ú CNend
-\param[in] pWinAttr   the pointer of windows attr.CNcomment:WINDOÊôÐÔ½á¹¹Ö¸Õë CNend
-\retval ::HI_SUCCESS CNcomment:³É¹¦ CNend
-\retval ::HI_ERR_VO_NO_INIT   VO not inited. CNcomment:VOÎ´³õÊ¼»¯ CNend
-\retval ::HI_ERR_VO_INVALID_PARA   illegal params.CNcomment:ÊäÈë²ÎÊý·Ç·¨ CNend
-\retval ::HI_ERR_VO_NULL_PTR       null pointer.CNcomment:ÊäÈëÖ¸ÕëÎª¿Õ CNend
-\retval ::HI_ERR_VO_INVALID_OPT    illegal operation.CNcomment:²Ù×÷·Ç·¨ CNend
-\retval ::HI_ERR_VO_WIN_NOT_EXIST  windows not exist.CNcomment:´°¿Ú²»´æÔÚ CNend
+CNcomment:enDispï¿½ï¿½bVirtualï¿½ï¿½ï¿½ï¿½Ò»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í²ï¿½ï¿½ï¿½ï¿½Ù½ï¿½ï¿½ï¿½ï¿½Þ¸Ä¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Þ¸Ä²ï¿½ï¿½ï¿½HI_UNF_WINDOW_ATTR_Sï¿½Ä²ï¿½ï¿½ï¿½Ëµï¿½ï¿½ï¿½ï¿½ CNend
+\param[in] hWindow    the input window handler.CNcomment:WINDOWï¿½ï¿½ï¿½ CNend
+\param[in] pWinAttr   the pointer of windows attr.CNcomment:WINDOï¿½ï¿½ï¿½Ô½á¹¹Ö¸ï¿½ï¿½ CNend
+\retval ::HI_SUCCESS CNcomment:ï¿½É¹ï¿½ CNend
+\retval ::HI_ERR_VO_NO_INIT   VO not inited. CNcomment:VOÎ´ï¿½ï¿½Ê¼ï¿½ï¿½ CNend
+\retval ::HI_ERR_VO_INVALID_PARA   illegal params.CNcomment:ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ç·ï¿½ CNend
+\retval ::HI_ERR_VO_NULL_PTR       null pointer.CNcomment:ï¿½ï¿½ï¿½ï¿½Ö¸ï¿½ï¿½Îªï¿½ï¿½ CNend
+\retval ::HI_ERR_VO_INVALID_OPT    illegal operation.CNcomment:ï¿½ï¿½ï¿½ï¿½ï¿½Ç·ï¿½ CNend
+\retval ::HI_ERR_VO_WIN_NOT_EXIST  windows not exist.CNcomment:ï¿½ï¿½ï¿½Ú²ï¿½ï¿½ï¿½ï¿½ï¿½ CNend
 \see \n
-CNcomment:ÎÞ CNend
+CNcomment:ï¿½ï¿½ CNend
 */
 HI_S32 HI_UNF_VO_SetWindowAttr(HI_HANDLE hWindow, const HI_UNF_WINDOW_ATTR_S *pWinAttr);
 
 /**
-\brief get the attribution of the given window.CNcomment:»ñÈ¡WINDOWÊôÐÔ CNend
+\brief get the attribution of the given window.CNcomment:ï¿½ï¿½È¡WINDOWï¿½ï¿½ï¿½ï¿½ CNend
 \attention \n
-CNcomment:ÎÞ CNend
-\param[in] hWindow     the input window handler.CNcomment:WINDOW¾ä±ú CNend
-\param[in] pWinAttr    the pointer of windows attr. CNcomment:WINDOÊôÐÔ½á¹¹Ö¸Õë CNend
-\retval ::HI_SUCCESS CNcomment:³É¹¦ CNend
-\retval ::HI_ERR_VO_NO_INIT    VO not inited. CNcomment:VOÎ´³õÊ¼»¯ CNend
-\retval ::HI_ERR_VO_INVALID_PARA   illegal params.CNcomment:ÊäÈë²ÎÊý·Ç·¨ CNend
-\retval ::HI_ERR_VO_NULL_PTR       null pointer.CNcomment:ÊäÈëÖ¸ÕëÎª¿Õ CNend
-\retval ::HI_ERR_VO_INVALID_OPT    illegal operation.CNcomment:²Ù×÷·Ç·¨ CNend
-\retval ::HI_ERR_VO_WIN_NOT_EXIST  windows not exist.CNcomment:´°¿Ú²»´æÔÚ CNend
+CNcomment:ï¿½ï¿½ CNend
+\param[in] hWindow     the input window handler.CNcomment:WINDOWï¿½ï¿½ï¿½ CNend
+\param[in] pWinAttr    the pointer of windows attr. CNcomment:WINDOï¿½ï¿½ï¿½Ô½á¹¹Ö¸ï¿½ï¿½ CNend
+\retval ::HI_SUCCESS CNcomment:ï¿½É¹ï¿½ CNend
+\retval ::HI_ERR_VO_NO_INIT    VO not inited. CNcomment:VOÎ´ï¿½ï¿½Ê¼ï¿½ï¿½ CNend
+\retval ::HI_ERR_VO_INVALID_PARA   illegal params.CNcomment:ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ç·ï¿½ CNend
+\retval ::HI_ERR_VO_NULL_PTR       null pointer.CNcomment:ï¿½ï¿½ï¿½ï¿½Ö¸ï¿½ï¿½Îªï¿½ï¿½ CNend
+\retval ::HI_ERR_VO_INVALID_OPT    illegal operation.CNcomment:ï¿½ï¿½ï¿½ï¿½ï¿½Ç·ï¿½ CNend
+\retval ::HI_ERR_VO_WIN_NOT_EXIST  windows not exist.CNcomment:ï¿½ï¿½ï¿½Ú²ï¿½ï¿½ï¿½ï¿½ï¿½ CNend
 \see \n
-CNcomment:ÎÞ CNend
+CNcomment:ï¿½ï¿½ CNend
 */
 HI_S32 HI_UNF_VO_GetWindowAttr(HI_HANDLE hWindow, HI_UNF_WINDOW_ATTR_S *pWinAttr);
 
 /**
-\brief get the frame from given window.CNcomment:»ñÈ¡WINDOWµÄFrameÐÅÏ¢ CNend
+\brief get the frame from given window.CNcomment:ï¿½ï¿½È¡WINDOWï¿½ï¿½Frameï¿½ï¿½Ï¢ CNend
 \attention \n
-CNcomment:ÎÞ CNend
-\param[in] hWindow     the input window handler.CNcomment:WINDOW¾ä±ú CNend
-\param[out] pstFrameinfo  frame information. CNcomment:FrameÐÅÏ¢ CNend
-\param[in] u32TimeoutMs wait time in ms.CNcomment:µÈ´ýÊ±¼ä£¬ºÁÃëÎªµ¥Î» CNend
-\retval ::HI_SUCCESS CNcomment:³É¹¦ CNend
-\retval ::HI_ERR_VO_NO_INIT   VO not inited.CNcomment: VOÎ´³õÊ¼»¯ CNend
-\retval ::HI_ERR_VO_INVALID_PARA   illegal params.CNcomment:ÊäÈë²ÎÊý·Ç·¨ CNend
-\retval ::HI_ERR_VO_NULL_PTR       null pointer.CNcomment:ÊäÈëÖ¸ÕëÎª¿Õ CNend
-\retval ::HI_ERR_VO_INVALID_OPT    illegal operation.CNcomment:²Ù×÷·Ç·¨ CNend
-\retval ::HI_ERR_VO_WIN_NOT_EXIST  windows not exist.CNcomment:´°¿Ú²»´æÔÚ CNend
+CNcomment:ï¿½ï¿½ CNend
+\param[in] hWindow     the input window handler.CNcomment:WINDOWï¿½ï¿½ï¿½ CNend
+\param[out] pstFrameinfo  frame information. CNcomment:Frameï¿½ï¿½Ï¢ CNend
+\param[in] u32TimeoutMs wait time in ms.CNcomment:ï¿½È´ï¿½Ê±ï¿½ä£¬ï¿½ï¿½ï¿½ï¿½Îªï¿½ï¿½Î» CNend
+\retval ::HI_SUCCESS CNcomment:ï¿½É¹ï¿½ CNend
+\retval ::HI_ERR_VO_NO_INIT   VO not inited.CNcomment: VOÎ´ï¿½ï¿½Ê¼ï¿½ï¿½ CNend
+\retval ::HI_ERR_VO_INVALID_PARA   illegal params.CNcomment:ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ç·ï¿½ CNend
+\retval ::HI_ERR_VO_NULL_PTR       null pointer.CNcomment:ï¿½ï¿½ï¿½ï¿½Ö¸ï¿½ï¿½Îªï¿½ï¿½ CNend
+\retval ::HI_ERR_VO_INVALID_OPT    illegal operation.CNcomment:ï¿½ï¿½ï¿½ï¿½ï¿½Ç·ï¿½ CNend
+\retval ::HI_ERR_VO_WIN_NOT_EXIST  windows not exist.CNcomment:ï¿½ï¿½ï¿½Ú²ï¿½ï¿½ï¿½ï¿½ï¿½ CNend
 \see \n
-CNcomment:ÎÞ CNend
+CNcomment:ï¿½ï¿½ CNend
 */
 HI_S32 HI_UNF_VO_AcquireFrame(HI_HANDLE hWindow, HI_UNF_VIDEO_FRAME_INFO_S *pstFrameinfo, HI_U32 u32TimeoutMs);
 
 /**
-\brief return the frame back to the given window, used for 3d graphics testing.CNcomment:ÊÍ·ÅÓÃ»§»ñÈ¡WINDOWµÄFrame£¬×¨ÃÅÓÃÓÚ3DÍ¼ÐÎ²âÊÔ CNend
+\brief return the frame back to the given window, used for 3d graphics testing.CNcomment:ï¿½Í·ï¿½ï¿½Ã»ï¿½ï¿½ï¿½È¡WINDOWï¿½ï¿½Frameï¿½ï¿½×¨ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½3DÍ¼ï¿½Î²ï¿½ï¿½ï¿½ CNend
 \attention \n
-CNcomment:ÎÞ CNend
-\param[in] hWindow     the input window handler.CNcomment:WINDOW¾ä±ú CNend
-\retval ::HI_SUCCESS CNcomment:³É¹¦ CNend
-\retval ::HI_ERR_VO_NO_INIT    VO not inited.CNcomment:VOÎ´³õÊ¼»¯ CNend
-\retval ::HI_ERR_VO_INVALID_PARA   illegal params.CNcomment:ÊäÈë²ÎÊý·Ç·¨ CNend
-\retval ::HI_ERR_VO_NULL_PTR       null pointer.CNcomment:ÊäÈëÖ¸ÕëÎª¿Õ CNend
-\retval ::HI_ERR_VO_INVALID_OPT    illegal operation.CNcomment:²Ù×÷·Ç·¨ CNend
-\retval ::HI_ERR_VO_WIN_NOT_EXIST  windows not exist.CNcomment:´°¿Ú²»´æÔÚ CNend
+CNcomment:ï¿½ï¿½ CNend
+\param[in] hWindow     the input window handler.CNcomment:WINDOWï¿½ï¿½ï¿½ CNend
+\retval ::HI_SUCCESS CNcomment:ï¿½É¹ï¿½ CNend
+\retval ::HI_ERR_VO_NO_INIT    VO not inited.CNcomment:VOÎ´ï¿½ï¿½Ê¼ï¿½ï¿½ CNend
+\retval ::HI_ERR_VO_INVALID_PARA   illegal params.CNcomment:ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ç·ï¿½ CNend
+\retval ::HI_ERR_VO_NULL_PTR       null pointer.CNcomment:ï¿½ï¿½ï¿½ï¿½Ö¸ï¿½ï¿½Îªï¿½ï¿½ CNend
+\retval ::HI_ERR_VO_INVALID_OPT    illegal operation.CNcomment:ï¿½ï¿½ï¿½ï¿½ï¿½Ç·ï¿½ CNend
+\retval ::HI_ERR_VO_WIN_NOT_EXIST  windows not exist.CNcomment:ï¿½ï¿½ï¿½Ú²ï¿½ï¿½ï¿½ï¿½ï¿½ CNend
 \see \n
-CNcomment:ÎÞ CNend
+CNcomment:ï¿½ï¿½ CNend
 */
 HI_S32 HI_UNF_VO_ReleaseFrame(HI_HANDLE hWindow,HI_UNF_VIDEO_FRAME_INFO_S *pstFrameinfo);
 
 /**
-\brief set the zorder of the given window.CNcomment:ÉèÖÃWINDOWµÄZÐò CNend
+\brief set the zorder of the given window.CNcomment:ï¿½ï¿½ï¿½ï¿½WINDOWï¿½ï¿½Zï¿½ï¿½ CNend
 \attention \n
-CNcomment:ÎÞ CNend
-\param[in] hWindow    the input window handler.CNcomment:WINDOW¾ä±ú CNend
-\param[in] enZFlag    how to adjust zorder. CNcomment:ZÐòµ÷½Ú·½Ê½ CNend
-\retval ::HI_SUCCESS CNcomment:³É¹¦ CNend
-\retval ::HI_ERR_VO_NO_INIT   VO not inited. CNcomment:VOÎ´³õÊ¼»¯ CNend
-\retval ::HI_ERR_VO_INVALID_PARA   illegal params.CNcomment:ÊäÈë²ÎÊý·Ç·¨ CNend
-\retval ::HI_ERR_VO_NULL_PTR       null pointer.CNcomment:ÊäÈëÖ¸ÕëÎª¿Õ CNend
-\retval ::HI_ERR_VO_INVALID_OPT    illegal operation.CNcomment:²Ù×÷·Ç·¨ CNend
-\retval ::HI_ERR_VO_WIN_NOT_EXIST  windows not exist.CNcomment:´°¿Ú²»´æÔÚ CNend
+CNcomment:ï¿½ï¿½ CNend
+\param[in] hWindow    the input window handler.CNcomment:WINDOWï¿½ï¿½ï¿½ CNend
+\param[in] enZFlag    how to adjust zorder. CNcomment:Zï¿½ï¿½ï¿½ï¿½Ú·ï¿½Ê½ CNend
+\retval ::HI_SUCCESS CNcomment:ï¿½É¹ï¿½ CNend
+\retval ::HI_ERR_VO_NO_INIT   VO not inited. CNcomment:VOÎ´ï¿½ï¿½Ê¼ï¿½ï¿½ CNend
+\retval ::HI_ERR_VO_INVALID_PARA   illegal params.CNcomment:ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ç·ï¿½ CNend
+\retval ::HI_ERR_VO_NULL_PTR       null pointer.CNcomment:ï¿½ï¿½ï¿½ï¿½Ö¸ï¿½ï¿½Îªï¿½ï¿½ CNend
+\retval ::HI_ERR_VO_INVALID_OPT    illegal operation.CNcomment:ï¿½ï¿½ï¿½ï¿½ï¿½Ç·ï¿½ CNend
+\retval ::HI_ERR_VO_WIN_NOT_EXIST  windows not exist.CNcomment:ï¿½ï¿½ï¿½Ú²ï¿½ï¿½ï¿½ï¿½ï¿½ CNend
 \see \n
-CNcomment:ÎÞ CNend
+CNcomment:ï¿½ï¿½ CNend
 */
 HI_S32 HI_UNF_VO_SetWindowZorder(HI_HANDLE hWindow, HI_LAYER_ZORDER_E enZFlag);
 
 /**
-\brief get the zorder of the given window.CNcomment:»ñÈ¡WINDOWµÄZÐò CNend
+\brief get the zorder of the given window.CNcomment:ï¿½ï¿½È¡WINDOWï¿½ï¿½Zï¿½ï¿½ CNend
 \attention \n
-CNcomment:ÎÞ CNend
-\param[in] hWindow       the input window handler.CNcomment:WINDOW¾ä±ú CNend
-\param[in] pu32Zorder    value of zoder, bigger value means higher prioty. CNcomment:ZÐòÊýÖµ£¬ÊýÖµÔ½´óÓÅÏÈ¼¶Ô½¸ß CNend
-\retval ::HI_SUCCESS CNcomment:³É¹¦ CNend
-\retval ::HI_ERR_VO_NO_INIT    VO not inited.CNcomment:VOÎ´³õÊ¼»¯ CNend
-\retval ::HI_ERR_VO_INVALID_PARA   illegal params.CNcomment:ÊäÈë²ÎÊý·Ç·¨ CNend
-\retval ::HI_ERR_VO_NULL_PTR       null pointer.CNcomment:ÊäÈëÖ¸ÕëÎª¿Õ CNend
-\retval ::HI_ERR_VO_INVALID_OPT    illegal operation.CNcomment:²Ù×÷·Ç·¨ CNend
-\retval ::HI_ERR_VO_WIN_NOT_EXIST  windows not exist.CNcomment:´°¿Ú²»´æÔÚ CNend
+CNcomment:ï¿½ï¿½ CNend
+\param[in] hWindow       the input window handler.CNcomment:WINDOWï¿½ï¿½ï¿½ CNend
+\param[in] pu32Zorder    value of zoder, bigger value means higher prioty. CNcomment:Zï¿½ï¿½ï¿½ï¿½Öµï¿½ï¿½ï¿½ï¿½ÖµÔ½ï¿½ï¿½ï¿½ï¿½ï¿½È¼ï¿½Ô½ï¿½ï¿½ CNend
+\retval ::HI_SUCCESS CNcomment:ï¿½É¹ï¿½ CNend
+\retval ::HI_ERR_VO_NO_INIT    VO not inited.CNcomment:VOÎ´ï¿½ï¿½Ê¼ï¿½ï¿½ CNend
+\retval ::HI_ERR_VO_INVALID_PARA   illegal params.CNcomment:ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ç·ï¿½ CNend
+\retval ::HI_ERR_VO_NULL_PTR       null pointer.CNcomment:ï¿½ï¿½ï¿½ï¿½Ö¸ï¿½ï¿½Îªï¿½ï¿½ CNend
+\retval ::HI_ERR_VO_INVALID_OPT    illegal operation.CNcomment:ï¿½ï¿½ï¿½ï¿½ï¿½Ç·ï¿½ CNend
+\retval ::HI_ERR_VO_WIN_NOT_EXIST  windows not exist.CNcomment:ï¿½ï¿½ï¿½Ú²ï¿½ï¿½ï¿½ï¿½ï¿½ CNend
 \see \n
-CNcomment:ÎÞ CNend
+CNcomment:ï¿½ï¿½ CNend
 */
 HI_S32 HI_UNF_VO_GetWindowZorder(HI_HANDLE hWindow, HI_U32 *pu32Zorder);
 
 /**
-\brief attach the window with video source such as vi/avplay.CNcomment:°ÑWINDOWÓëÖ¸¶¨µÄAVPLAY/VI°ó¶¨ CNend
+\brief attach the window with video source such as vi/avplay.CNcomment:ï¿½ï¿½WINDOWï¿½ï¿½Ö¸ï¿½ï¿½ï¿½ï¿½AVPLAY/VIï¿½ï¿½ CNend
 \attention \n
 it can attach the handler of avplay or vi to the window.
-CNcomment:¿ÉÒÔ½«AVPLAY»òVIµÄ¾ä±ú°ó¶¨µ½WINDOWÉÏ¡£ CNend
-\param[in] hWindow     the input window handler. CNcomment:WINDOW¾ä±ú CNend
-\param[in] hSrc        the handler of video source. CNcomment:Êý¾ÝÔ´¾ä±ú CNend
-\retval ::HI_SUCCESS CNcomment:³É¹¦ CNend
-\retval ::HI_ERR_VO_NO_INIT    VO not inited.CNcomment:VOÎ´³õÊ¼»¯ CNend
-\retval ::HI_ERR_VO_INVALID_PARA  illegal params. CNcomment:ÊäÈë²ÎÊý·Ç·¨ CNend
-\retval ::HI_ERR_VO_NULL_PTR       null pointer.CNcomment:ÊäÈëÖ¸ÕëÎª¿Õ CNend
-\retval ::HI_ERR_VO_INVALID_OPT    illegal operation.CNcomment:²Ù×÷·Ç·¨ CNend
-\retval ::HI_ERR_VO_WIN_NOT_EXIST  windows not exist.CNcomment:´°¿Ú²»´æÔÚ CNend
+CNcomment:ï¿½ï¿½ï¿½Ô½ï¿½AVPLAYï¿½ï¿½VIï¿½Ä¾ï¿½ï¿½ï¿½ó¶¨µï¿½WINDOWï¿½Ï¡ï¿½ CNend
+\param[in] hWindow     the input window handler. CNcomment:WINDOWï¿½ï¿½ï¿½ CNend
+\param[in] hSrc        the handler of video source. CNcomment:ï¿½ï¿½ï¿½ï¿½Ô´ï¿½ï¿½ï¿½ CNend
+\retval ::HI_SUCCESS CNcomment:ï¿½É¹ï¿½ CNend
+\retval ::HI_ERR_VO_NO_INIT    VO not inited.CNcomment:VOÎ´ï¿½ï¿½Ê¼ï¿½ï¿½ CNend
+\retval ::HI_ERR_VO_INVALID_PARA  illegal params. CNcomment:ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ç·ï¿½ CNend
+\retval ::HI_ERR_VO_NULL_PTR       null pointer.CNcomment:ï¿½ï¿½ï¿½ï¿½Ö¸ï¿½ï¿½Îªï¿½ï¿½ CNend
+\retval ::HI_ERR_VO_INVALID_OPT    illegal operation.CNcomment:ï¿½ï¿½ï¿½ï¿½ï¿½Ç·ï¿½ CNend
+\retval ::HI_ERR_VO_WIN_NOT_EXIST  windows not exist.CNcomment:ï¿½ï¿½ï¿½Ú²ï¿½ï¿½ï¿½ï¿½ï¿½ CNend
 \see \n
-CNcomment:ÎÞ CNend
+CNcomment:ï¿½ï¿½ CNend
 */
 HI_S32 HI_UNF_VO_AttachWindow(HI_HANDLE hWindow, HI_HANDLE hSrc);
 
 
 /**
-\brief detach the window from the video source such as avplay or vi.CNcomment:°ÑWINDOWÓëÖ¸¶¨µÄAVPLAY/VI½â°ó¶¨ CNend
+\brief detach the window from the video source such as avplay or vi.CNcomment:ï¿½ï¿½WINDOWï¿½ï¿½Ö¸ï¿½ï¿½ï¿½ï¿½AVPLAY/VIï¿½ï¿½ï¿½ CNend
 \attention \n
-CNcomment:ÎÞ CNend
-\param[in] hWindow     the input window handler.CNcomment:WINDOW¾ä±ú CNend
-\param[in] hSrc        the handler of video source.CNcomment:Êý¾ÝÔ´¾ä±ú CNend
-\retval ::HI_SUCCESS CNcomment:³É¹¦ CNend
-\retval ::HI_ERR_VO_NO_INIT    VO not inited.CNcomment:VOÎ´³õÊ¼»¯ CNend
-\retval ::HI_ERR_VO_INVALID_PARA   illegal params.CNcomment:ÊäÈë²ÎÊý·Ç·¨ CNend
-\retval ::HI_ERR_VO_NULL_PTR      null pointer.CNcomment: ÊäÈëÖ¸ÕëÎª¿Õ CNend
-\retval ::HI_ERR_VO_INVALID_OPT    illegal operation.CNcomment:²Ù×÷·Ç·¨ CNend
-\retval ::HI_ERR_VO_WIN_NOT_EXIST  windows not exist.CNcomment:´°¿Ú²»´æÔÚ CNend
+CNcomment:ï¿½ï¿½ CNend
+\param[in] hWindow     the input window handler.CNcomment:WINDOWï¿½ï¿½ï¿½ CNend
+\param[in] hSrc        the handler of video source.CNcomment:ï¿½ï¿½ï¿½ï¿½Ô´ï¿½ï¿½ï¿½ CNend
+\retval ::HI_SUCCESS CNcomment:ï¿½É¹ï¿½ CNend
+\retval ::HI_ERR_VO_NO_INIT    VO not inited.CNcomment:VOÎ´ï¿½ï¿½Ê¼ï¿½ï¿½ CNend
+\retval ::HI_ERR_VO_INVALID_PARA   illegal params.CNcomment:ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ç·ï¿½ CNend
+\retval ::HI_ERR_VO_NULL_PTR      null pointer.CNcomment: ï¿½ï¿½ï¿½ï¿½Ö¸ï¿½ï¿½Îªï¿½ï¿½ CNend
+\retval ::HI_ERR_VO_INVALID_OPT    illegal operation.CNcomment:ï¿½ï¿½ï¿½ï¿½ï¿½Ç·ï¿½ CNend
+\retval ::HI_ERR_VO_WIN_NOT_EXIST  windows not exist.CNcomment:ï¿½ï¿½ï¿½Ú²ï¿½ï¿½ï¿½ï¿½ï¿½ CNend
 \see \n
-CNcomment:ÎÞ CNend
+CNcomment:ï¿½ï¿½ CNend
 */
 HI_S32 HI_UNF_VO_DetachWindow(HI_HANDLE hWindow, HI_HANDLE hSrc);
 
 
 /**
-\brief  to freeze the video content of given window.CNcomment:¶³½áWINDOWµÄÏÔÊ¾ÄÚÈÝ CNend
+\brief  to freeze the video content of given window.CNcomment:ï¿½ï¿½ï¿½ï¿½WINDOWï¿½ï¿½ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½ï¿½ CNend
 \attention \n
 the display will be freezed after calling this func, but backgrounddly,the data flow is normal from video decoder.
 so when freezing is cacelled, the newest video content can be display at once.
-CNcomment:´Ë¹¦ÄÜÓÃÓÚÔÚ²¥·Å¹ý³ÌÖÐ¶³½áÆÁÄ»ÏÔÊ¾ÄÚÈÝ£¬´ËÊ±WINDOWÖÐµÄÊý¾ÝÁ÷¼ÌÐøÔËÐÐ£¬\n
-Òò´ËÈ¡Ïû¶³½áºó£¬»áÁ¢¿ÌÏÔÊ¾×îÐÂµÄÄÚÈÝ¡£ CNend
-\param[in] hWindow           the input window handler.CNcomment:WINDOW¾ä±ú CNend
-\param[in] bEnable           shows whether to freeze window.CNcomment:Ê¹ÄÜ/½ûÖ¹±êÖ¾ CNend
-\param[in] enWinFreezeMode   the mode of freeze.CNcomment:¶³½áµÄ·½Ê½ CNend
-\retval ::HI_SUCCESS CNcomment:³É¹¦ CNend
-\retval ::HI_ERR_VO_NO_INIT    VO not inited.CNcomment:VOÎ´³õÊ¼»¯ CNend
-\retval ::HI_ERR_VO_INVALID_PARA   illegal params.CNcomment:ÊäÈë²ÎÊý·Ç·¨ CNend
-\retval ::HI_ERR_VO_NULL_PTR      null pointer.CNcomment: ÊäÈëÖ¸ÕëÎª¿Õ CNend
-\retval ::HI_ERR_VO_INVALID_OPT    illegal operation.CNcomment:²Ù×÷·Ç·¨ CNend
-\retval ::HI_ERR_VO_WIN_NOT_EXIST  windows not exist.CNcomment:´°¿Ú²»´æÔÚ CNend
+CNcomment:ï¿½Ë¹ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ú²ï¿½ï¿½Å¹ï¿½ï¿½ï¿½ï¿½Ð¶ï¿½ï¿½ï¿½ï¿½ï¿½Ä»ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½Ý£ï¿½ï¿½ï¿½Ê±WINDOWï¿½Ðµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ð£ï¿½\n
+ï¿½ï¿½ï¿½È¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ó£¬»ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê¾ï¿½ï¿½ï¿½Âµï¿½ï¿½ï¿½ï¿½Ý¡ï¿½ CNend
+\param[in] hWindow           the input window handler.CNcomment:WINDOWï¿½ï¿½ï¿½ CNend
+\param[in] bEnable           shows whether to freeze window.CNcomment:Ê¹ï¿½ï¿½/ï¿½ï¿½Ö¹ï¿½ï¿½Ö¾ CNend
+\param[in] enWinFreezeMode   the mode of freeze.CNcomment:ï¿½ï¿½ï¿½ï¿½Ä·ï¿½Ê½ CNend
+\retval ::HI_SUCCESS CNcomment:ï¿½É¹ï¿½ CNend
+\retval ::HI_ERR_VO_NO_INIT    VO not inited.CNcomment:VOÎ´ï¿½ï¿½Ê¼ï¿½ï¿½ CNend
+\retval ::HI_ERR_VO_INVALID_PARA   illegal params.CNcomment:ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ç·ï¿½ CNend
+\retval ::HI_ERR_VO_NULL_PTR      null pointer.CNcomment: ï¿½ï¿½ï¿½ï¿½Ö¸ï¿½ï¿½Îªï¿½ï¿½ CNend
+\retval ::HI_ERR_VO_INVALID_OPT    illegal operation.CNcomment:ï¿½ï¿½ï¿½ï¿½ï¿½Ç·ï¿½ CNend
+\retval ::HI_ERR_VO_WIN_NOT_EXIST  windows not exist.CNcomment:ï¿½ï¿½ï¿½Ú²ï¿½ï¿½ï¿½ï¿½ï¿½ CNend
 \see \n
-CNcomment:ÎÞ CNend
+CNcomment:ï¿½ï¿½ CNend
 */
 HI_S32 HI_UNF_VO_FreezeWindow(HI_HANDLE hWindow, HI_BOOL bEnable, HI_UNF_WINDOW_FREEZE_MODE_E enWinFreezeMode);
 
 /**
-\brief  to get the freeze status of the given window.CNcomment:»ñÈ¡´°¿ÚµÄ¶³½á×´Ì¬ CNend
+\brief  to get the freeze status of the given window.CNcomment:ï¿½ï¿½È¡ï¿½ï¿½ï¿½ÚµÄ¶ï¿½ï¿½ï¿½×´Ì¬ CNend
 \attention \n
-\param[in] hWindow            the input window handler.CNcomment:WINDOW¾ä±ú CNend
-\param[out] pbEnable           shows whether to freeze window.CNcomment:Ê¹ÄÜ/½ûÖ¹±êÖ¾ CNend
-\param[out] penWinFreezeMode   the mode of freeze.CNcomment:¶³½áµÄ·½Ê½ CNend
-\retval ::HI_SUCCESS CNcomment:³É¹¦ CNend
-\retval ::HI_ERR_VO_NO_INIT    VO not inited.CNcomment:VOÎ´³õÊ¼»¯ CNend
-\retval ::HI_ERR_VO_INVALID_PARA   illegal params.CNcomment:ÊäÈë²ÎÊý·Ç·¨ CNend
-\retval ::HI_ERR_VO_NULL_PTR      null pointer.CNcomment: ÊäÈëÖ¸ÕëÎª¿Õ CNend
-\retval ::HI_ERR_VO_INVALID_OPT    illegal operation.CNcomment:²Ù×÷·Ç·¨ CNend
-\retval ::HI_ERR_VO_WIN_NOT_EXIST  windows not exist.CNcomment:´°¿Ú²»´æÔÚ CNend
+\param[in] hWindow            the input window handler.CNcomment:WINDOWï¿½ï¿½ï¿½ CNend
+\param[out] pbEnable           shows whether to freeze window.CNcomment:Ê¹ï¿½ï¿½/ï¿½ï¿½Ö¹ï¿½ï¿½Ö¾ CNend
+\param[out] penWinFreezeMode   the mode of freeze.CNcomment:ï¿½ï¿½ï¿½ï¿½Ä·ï¿½Ê½ CNend
+\retval ::HI_SUCCESS CNcomment:ï¿½É¹ï¿½ CNend
+\retval ::HI_ERR_VO_NO_INIT    VO not inited.CNcomment:VOÎ´ï¿½ï¿½Ê¼ï¿½ï¿½ CNend
+\retval ::HI_ERR_VO_INVALID_PARA   illegal params.CNcomment:ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ç·ï¿½ CNend
+\retval ::HI_ERR_VO_NULL_PTR      null pointer.CNcomment: ï¿½ï¿½ï¿½ï¿½Ö¸ï¿½ï¿½Îªï¿½ï¿½ CNend
+\retval ::HI_ERR_VO_INVALID_OPT    illegal operation.CNcomment:ï¿½ï¿½ï¿½ï¿½ï¿½Ç·ï¿½ CNend
+\retval ::HI_ERR_VO_WIN_NOT_EXIST  windows not exist.CNcomment:ï¿½ï¿½ï¿½Ú²ï¿½ï¿½ï¿½ï¿½ï¿½ CNend
 \see \n
-CNcomment:ÎÞ CNend
+CNcomment:ï¿½ï¿½ CNend
 */
 HI_S32 HI_UNF_VO_GetWindowFreezeStatus(HI_HANDLE hWindow, HI_BOOL *pbEnable, HI_UNF_WINDOW_FREEZE_MODE_E *penWinFreezeMode);
 
 
 /**
-\brief reset the window.CNcomment:¸´Î»WINDOW CNend
+\brief reset the window.CNcomment:ï¿½ï¿½Î»WINDOW CNend
 \attention \n
 this function can reset buffers of the given window, and black frame or the last frame will be displayed according configuration.
-CNcomment:´Ë¹¦ÄÜÇå¿ÕwindowÖÐµÄ»º³å£¬¸ù¾Ý²ÎÊýÏÔÊ¾ºÚÖ¡»ò×îºóÒ»Ö¡¡£ CNend
-\param[in] hWindow           the input window handler.CNcomment:WINDOW¾ä±ú CNend
-\param[in] enWinFreezeMode   method of freeze the window.CNcomment:¸´Î»µÄ·½Ê½ CNend
-\retval ::HI_SUCCESS CNcomment:³É¹¦ CNend
-\retval ::HI_ERR_VO_NO_INIT    VO not inited.CNcomment:VOÎ´³õÊ¼»¯ CNend
-\retval ::HI_ERR_VO_INVALID_PARA   illegal params.CNcomment:ÊäÈë²ÎÊý·Ç·¨ CNend
-\retval ::HI_ERR_VO_NULL_PTR       null pointer.CNcomment:ÊäÈëÖ¸ÕëÎª¿Õ CNend
-\retval ::HI_ERR_VO_INVALID_OPT    illegal operation.CNcomment:²Ù×÷·Ç·¨ CNend
-\retval ::HI_ERR_VO_WIN_NOT_EXIST  windows not exist.CNcomment:´°¿Ú²»´æÔÚ CNend
+CNcomment:ï¿½Ë¹ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½windowï¿½ÐµÄ»ï¿½ï¿½å£¬ï¿½ï¿½ï¿½Ý²ï¿½ï¿½ï¿½ï¿½ï¿½Ê¾ï¿½ï¿½Ö¡ï¿½ï¿½ï¿½ï¿½ï¿½Ò»Ö¡ï¿½ï¿½ CNend
+\param[in] hWindow           the input window handler.CNcomment:WINDOWï¿½ï¿½ï¿½ CNend
+\param[in] enWinFreezeMode   method of freeze the window.CNcomment:ï¿½ï¿½Î»ï¿½Ä·ï¿½Ê½ CNend
+\retval ::HI_SUCCESS CNcomment:ï¿½É¹ï¿½ CNend
+\retval ::HI_ERR_VO_NO_INIT    VO not inited.CNcomment:VOÎ´ï¿½ï¿½Ê¼ï¿½ï¿½ CNend
+\retval ::HI_ERR_VO_INVALID_PARA   illegal params.CNcomment:ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ç·ï¿½ CNend
+\retval ::HI_ERR_VO_NULL_PTR       null pointer.CNcomment:ï¿½ï¿½ï¿½ï¿½Ö¸ï¿½ï¿½Îªï¿½ï¿½ CNend
+\retval ::HI_ERR_VO_INVALID_OPT    illegal operation.CNcomment:ï¿½ï¿½ï¿½ï¿½ï¿½Ç·ï¿½ CNend
+\retval ::HI_ERR_VO_WIN_NOT_EXIST  windows not exist.CNcomment:ï¿½ï¿½ï¿½Ú²ï¿½ï¿½ï¿½ï¿½ï¿½ CNend
 \see \n
-CNcomment:ÎÞ CNend
+CNcomment:ï¿½ï¿½ CNend
 */
 HI_S32 HI_UNF_VO_ResetWindow(HI_HANDLE hWindow, HI_UNF_WINDOW_FREEZE_MODE_E enWinFreezeMode);
 
 /**
-\brief pass the external allocated buffer to this function to test 3d graphics.CNcomment:ÏòWINDOW´«µÝÓÃ»§Íâ²¿·ÖÅäµÄbuffer£¬×¨ÃÅÓÃÓÚ3DÍ¼ÐÎ²âÊÔ CNend
+\brief pass the external allocated buffer to this function to test 3d graphics.CNcomment:ï¿½ï¿½WINDOWï¿½ï¿½ï¿½ï¿½ï¿½Ã»ï¿½ï¿½â²¿ï¿½ï¿½ï¿½ï¿½ï¿½bufferï¿½ï¿½×¨ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½3DÍ¼ï¿½Î²ï¿½ï¿½ï¿½ CNend
 \attention \n
-CNcomment:ÎÞ CNend
-\param[in] hWindow     the input window handler.CNcomment:WINDOW¾ä±ú CNend
-\param[in] pstBufAttr  external buffer.CNcomment:Íâ²¿µÄbuffer CNend
-\retval ::HI_SUCCESS CNcomment:³É¹¦ CNend
-\retval ::HI_ERR_VO_NO_INIT    VO not inited.CNcomment:VOÎ´³õÊ¼»¯ CNend
-\retval ::HI_ERR_VO_INVALID_PARA   illegal params.CNcomment:ÊäÈë²ÎÊý·Ç·¨ CNend
-\retval ::HI_ERR_VO_NULL_PTR       null pointer.CNcomment:ÊäÈëÖ¸ÕëÎª¿Õ CNend
-\retval ::HI_ERR_VO_INVALID_OPT    illegal operation.CNcomment:²Ù×÷·Ç·¨ CNend
-\retval ::HI_ERR_VO_WIN_NOT_EXIST  windows not exist.CNcomment:´°¿Ú²»´æÔÚ CNend
+CNcomment:ï¿½ï¿½ CNend
+\param[in] hWindow     the input window handler.CNcomment:WINDOWï¿½ï¿½ï¿½ CNend
+\param[in] pstBufAttr  external buffer.CNcomment:ï¿½â²¿ï¿½ï¿½buffer CNend
+\retval ::HI_SUCCESS CNcomment:ï¿½É¹ï¿½ CNend
+\retval ::HI_ERR_VO_NO_INIT    VO not inited.CNcomment:VOÎ´ï¿½ï¿½Ê¼ï¿½ï¿½ CNend
+\retval ::HI_ERR_VO_INVALID_PARA   illegal params.CNcomment:ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ç·ï¿½ CNend
+\retval ::HI_ERR_VO_NULL_PTR       null pointer.CNcomment:ï¿½ï¿½ï¿½ï¿½Ö¸ï¿½ï¿½Îªï¿½ï¿½ CNend
+\retval ::HI_ERR_VO_INVALID_OPT    illegal operation.CNcomment:ï¿½ï¿½ï¿½ï¿½ï¿½Ç·ï¿½ CNend
+\retval ::HI_ERR_VO_WIN_NOT_EXIST  windows not exist.CNcomment:ï¿½ï¿½ï¿½Ú²ï¿½ï¿½ï¿½ï¿½ï¿½ CNend
 \see \n
-CNcomment:ÎÞ CNend
+CNcomment:ï¿½ï¿½ CNend
 */
 HI_S32 HI_UNF_VO_AttachExternBuffer(HI_HANDLE hWindow,HI_UNF_BUFFER_ATTR_S* pstBufAttr);
 
 /**
 \brief to set the work mode of window: quick output or not. Deinterlace alg will be disabled when quick output is enabled.
-CNcomment:ÉèÖÃWINDOWÊÇ·ñ¹¤×÷ÔÚ¿ìËÙÊä³öÄ£Ê½£¬¿ìËÙÊä³öÄ£Ê½Ç¿ÖÆ¹Ø±ÕÈ¥¸ôÐÐËã·¨ CNend
+CNcomment:ï¿½ï¿½ï¿½ï¿½WINDOWï¿½Ç·ï¿½ï¿½ï¿½ï¿½Ú¿ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä£Ê½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä£Ê½Ç¿ï¿½Æ¹Ø±ï¿½È¥ï¿½ï¿½ï¿½ï¿½ï¿½ã·¨ CNend
 \attention \n
-CNcomment:ÎÞ CNend
-\param[in] hWindow     the input window handler.CNcomment:WINDOW¾ä±ú CNend
-\param[in] bQuickOutputEnable  whether determine the output mode of window. CNcomment:¿ìËÙÊä³öÄ£Ê½Ê¹ÄÜ/½ûÖ¹±êÖ¾ CNend
-\retval ::HI_SUCCESS CNcomment:³É¹¦ CNend
-\retval ::HI_ERR_VO_NO_INIT    VO not inited.CNcomment:VOÎ´³õÊ¼»¯ CNend
-\retval ::HI_ERR_VO_INVALID_PARA  illegal params.CNcomment: ÊäÈë²ÎÊý·Ç·¨ CNend
-\retval ::HI_ERR_VO_NULL_PTR       null pointer.CNcomment:ÊäÈëÖ¸ÕëÎª¿Õ CNend
-\retval ::HI_ERR_VO_INVALID_OPT    illegal operation.CNcomment:²Ù×÷·Ç·¨ CNend
-\retval ::HI_ERR_VO_WIN_NOT_EXIST  windows not exist.CNcomment:´°¿Ú²»´æÔÚ CNend
+CNcomment:ï¿½ï¿½ CNend
+\param[in] hWindow     the input window handler.CNcomment:WINDOWï¿½ï¿½ï¿½ CNend
+\param[in] bQuickOutputEnable  whether determine the output mode of window. CNcomment:ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä£Ê½Ê¹ï¿½ï¿½/ï¿½ï¿½Ö¹ï¿½ï¿½Ö¾ CNend
+\retval ::HI_SUCCESS CNcomment:ï¿½É¹ï¿½ CNend
+\retval ::HI_ERR_VO_NO_INIT    VO not inited.CNcomment:VOÎ´ï¿½ï¿½Ê¼ï¿½ï¿½ CNend
+\retval ::HI_ERR_VO_INVALID_PARA  illegal params.CNcomment: ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ç·ï¿½ CNend
+\retval ::HI_ERR_VO_NULL_PTR       null pointer.CNcomment:ï¿½ï¿½ï¿½ï¿½Ö¸ï¿½ï¿½Îªï¿½ï¿½ CNend
+\retval ::HI_ERR_VO_INVALID_OPT    illegal operation.CNcomment:ï¿½ï¿½ï¿½ï¿½ï¿½Ç·ï¿½ CNend
+\retval ::HI_ERR_VO_WIN_NOT_EXIST  windows not exist.CNcomment:ï¿½ï¿½ï¿½Ú²ï¿½ï¿½ï¿½ï¿½ï¿½ CNend
 \see \n
-CNcomment:ÎÞ CNend
+CNcomment:ï¿½ï¿½ CNend
 */
 HI_S32 HI_UNF_VO_SetQuickOutputEnable(HI_HANDLE hWindow, HI_BOOL bQuickOutputEnable);
 
 /**
 \brief to get the work mode of window: quick output or not.
-CNcomment:»ñÈ¡WINDOWÊÇ·ñ¹¤×÷ÔÚ¿ìËÙÊä³öÄ£Ê½ CNend
+CNcomment:ï¿½ï¿½È¡WINDOWï¿½Ç·ï¿½ï¿½ï¿½ï¿½Ú¿ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä£Ê½ CNend
 \attention \n
-CNcomment:ÎÞ CNend
-\param[in]  hWindow     the input window handler.CNcomment:WINDOW¾ä±ú CNend
-\param[out] pbQuickOutputEnable  whether determine the output mode of window. CNcomment:¿ìËÙÊä³öÄ£Ê½Ê¹ÄÜ/½ûÖ¹±êÖ¾ CNend
-\retval ::HI_SUCCESS CNcomment:³É¹¦ CNend
-\retval ::HI_ERR_VO_NO_INIT    VO not inited.CNcomment:VOÎ´³õÊ¼»¯ CNend
-\retval ::HI_ERR_VO_INVALID_PARA  illegal params.CNcomment: ÊäÈë²ÎÊý·Ç·¨ CNend
-\retval ::HI_ERR_VO_NULL_PTR       null pointer.CNcomment:ÊäÈëÖ¸ÕëÎª¿Õ CNend
-\retval ::HI_ERR_VO_INVALID_OPT    illegal operation.CNcomment:²Ù×÷·Ç·¨ CNend
-\retval ::HI_ERR_VO_WIN_NOT_EXIST  windows not exist.CNcomment:´°¿Ú²»´æÔÚ CNend
+CNcomment:ï¿½ï¿½ CNend
+\param[in]  hWindow     the input window handler.CNcomment:WINDOWï¿½ï¿½ï¿½ CNend
+\param[out] pbQuickOutputEnable  whether determine the output mode of window. CNcomment:ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ä£Ê½Ê¹ï¿½ï¿½/ï¿½ï¿½Ö¹ï¿½ï¿½Ö¾ CNend
+\retval ::HI_SUCCESS CNcomment:ï¿½É¹ï¿½ CNend
+\retval ::HI_ERR_VO_NO_INIT    VO not inited.CNcomment:VOÎ´ï¿½ï¿½Ê¼ï¿½ï¿½ CNend
+\retval ::HI_ERR_VO_INVALID_PARA  illegal params.CNcomment: ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ç·ï¿½ CNend
+\retval ::HI_ERR_VO_NULL_PTR       null pointer.CNcomment:ï¿½ï¿½ï¿½ï¿½Ö¸ï¿½ï¿½Îªï¿½ï¿½ CNend
+\retval ::HI_ERR_VO_INVALID_OPT    illegal operation.CNcomment:ï¿½ï¿½ï¿½ï¿½ï¿½Ç·ï¿½ CNend
+\retval ::HI_ERR_VO_WIN_NOT_EXIST  windows not exist.CNcomment:ï¿½ï¿½ï¿½Ú²ï¿½ï¿½ï¿½ï¿½ï¿½ CNend
 \see \n
-CNcomment:ÎÞ CNend
+CNcomment:ï¿½ï¿½ CNend
 */
 HI_S32 HI_UNF_VO_GetQuickOutputStatus(HI_HANDLE hWindow, HI_BOOL *pbQuickOutputEnable);
 
 /**
-\brief  to set the filed mode of given window.CNcomment:ÉèÖÃ´°¿ÚµÄ³¡²¥·ÅÄ£Ê½ CNend
+\brief  to set the filed mode of given window.CNcomment:ï¿½ï¿½ï¿½Ã´ï¿½ï¿½ÚµÄ³ï¿½ï¿½ï¿½ï¿½ï¿½Ä£Ê½ CNend
 \attention \n
 when fast-backward playing, there will be no abnormity through calling this func. But calling of this
 func is forbidden when normal playing. It should be called after HI_UNF_VO_AttachWindow.
-CNcomment:Í¨¹ýÉèÖÃ´Ë½Ó¿ÚÊ¹ÄÜ£¬±£Ö¤¿ìÍË²»»á³öÏÖ³¡Í¼Ïñ»ØÍËµÄÏÖÏó£¬ÔÚÕý³£²¥·ÅÊ±£¬\n
-ÇëÉèÖÃÎª½ûÖ¹£¬Ä¬ÈÏÎª½ûÖ¹¡£HI_UNF_VO_AttachWindowµ÷ÓÃÖ®ºóÊ¹ÓÃÓÐÐ§¡£ CNend
-\param[in] hWindow           the input window handler.CNcomment:WINDOW¾ä±ú CNend
-\param[in] bEnable           wether to enable field play.CNcomment:Ê¹ÄÜ/½ûÖ¹±êÖ¾ CNend
-\retval ::HI_SUCCESS CNcomment:³É¹¦ CNend
-\retval ::HI_ERR_VO_NO_INIT    VO not inited.CNcomment:VOÎ´³õÊ¼»¯ CNend
-\retval ::HI_ERR_VO_INVALID_PARA   illegal params.CNcomment:ÊäÈë²ÎÊý·Ç·¨ CNend
-\retval ::HI_ERR_VO_NULL_PTR       null pointer.CNcomment:ÊäÈëÖ¸ÕëÎª¿Õ CNend
-\retval ::HI_ERR_VO_INVALID_OPT    illegal operation.CNcomment:²Ù×÷·Ç·¨ CNend
-\retval ::HI_ERR_VO_WIN_NOT_EXIST  windows not exist.CNcomment:´°¿Ú²»´æÔÚ CNend
-\retval ::HI_ERR_VO_WIN_UNSUPPORT  unsupported operation.CNcomment:²Ù×÷²»Ö§³Ö CNend
+CNcomment:Í¨ï¿½ï¿½ï¿½ï¿½ï¿½Ã´Ë½Ó¿ï¿½Ê¹ï¿½Ü£ï¿½ï¿½ï¿½Ö¤ï¿½ï¿½ï¿½Ë²ï¿½ï¿½ï¿½ï¿½ï¿½Ö³ï¿½Í¼ï¿½ï¿½ï¿½ï¿½Ëµï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê±ï¿½ï¿½\n
+ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Îªï¿½ï¿½Ö¹ï¿½ï¿½Ä¬ï¿½ï¿½Îªï¿½ï¿½Ö¹ï¿½ï¿½HI_UNF_VO_AttachWindowï¿½ï¿½ï¿½ï¿½Ö®ï¿½ï¿½Ê¹ï¿½ï¿½ï¿½ï¿½Ð§ï¿½ï¿½ CNend
+\param[in] hWindow           the input window handler.CNcomment:WINDOWï¿½ï¿½ï¿½ CNend
+\param[in] bEnable           wether to enable field play.CNcomment:Ê¹ï¿½ï¿½/ï¿½ï¿½Ö¹ï¿½ï¿½Ö¾ CNend
+\retval ::HI_SUCCESS CNcomment:ï¿½É¹ï¿½ CNend
+\retval ::HI_ERR_VO_NO_INIT    VO not inited.CNcomment:VOÎ´ï¿½ï¿½Ê¼ï¿½ï¿½ CNend
+\retval ::HI_ERR_VO_INVALID_PARA   illegal params.CNcomment:ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ç·ï¿½ CNend
+\retval ::HI_ERR_VO_NULL_PTR       null pointer.CNcomment:ï¿½ï¿½ï¿½ï¿½Ö¸ï¿½ï¿½Îªï¿½ï¿½ CNend
+\retval ::HI_ERR_VO_INVALID_OPT    illegal operation.CNcomment:ï¿½ï¿½ï¿½ï¿½ï¿½Ç·ï¿½ CNend
+\retval ::HI_ERR_VO_WIN_NOT_EXIST  windows not exist.CNcomment:ï¿½ï¿½ï¿½Ú²ï¿½ï¿½ï¿½ï¿½ï¿½ CNend
+\retval ::HI_ERR_VO_WIN_UNSUPPORT  unsupported operation.CNcomment:ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö§ï¿½ï¿½ CNend
 \see \n
-CNcomment:ÎÞ CNend
+CNcomment:ï¿½ï¿½ CNend
 */
 HI_S32 HI_UNF_VO_SetWindowFieldMode(HI_HANDLE hWindow, HI_BOOL bEnable);
 
 /**
-\brief  to get the filed mode of given window.CNcomment:»ñÈ¡´°¿ÚµÄ³¡²¥·ÅÄ£Ê½ CNend
+\brief  to get the filed mode of given window.CNcomment:ï¿½ï¿½È¡ï¿½ï¿½ï¿½ÚµÄ³ï¿½ï¿½ï¿½ï¿½ï¿½Ä£Ê½ CNend
 \attention \n
-\param[in] hWindow           the input window handler.CNcomment:WINDOW¾ä±ú CNend
-\param[out] pbEnable         wether to enable field play.CNcomment:Ê¹ÄÜ/½ûÖ¹±êÖ¾ CNend
-\retval ::HI_SUCCESS CNcomment:³É¹¦ CNend
-\retval ::HI_ERR_VO_NO_INIT    VO not inited.CNcomment:VOÎ´³õÊ¼»¯ CNend
-\retval ::HI_ERR_VO_INVALID_PARA   illegal params.CNcomment:ÊäÈë²ÎÊý·Ç·¨ CNend
-\retval ::HI_ERR_VO_NULL_PTR       null pointer.CNcomment:ÊäÈëÖ¸ÕëÎª¿Õ CNend
-\retval ::HI_ERR_VO_INVALID_OPT    illegal operation.CNcomment:²Ù×÷·Ç·¨ CNend
-\retval ::HI_ERR_VO_WIN_NOT_EXIST  windows not exist.CNcomment:´°¿Ú²»´æÔÚ CNend
-\retval ::HI_ERR_VO_WIN_UNSUPPORT  unsupported operation.CNcomment:²Ù×÷²»Ö§³Ö CNend
+\param[in] hWindow           the input window handler.CNcomment:WINDOWï¿½ï¿½ï¿½ CNend
+\param[out] pbEnable         wether to enable field play.CNcomment:Ê¹ï¿½ï¿½/ï¿½ï¿½Ö¹ï¿½ï¿½Ö¾ CNend
+\retval ::HI_SUCCESS CNcomment:ï¿½É¹ï¿½ CNend
+\retval ::HI_ERR_VO_NO_INIT    VO not inited.CNcomment:VOÎ´ï¿½ï¿½Ê¼ï¿½ï¿½ CNend
+\retval ::HI_ERR_VO_INVALID_PARA   illegal params.CNcomment:ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ç·ï¿½ CNend
+\retval ::HI_ERR_VO_NULL_PTR       null pointer.CNcomment:ï¿½ï¿½ï¿½ï¿½Ö¸ï¿½ï¿½Îªï¿½ï¿½ CNend
+\retval ::HI_ERR_VO_INVALID_OPT    illegal operation.CNcomment:ï¿½ï¿½ï¿½ï¿½ï¿½Ç·ï¿½ CNend
+\retval ::HI_ERR_VO_WIN_NOT_EXIST  windows not exist.CNcomment:ï¿½ï¿½ï¿½Ú²ï¿½ï¿½ï¿½ï¿½ï¿½ CNend
+\retval ::HI_ERR_VO_WIN_UNSUPPORT  unsupported operation.CNcomment:ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ö§ï¿½ï¿½ CNend
 \see \n
-CNcomment:ÎÞ CNend
+CNcomment:ï¿½ï¿½ CNend
 */
 HI_S32 HI_UNF_VO_GetWindowFieldMode(HI_HANDLE hWindow, HI_BOOL *pbEnable);
 
 
 /**
-\brief capture the current frame of given window.CNcomment:²¶»ñWINDOWµÄµ±Ç°Ö¡ CNend
+\brief capture the current frame of given window.CNcomment:ï¿½ï¿½ï¿½ï¿½WINDOWï¿½Äµï¿½Ç°Ö¡ CNend
 \attention \n
-\param[in] hWindow           the input window handler.CNcomment:WINDOW¾ä±ú CNend
+\param[in] hWindow           the input window handler.CNcomment:WINDOWï¿½ï¿½ï¿½ CNend
 \param[in] pstCapPicture
-\retval ::HI_SUCCESS CNcomment:³É¹¦ CNend
-\retval ::HI_ERR_VO_NO_INIT    VO not inited.CNcomment:VOÎ´³õÊ¼»¯ CNend
-\retval ::HI_ERR_VO_INVALID_PARA  illegal params.CNcomment: ÊäÈë²ÎÊý·Ç·¨ CNend
-\retval ::HI_ERR_VO_NULL_PTR       null pointer.CNcomment:ÊäÈëÖ¸ÕëÎª¿Õ CNend
-\retval ::HI_ERR_VO_INVALID_OPT   illegal operation.CNcomment: ²Ù×÷·Ç·¨ CNend
-\retval ::HI_ERR_VO_WIN_NOT_EXIST  windows not exist.CNcomment:´°¿Ú²»´æÔÚ CNend
+\retval ::HI_SUCCESS CNcomment:ï¿½É¹ï¿½ CNend
+\retval ::HI_ERR_VO_NO_INIT    VO not inited.CNcomment:VOÎ´ï¿½ï¿½Ê¼ï¿½ï¿½ CNend
+\retval ::HI_ERR_VO_INVALID_PARA  illegal params.CNcomment: ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ç·ï¿½ CNend
+\retval ::HI_ERR_VO_NULL_PTR       null pointer.CNcomment:ï¿½ï¿½ï¿½ï¿½Ö¸ï¿½ï¿½Îªï¿½ï¿½ CNend
+\retval ::HI_ERR_VO_INVALID_OPT   illegal operation.CNcomment: ï¿½ï¿½ï¿½ï¿½ï¿½Ç·ï¿½ CNend
+\retval ::HI_ERR_VO_WIN_NOT_EXIST  windows not exist.CNcomment:ï¿½ï¿½ï¿½Ú²ï¿½ï¿½ï¿½ï¿½ï¿½ CNend
 \see \n
-CNcomment:ÎÞ CNend
+CNcomment:ï¿½ï¿½ CNend
 */
 HI_S32 HI_UNF_VO_CapturePicture(HI_HANDLE hWindow, HI_UNF_VIDEO_FRAME_INFO_S *pstCapPicture);
 
 
 /**
-\brief if you capture picture is finished, release the memory.CNcomment:²¶»ñÍê±Ï£¬ÊÍ·Å²¶»ñµÄÄÚ´æÇøÓò CNend
+\brief if you capture picture is finished, release the memory.CNcomment:ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ï£ï¿½ï¿½Í·Å²ï¿½ï¿½ï¿½ï¿½ï¿½Ú´ï¿½ï¿½ï¿½ï¿½ï¿½ CNend
 \attention \n
 this function will release captured picture, so user should call this function
 after you used this captured picture.
-CNcomment:ÓÉÓÚ¸Ãº¯Êý»áÊÍ·Å±»²¶»ñµÄÒ»Ö¡£¬ËùÒÔÓÃ»§ÐèÒªÔÚÓÃÍê²¶»ñÖ¡Ö®ºóÔÙµ÷ÓÃ´Ë½Ó¿Ú CNend
-\param[in] hWindow           the input window handler.CNcomment:WINDOW¾ä±ú CNend
+CNcomment:ï¿½ï¿½ï¿½Ú¸Ãºï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Í·Å±ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ò»Ö¡ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ã»ï¿½ï¿½ï¿½Òªï¿½ï¿½ï¿½ï¿½ï¿½ê²¶ï¿½ï¿½Ö¡Ö®ï¿½ï¿½ï¿½Ùµï¿½ï¿½Ã´Ë½Ó¿ï¿½ CNend
+\param[in] hWindow           the input window handler.CNcomment:WINDOWï¿½ï¿½ï¿½ CNend
 \param[in] pstCapPicture
-\retval ::HI_SUCCESS CNcomment:³É¹¦ CNend
-\retval ::HI_ERR_VO_NO_INIT    VO not inited.CNcomment:VOÎ´³õÊ¼»¯ CNend
-\retval ::HI_ERR_VO_INVALID_PARA  illegal params.CNcomment: ÊäÈë²ÎÊý·Ç·¨ CNend
-\retval ::HI_ERR_VO_NULL_PTR       null pointer.CNcomment:ÊäÈëÖ¸ÕëÎª¿Õ CNend
-\retval ::HI_ERR_VO_INVALID_OPT   illegal operation.CNcomment: ²Ù×÷·Ç·¨ CNend
-\retval ::HI_ERR_VO_WIN_NOT_EXIST  windows not exist.CNcomment:´°¿Ú²»´æÔÚ CNend
+\retval ::HI_SUCCESS CNcomment:ï¿½É¹ï¿½ CNend
+\retval ::HI_ERR_VO_NO_INIT    VO not inited.CNcomment:VOÎ´ï¿½ï¿½Ê¼ï¿½ï¿½ CNend
+\retval ::HI_ERR_VO_INVALID_PARA  illegal params.CNcomment: ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ç·ï¿½ CNend
+\retval ::HI_ERR_VO_NULL_PTR       null pointer.CNcomment:ï¿½ï¿½ï¿½ï¿½Ö¸ï¿½ï¿½Îªï¿½ï¿½ CNend
+\retval ::HI_ERR_VO_INVALID_OPT   illegal operation.CNcomment: ï¿½ï¿½ï¿½ï¿½ï¿½Ç·ï¿½ CNend
+\retval ::HI_ERR_VO_WIN_NOT_EXIST  windows not exist.CNcomment:ï¿½ï¿½ï¿½Ú²ï¿½ï¿½ï¿½ï¿½ï¿½ CNend
 \see \n
-CNcomment:ÎÞ CNend
+CNcomment:ï¿½ï¿½ CNend
 */
 HI_S32 HI_UNF_VO_CapturePictureRelease(HI_HANDLE hWindow, HI_UNF_VIDEO_FRAME_INFO_S *pstCapPicture);
 
 /**
-\brief set window rotion type.CNcomment:ÉèÖÃ´°¿ÚµÄÐý×ªÀàÐÍ CNend
+\brief set window rotion type.CNcomment:ï¿½ï¿½ï¿½Ã´ï¿½ï¿½Úµï¿½ï¿½ï¿½×ªï¿½ï¿½ï¿½ï¿½ CNend
 \attention \n
 3716/3712: not support
-CNcomment:3716/3712²»Ö§³Ö CNend
-\param[in] hWindow    window handle .CNcomment:´°¿Ú¾ä±ú CNend
-\param[in] enRotation    rotion type.CNcomment:Ðý×ªÀàÐÍ CNend
-\retval ::HI_SUCCESS openned success.CNcomment:³É¹¦ CNend
-\retval ::HI_ERR_VO_NO_INIT  VO not inited. CNcomment:VOÎ´³õÊ¼»¯ CNend
-\retval ::HI_ERR_VO_INVALID_PARA  illegal params.CNcomment:ÊäÈë²ÎÊý·Ç·¨ CNend
-\retval ::HI_ERR_VO_NULL_PTR       null pointer.CNcomment:ÊäÈëÖ¸ÕëÎª¿Õ CNend
+CNcomment:3716/3712ï¿½ï¿½Ö§ï¿½ï¿½ CNend
+\param[in] hWindow    window handle .CNcomment:ï¿½ï¿½ï¿½Ú¾ï¿½ï¿½ CNend
+\param[in] enRotation    rotion type.CNcomment:ï¿½ï¿½×ªï¿½ï¿½ï¿½ï¿½ CNend
+\retval ::HI_SUCCESS openned success.CNcomment:ï¿½É¹ï¿½ CNend
+\retval ::HI_ERR_VO_NO_INIT  VO not inited. CNcomment:VOÎ´ï¿½ï¿½Ê¼ï¿½ï¿½ CNend
+\retval ::HI_ERR_VO_INVALID_PARA  illegal params.CNcomment:ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ç·ï¿½ CNend
+\retval ::HI_ERR_VO_NULL_PTR       null pointer.CNcomment:ï¿½ï¿½ï¿½ï¿½Ö¸ï¿½ï¿½Îªï¿½ï¿½ CNend
 \see \n
-CNcomment:ÎÞ CNend
+CNcomment:ï¿½ï¿½ CNend
 */
 HI_S32 HI_UNF_VO_SetRotation(HI_HANDLE hWindow, HI_UNF_VO_ROTATION_E enRotation);
 
 
 /**
-\brief get window rotion type.CNcomment:»ñÈ¡´°¿ÚµÄÐý×ª¾ä±ú CNend
+\brief get window rotion type.CNcomment:ï¿½ï¿½È¡ï¿½ï¿½ï¿½Úµï¿½ï¿½ï¿½×ªï¿½ï¿½ï¿½ CNend
 \attention \n
 3716/3712: not support
-CNcomment:3716/3712²»Ö§³Ö CNend
-\param[in] hWindow    window handle .CNcomment:´°¿Ú¾ä±ú CNend
-\param[in] enRotation    rotion type.CNcomment:Ðý×ªÀàÐÍ CNend
-\retval ::HI_SUCCESS openned success.CNcomment:³É¹¦ CNend
-\retval ::HI_ERR_VO_NO_INIT  VO not inited. CNcomment:VOÎ´³õÊ¼»¯ CNend
-\retval ::HI_ERR_VO_INVALID_PARA  illegal params.CNcomment:ÊäÈë²ÎÊý·Ç·¨ CNend
-\retval ::HI_ERR_VO_NULL_PTR       null pointer.CNcomment:ÊäÈëÖ¸ÕëÎª¿Õ CNend
+CNcomment:3716/3712ï¿½ï¿½Ö§ï¿½ï¿½ CNend
+\param[in] hWindow    window handle .CNcomment:ï¿½ï¿½ï¿½Ú¾ï¿½ï¿½ CNend
+\param[in] enRotation    rotion type.CNcomment:ï¿½ï¿½×ªï¿½ï¿½ï¿½ï¿½ CNend
+\retval ::HI_SUCCESS openned success.CNcomment:ï¿½É¹ï¿½ CNend
+\retval ::HI_ERR_VO_NO_INIT  VO not inited. CNcomment:VOÎ´ï¿½ï¿½Ê¼ï¿½ï¿½ CNend
+\retval ::HI_ERR_VO_INVALID_PARA  illegal params.CNcomment:ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ç·ï¿½ CNend
+\retval ::HI_ERR_VO_NULL_PTR       null pointer.CNcomment:ï¿½ï¿½ï¿½ï¿½Ö¸ï¿½ï¿½Îªï¿½ï¿½ CNend
 \see \n
-CNcomment:ÎÞ CNend
+CNcomment:ï¿½ï¿½ CNend
 */
 HI_S32 HI_UNF_VO_GetRotation(HI_HANDLE hWindow, HI_UNF_VO_ROTATION_E *penRotation);
 
 /**
-\brief flip window.CNcomment:·­×ªwindow CNend
+\brief flip window.CNcomment:ï¿½ï¿½×ªwindow CNend
 \attention \n
 3716/3712: not support
-CNcomment:3716/3712²»Ö§³Ö CNend
-\param[in] hWindow    window handle .CNcomment:´°¿Ú¾ä±ú CNend
-\param[in] bHoriFlip    horizon flip.CNcomment:Ë®Æ½·­×ª CNend
-\param[in] bVertFlip    vertical flip.CNcomment:´¹Ö±·­×ª CNend
-\retval ::HI_SUCCESS openned success.CNcomment:³É¹¦ CNend
-\retval ::HI_ERR_VO_NO_INIT  VO not inited. CNcomment:VOÎ´³õÊ¼»¯ CNend
-\retval ::HI_ERR_VO_INVALID_PARA  illegal params.CNcomment:ÊäÈë²ÎÊý·Ç·¨ CNend
-\retval ::HI_ERR_VO_NULL_PTR       null pointer.CNcomment:ÊäÈëÖ¸ÕëÎª¿Õ CNend
+CNcomment:3716/3712ï¿½ï¿½Ö§ï¿½ï¿½ CNend
+\param[in] hWindow    window handle .CNcomment:ï¿½ï¿½ï¿½Ú¾ï¿½ï¿½ CNend
+\param[in] bHoriFlip    horizon flip.CNcomment:Ë®Æ½ï¿½ï¿½×ª CNend
+\param[in] bVertFlip    vertical flip.CNcomment:ï¿½ï¿½Ö±ï¿½ï¿½×ª CNend
+\retval ::HI_SUCCESS openned success.CNcomment:ï¿½É¹ï¿½ CNend
+\retval ::HI_ERR_VO_NO_INIT  VO not inited. CNcomment:VOÎ´ï¿½ï¿½Ê¼ï¿½ï¿½ CNend
+\retval ::HI_ERR_VO_INVALID_PARA  illegal params.CNcomment:ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ç·ï¿½ CNend
+\retval ::HI_ERR_VO_NULL_PTR       null pointer.CNcomment:ï¿½ï¿½ï¿½ï¿½Ö¸ï¿½ï¿½Îªï¿½ï¿½ CNend
 \see \n
-CNcomment:ÎÞ CNend
+CNcomment:ï¿½ï¿½ CNend
 */
 HI_S32 HI_UNF_VO_SetFlip(HI_HANDLE hWindow, HI_BOOL bHoriFlip, HI_BOOL bVertFlip);
 
 /**
-\brief get fliping tpye of window.CNcomment:»ñµÃ´°¿ÚµÄ·­×ªÀàÐÍ CNend
+\brief get fliping tpye of window.CNcomment:ï¿½ï¿½Ã´ï¿½ï¿½ÚµÄ·ï¿½×ªï¿½ï¿½ï¿½ï¿½ CNend
 \attention \n
 3716/3712: not support
-CNcomment:3716/3712²»Ö§³Ö CNend
-\param[in] hWindow    window handle .CNcomment:´°¿Ú¾ä±ú CNend
-\param[in] bHoriFlip    horizon flip flag.CNcomment:Ë®Æ½·­×ª±êÖ¾ CNend
-\param[in] bVertFlip    vertical flip flag.CNcomment:´¹Ö±·­×ª±êÖ¾ CNend
-\retval ::HI_SUCCESS openned success.CNcomment:³É¹¦ CNend
-\retval ::HI_ERR_VO_NO_INIT  VO not inited. CNcomment:VOÎ´³õÊ¼»¯ CNend
-\retval ::HI_ERR_VO_INVALID_PARA  illegal params.CNcomment:ÊäÈë²ÎÊý·Ç·¨ CNend
-\retval ::HI_ERR_VO_NULL_PTR       null pointer.CNcomment:ÊäÈëÖ¸ÕëÎª¿Õ CNend
+CNcomment:3716/3712ï¿½ï¿½Ö§ï¿½ï¿½ CNend
+\param[in] hWindow    window handle .CNcomment:ï¿½ï¿½ï¿½Ú¾ï¿½ï¿½ CNend
+\param[in] bHoriFlip    horizon flip flag.CNcomment:Ë®Æ½ï¿½ï¿½×ªï¿½ï¿½Ö¾ CNend
+\param[in] bVertFlip    vertical flip flag.CNcomment:ï¿½ï¿½Ö±ï¿½ï¿½×ªï¿½ï¿½Ö¾ CNend
+\retval ::HI_SUCCESS openned success.CNcomment:ï¿½É¹ï¿½ CNend
+\retval ::HI_ERR_VO_NO_INIT  VO not inited. CNcomment:VOÎ´ï¿½ï¿½Ê¼ï¿½ï¿½ CNend
+\retval ::HI_ERR_VO_INVALID_PARA  illegal params.CNcomment:ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ç·ï¿½ CNend
+\retval ::HI_ERR_VO_NULL_PTR       null pointer.CNcomment:ï¿½ï¿½ï¿½ï¿½Ö¸ï¿½ï¿½Îªï¿½ï¿½ CNend
 \see \n
-CNcomment:ÎÞ CNend
+CNcomment:ï¿½ï¿½ CNend
 */
 HI_S32 HI_UNF_VO_GetFlip(HI_HANDLE hWindow, HI_BOOL *pbHoriFlip, HI_BOOL *pbVertFlip);
 
 /**
-\brief set video stereo depth for 3D output.CNcomment:ÉèÖÃ3DÊä³öÊÓÆµ¾°Éî CNend
+\brief set video stereo depth for 3D output.CNcomment:ï¿½ï¿½ï¿½ï¿½3Dï¿½ï¿½ï¿½ï¿½ï¿½Æµï¿½ï¿½ï¿½ï¿½ CNend
 \attention \n
 3716/3712: not support.Only take effect in 3D output mode.
-CNcomment: 3716/3712²»Ö§³Ö .½öÔÚ3DÊä³öÊ±ÓÐÐ§ CNend
-\param[in] hWindow    window handle .CNcomment:´°¿Ú¾ä±ú CNend
-\param[in] s32Depth Depth of filed. the range is [-50,50].CNcomment:¾°Éî£¬È¡ÖµÎª[-50,50]. CNend
-\retval ::HI_SUCCESS  success.CNcomment:³É¹¦ CNend
-\retval ::HI_ERR_VO_NO_INIT    VO uninitialization.CNcomment:VO Î´³õÊ¼»¯ CNend
-\retval ::HI_ERR_VO_INVALID_PARA   invalid input parameter.CNcomment:ÊäÈë²ÎÊý·Ç·¨ CNend
+CNcomment: 3716/3712ï¿½ï¿½Ö§ï¿½ï¿½ .ï¿½ï¿½ï¿½ï¿½3Dï¿½ï¿½ï¿½Ê±ï¿½ï¿½Ð§ CNend
+\param[in] hWindow    window handle .CNcomment:ï¿½ï¿½ï¿½Ú¾ï¿½ï¿½ CNend
+\param[in] s32Depth Depth of filed. the range is [-50,50].CNcomment:ï¿½ï¿½ï¿½î£¬È¡ÖµÎª[-50,50]. CNend
+\retval ::HI_SUCCESS  success.CNcomment:ï¿½É¹ï¿½ CNend
+\retval ::HI_ERR_VO_NO_INIT    VO uninitialization.CNcomment:VO Î´ï¿½ï¿½Ê¼ï¿½ï¿½ CNend
+\retval ::HI_ERR_VO_INVALID_PARA   invalid input parameter.CNcomment:ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ç·ï¿½ CNend
 \see \n
-none.CNcomment:ÎÞ CNend
+none.CNcomment:ï¿½ï¿½ CNend
  */
 HI_S32 HI_UNF_VO_SetStereoDetpth(HI_HANDLE hWindow, HI_S32 s32Depth);
 
 /**
-\brief get video stereo depth for 3D output.CNcomment: »ñÈ¡3DÊä³öÊÓÆµ¾°Éî CNend
+\brief get video stereo depth for 3D output.CNcomment: ï¿½ï¿½È¡3Dï¿½ï¿½ï¿½ï¿½ï¿½Æµï¿½ï¿½ï¿½ï¿½ CNend
 \attention \n
-\param[in] hWindow    window handle .CNcomment:´°¿Ú¾ä±ú CNend
-\param[out] ps32Depth Depth of filed. the range is [-50,50].CNcomment:¾°Éî£¬È¡ÖµÎª[-50,50]. CNend
-\retval ::HI_SUCCESS  success.CNcomment:³É¹¦ CNend
-\retval ::HI_ERR_VO_NO_INIT    VO uninitialization.CNcomment:VO Î´³õÊ¼»¯ CNend
-\retval ::HI_ERR_VO_INVALID_PARA   invalid input parameter.CNcomment:ÊäÈë²ÎÊý·Ç·¨ CNend
+\param[in] hWindow    window handle .CNcomment:ï¿½ï¿½ï¿½Ú¾ï¿½ï¿½ CNend
+\param[out] ps32Depth Depth of filed. the range is [-50,50].CNcomment:ï¿½ï¿½ï¿½î£¬È¡ÖµÎª[-50,50]. CNend
+\retval ::HI_SUCCESS  success.CNcomment:ï¿½É¹ï¿½ CNend
+\retval ::HI_ERR_VO_NO_INIT    VO uninitialization.CNcomment:VO Î´ï¿½ï¿½Ê¼ï¿½ï¿½ CNend
+\retval ::HI_ERR_VO_INVALID_PARA   invalid input parameter.CNcomment:ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ç·ï¿½ CNend
 \see \n
-none.CNcomment:ÎÞ CNend
+none.CNcomment:ï¿½ï¿½ CNend
  */
 HI_S32 HI_UNF_VO_GetStereoDetpth(HI_HANDLE hWindow, HI_S32 *ps32Depth);
 

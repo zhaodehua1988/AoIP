@@ -19,6 +19,7 @@
 #include "fpga_conf.h"
 #include "sys_ip.h"
 #include "tsk_player.h"
+#include "fpga_update.h"
 #define HELLO_DEBUG
 
 WV_S32 main()
@@ -39,16 +40,17 @@ WV_S32 main()
 #ifdef HELLO_DEBUG
 	PCA9548_Init();
 	PCA9555_Init();
-	ADV_7619_Init();
-	FPGA_CONF_Init();
+	//ADV_7619_Init();
+	FPGA_UPDATE_Init();
+	//FPGA_CONF_Init();
 
-	TSK_PLAYER_Open();
+	//TSK_PLAYER_Open();
 
-	ITE6805_Open();
-	ITE6615_Open();
+	//ITE6805_Open();
+	//ITE6615_Open();
 
 	//TI1297_Init();
-	TSK_GO_Open();
+	//TSK_GO_Open();
 #endif
 	//system("./MultiViewer > /dev/null");
 	rowNum = 0;
@@ -60,11 +62,11 @@ WV_S32 main()
 		usleep(100000);
 	}
 #ifdef HELLO_DEBUG
-	TSK_GO_Close();
-	ITE6615_Close();
-	ITE6805_Close();
-	TSK_PLAYER_Close();
-	FPGA_CONF_DeInit();
+	//TSK_GO_Close();
+	//ITE6615_Close();
+	//ITE6805_Close();
+	//TSK_PLAYER_Close();
+	//FPGA_CONF_DeInit();
 #endif
 
 	SYS_IP_DeInit();

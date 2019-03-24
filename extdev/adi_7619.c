@@ -122,8 +122,6 @@ WV_S32  ADV_7619_SetConf();
 ****************************************************************************************************/
 WV_S32 ADV_7619_SetConf()
 {
-//WV_S32 PCA9548_IIC_Read(WV_U8 id,WV_U8 devAddr,WV_U8 regAddr,WV_U8 *data);
-//WV_S32 PCA9548_IIC_Write(WV_U8 id,WV_U8 devAddr,WV_U8 regAddr,WV_U8 data);
 
 	WV_S32 i, num;
 	WV_U8 devAddr, regAddr, data;

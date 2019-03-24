@@ -280,12 +280,13 @@ WV_S32  TSK_PLAYER_Create()
     WV_CHECK_RET(  HIS_DIS_WinCreat(&(gTskPlayer.winHandl),gTskPlayer.winRect));
     WV_CHECK_RET(  HIS_DIS_WinAttach(&(gTskPlayer.winHandl),&(gTskPlayer.avPlayHandl)));
     WV_CHECK_RET(  HIS_DIS_WinStart(&(gTskPlayer.winHandl)));
-
     //开始播放
     WV_CHECK_RET(  HIS_PLAYER_Create(&(gTskPlayer.playerHandl) ,&(gTskPlayer.avPlayHandl)));
     WV_CHECK_RET(  HIS_PLAYER_Start(&(gTskPlayer.playerHandl) ,gTskPlayer.fileName));
-
+    printf("create,handle = %d ",gTskPlayer.playerHandl);
     HIS_AVP_SetVolume(0,50);
+
+
     //HIS_AVP_SetSampleRate(0,9);
     return WV_SOK;
 
@@ -295,7 +296,7 @@ WV_S32  TSK_PLAYER_Destory();
 ***********************************************************************/
 
 WV_S32  TSK_PLAYER_Destory()
-{
+{   printf("destory,handle = %d ",gTskPlayer.playerHandl);
     HIS_PLAYER_Stop(&gTskPlayer.playerHandl);
     HIS_PLAYER_Destory(&(gTskPlayer.playerHandl));
     HIS_DIS_WinFreeze(&(gTskPlayer.winHandl),HI_TRUE,0);
@@ -317,7 +318,7 @@ WV_S32  TSK_PLAYER_Open()
     gTskPlayer.winRect.s32Y = 0;
     gTskPlayer.winRect.s32Width = 1920;
     gTskPlayer.winRect.s32Height = 1080;
-    sprintf(gTskPlayer.fileName, "%s", "./mov/mov0.mp4");
+    sprintf(gTskPlayer.fileName, "%s", "./mov/mov4.mp4");
 
 
     HIS_PLAYER_Init();

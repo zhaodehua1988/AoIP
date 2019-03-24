@@ -27,7 +27,7 @@ extern "C" {
 /** @{*/  /** <!-[SPI]*/
 
 /** SPI device select */
-/** CNcomment: SPI Éè±¸ */
+/** CNcomment: SPI ï¿½è±¸ */
 typedef enum hiUNF_SPI_DEV_E
 {
     HI_UNF_SPI_DEV_0 =0 ,
@@ -36,7 +36,7 @@ typedef enum hiUNF_SPI_DEV_E
 }HI_UNF_SPI_DEV_E;
 
 /** SPI CS Config */
-/** CNcomment: SPI CS½ÅÅäÖÃ*/
+/** CNcomment: SPI CSï¿½ï¿½ï¿½ï¿½ï¿½ï¿½*/
 typedef enum hiUNF_SPI_CFGCS_E
 {
     HI_UNF_SPI_LOGIC_CS =0 ,
@@ -45,7 +45,7 @@ typedef enum hiUNF_SPI_CFGCS_E
 
 
 /** SPICLOCKOUT polarity */
-/** CNcomment: SPICLOCKOUT ¼«ÐÔÖµÃ¶¾Ù */
+/** CNcomment: SPICLOCKOUT ï¿½ï¿½ï¿½ï¿½ÖµÃ¶ï¿½ï¿½ */
 typedef enum hiUNF_SPI_SPO_E
 {
     HI_UNF_SPI_SPO_0 = 0,
@@ -53,7 +53,7 @@ typedef enum hiUNF_SPI_SPO_E
 }HI_UNF_SPI_SPO_E;
 
 /** SPICLOCKOUT  phase */
-/** CNcomment: SPICLOCKOUT ÏàÎ»ÖµÃ¶¾Ù */
+/** CNcomment: SPICLOCKOUT ï¿½ï¿½Î»ÖµÃ¶ï¿½ï¿½ */
 typedef enum hiUNF_SPI_SPH_E
 {
     HI_UNF_SPI_SPH_0 = 0,
@@ -61,7 +61,7 @@ typedef enum hiUNF_SPI_SPH_E
 }HI_UNF_SPI_SPH_E;
 
 /** SPI Frame format */
-/** CNcomment: Ö¡¸ñÊ½ */
+/** CNcomment: Ö¡ï¿½ï¿½Ê½ */
 typedef enum hiUNF_SPI_FRF_E
 {
     HI_UNF_SPI_FRF_MOTO = 0,	/**< Motorola SPI */ /** CNcomment: Motorola SPI*/
@@ -71,32 +71,32 @@ typedef enum hiUNF_SPI_FRF_E
 }HI_UNF_SPI_FRF_E;
 
 /** SPI Data byte order */
-/** CNcomment: Êý¾Ý´óÐ¡¶Ë¶¨Òå */
+/** CNcomment: ï¿½ï¿½ï¿½Ý´ï¿½Ð¡ï¿½Ë¶ï¿½ï¿½ï¿½ */
 typedef enum hiUNF_SPI_BIGEND_E
 {
-	HI_UNF_SPI_BIGEND_LITTLE,	/**< little endian */ /** CNcomment: Ð¡¶Ë*/
-	HI_UNF_SPI_BIGEND_BIG			/**< big endian */ /** CNcomment: ´ó¶Ë*/
+	HI_UNF_SPI_BIGEND_LITTLE,	/**< little endian */ /** CNcomment: Ð¡ï¿½ï¿½*/
+	HI_UNF_SPI_BIGEND_BIG			/**< big endian */ /** CNcomment: ï¿½ï¿½ï¿½*/
 }HI_UNF_SPI_BIGEND_E;
 
 /** SPI addition attribute about Motorola SPI */
-/** CNcomment: Motorola SPI Ð­Òé×¨ÓÐÊôÐÔ */
+/** CNcomment: Motorola SPI Ð­ï¿½ï¿½×¨ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ */
 
 typedef struct hiUNF_SPI_ATTR_MOTO_S
 {
-	HI_UNF_SPI_SPO_E enSpo;	/**< only effactive when enCs is HI_UNF_SPI_FRF_MOTO */ /** CNcomment: ½öÔÚmotorolaÐ­ÒéÓÐÐ§*/
-	HI_UNF_SPI_SPH_E enSph; /**< only effactive when enCs is HI_UNF_SPI_FRF_MOTO */ /** CNcomment: ½öÔÚmotorolaÐ­ÒéÓÐÐ§*/
+	HI_UNF_SPI_SPO_E enSpo;	/**< only effactive when enCs is HI_UNF_SPI_FRF_MOTO */ /** CNcomment: ï¿½ï¿½ï¿½ï¿½motorolaÐ­ï¿½ï¿½ï¿½ï¿½Ð§*/
+	HI_UNF_SPI_SPH_E enSph; /**< only effactive when enCs is HI_UNF_SPI_FRF_MOTO */ /** CNcomment: ï¿½ï¿½ï¿½ï¿½motorolaÐ­ï¿½ï¿½ï¿½ï¿½Ð§*/
 }HI_UNF_SPI_ATTR_MOTO_S;
 
 /** SPI additional attribute about National Microwire SPI */
-/** CNcomment: National Microwire SPI Ð­Òé×¨ÓÐÊôÐÔ */
+/** CNcomment: National Microwire SPI Ð­ï¿½ï¿½×¨ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ */
 typedef struct hiUNF_SPI_ATTR_NM_S
 {
-	HI_BOOL	bWaitEn;		/**< wait enable. */  /** CNcomment: µÈ´ýÊ¹ÄÜ*/
-	HI_U32 u32Waitval;	/**< wait time value. */	/** CNcomment: µÈ´ýÊ±¼ä*/
+	HI_BOOL	bWaitEn;		/**< wait enable. */  /** CNcomment: ï¿½È´ï¿½Ê¹ï¿½ï¿½*/
+	HI_U32 u32Waitval;	/**< wait time value. */	/** CNcomment: ï¿½È´ï¿½Ê±ï¿½ï¿½*/
 }HI_UNF_SPI_ATTR_NM_S;
 
 /** SPI additional attribute union */
-/** CNcomment: Motorola SPI/NM Ð­Òé×¨ÓÐÊôÐÔ */
+/** CNcomment: Motorola SPI/NM Ð­ï¿½ï¿½×¨ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½ */
 typedef union
 {
 	HI_UNF_SPI_ATTR_MOTO_S stMoto;
@@ -104,16 +104,16 @@ typedef union
 }HI_UNF_SPI_ATTR_EXT_U;
 
 /** The SPI attribute*/
-/** CNcomment: SPI¹¤×÷Ä£Ê½ÊôÐÔ*/
+/** CNcomment: SPIï¿½ï¿½ï¿½ï¿½Ä£Ê½ï¿½ï¿½ï¿½ï¿½*/
 typedef struct hiUNF_SPI_ATTR_S
 {
-	HI_UNF_SPI_DEV_E enDev;	/**< chip select */  /** CNcomment: Ö¸¶¨Éè±¸*/
-	HI_UNF_SPI_CFGCS_E csCfg; /**< cs select */  /** CNcomment: Ñ¡ÔñÆ¬Ñ¡ÅäÖÃ*/
-	HI_U32	u32Baud;  /**< baud rate */  /** CNcomment: ²¨ÌØÂÊ*/
+	HI_UNF_SPI_DEV_E enDev;	/**< chip select */  /** CNcomment: Ö¸ï¿½ï¿½ï¿½è±¸*/
+	HI_UNF_SPI_CFGCS_E csCfg; /**< cs select */  /** CNcomment: Ñ¡ï¿½ï¿½Æ¬Ñ¡ï¿½ï¿½ï¿½ï¿½*/
+	HI_U32	u32Baud;  /**< baud rate */  /** CNcomment: ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½*/
 	HI_UNF_SPI_FRF_E enFrf;	/**< frame format */  /** CNcomment: Ö¡Ä£Ê½*/
-	HI_U32 u32Dss;  /**< number of bits per transfer, 4-15bit, value of u32Dss : [4, 15]. */  /** CNcomment: ÉèÖÃ·¶Î§4-15*/
-	HI_UNF_SPI_BIGEND_E enBigend;	/**< byte order */  /** CNcomment: ´óÐ¡¶Ë*/
-	HI_UNF_SPI_ATTR_EXT_U unExtAttr; /**< addition attr when frf is moto or nm. */  /** CNcomment: Ä£Ê½ÎªMOTO»òÕßNMÊ±Ê¹ÓÃ*/
+	HI_U32 u32Dss;  /**< number of bits per transfer, 4-15bit, value of u32Dss : [4, 15]. */  /** CNcomment: ï¿½ï¿½ï¿½Ã·ï¿½Î§4-15*/
+	HI_UNF_SPI_BIGEND_E enBigend;	/**< byte order */  /** CNcomment: ï¿½ï¿½Ð¡ï¿½ï¿½*/
+	HI_UNF_SPI_ATTR_EXT_U unExtAttr; /**< addition attr when frf is moto or nm. */  /** CNcomment: Ä£Ê½ÎªMOTOï¿½ï¿½ï¿½ï¿½NMÊ±Ê¹ï¿½ï¿½*/
 	
 }HI_UNF_SPI_ATTR_S;
 
@@ -127,10 +127,10 @@ typedef struct hiUNF_SPI_ATTR_S
 
 /**
  \brief Init the SPI device.
-CNcomment:\brief ³õÊ¼»¯SPI£¨the Inter-Integrated Circuit£©Éè±¸¡£CNend
+CNcomment:\brief ï¿½ï¿½Ê¼ï¿½ï¿½SPIï¿½ï¿½the Inter-Integrated Circuitï¿½ï¿½ï¿½è±¸ï¿½ï¿½CNend
 
- \param N/A                                                               CNcomment:ÎÞ¡£CNend
- \retval 0 Success                                                        CNcomment:³É¹¦¡£CNend
+ \param N/A                                                               CNcomment:ï¿½Þ¡ï¿½CNend
+ \retval 0 Success                                                        CNcomment:ï¿½É¹ï¿½ï¿½ï¿½CNend
  \see \n
 N/A
  */
@@ -138,10 +138,10 @@ HI_S32 HI_UNF_SPI_Init(HI_VOID);
 
 /**
  \brief  DeInit the SPI device.
-CNcomment:\brief È¥³õÊ¼»¯SPIÉè±¸¡£CNend
+CNcomment:\brief È¥ï¿½ï¿½Ê¼ï¿½ï¿½SPIï¿½è±¸ï¿½ï¿½CNend
 
- \param N/A                                                        CNcomment:ÎÞ¡£CNend
- \retval 0 Success                                                 CNcomment: ³É¹¦¡£CNend
+ \param N/A                                                        CNcomment:ï¿½Þ¡ï¿½CNend
+ \retval 0 Success                                                 CNcomment: ï¿½É¹ï¿½ï¿½ï¿½CNend
  \see \n
 N/A
  */
@@ -151,16 +151,16 @@ HI_S32 HI_UNF_SPI_DeInit(HI_VOID);
 
 /**
  \brief Open the SPI device.
-CNcomment:\brief ´ò¿ªÖ¸¶¨SPIÉè±¸¡£CNend
+CNcomment:\brief ï¿½ï¿½Ö¸ï¿½ï¿½SPIï¿½è±¸ï¿½ï¿½CNend
 
   \attention \n
  Hi3719MV100/ Hi3718MV100 has SPI0 only.\n
- CNcomment: Hi3719MV100/ Hi3718MV100 Ö»ÓÐSPI0\n CNend
+ CNcomment: Hi3719MV100/ Hi3718MV100 Ö»ï¿½ï¿½SPI0\n CNend
 
- \param[in] enDev  select device		  CNcomment:Ö¸¶¨Éè±¸¡£CNend
+ \param[in] enDev  select device		  CNcomment:Ö¸ï¿½ï¿½ï¿½è±¸ï¿½ï¿½CNend
   
- \retval 0 Success                                                        CNcomment:³É¹¦¡£CNend
- \retval ::HI_ERR_SPI_OPEN_ERR  Opne Spi Error.	 	   CNcomment:SPIÉè±¸´ò¿ªÊ§°Ü¡£CNend
+ \retval 0 Success                                                        CNcomment:ï¿½É¹ï¿½ï¿½ï¿½CNend
+ \retval ::HI_ERR_SPI_OPEN_ERR  Opne Spi Error.	 	   CNcomment:SPIï¿½è±¸ï¿½ï¿½Ê§ï¿½Ü¡ï¿½CNend
  \see \n
 N/A
  */
@@ -170,12 +170,12 @@ HI_S32 HI_UNF_SPI_Open(HI_UNF_SPI_DEV_E enDev);
 
 /**
  \brief Close the SPI device.
-CNcomment:\brief ¹Ø±ÕÖ¸¶¨SPIÉè±¸¡£CNend
+CNcomment:\brief ï¿½Ø±ï¿½Ö¸ï¿½ï¿½SPIï¿½è±¸ï¿½ï¿½CNend
 
- \param[in] enDev  select device		  CNcomment:Ö¸¶¨Éè±¸¡£CNend
+ \param[in] enDev  select device		  CNcomment:Ö¸ï¿½ï¿½ï¿½è±¸ï¿½ï¿½CNend
 
- \retval 0 Success                                                        CNcomment:³É¹¦¡£CNend
- \retval ::HI_ERR_SPI_CLOSE_ERR  Close Spi Error.	 	   CNcomment:SPIÉè±¸¹Ø±ÕÊ§°Ü¡£CNend
+ \retval 0 Success                                                        CNcomment:ï¿½É¹ï¿½ï¿½ï¿½CNend
+ \retval ::HI_ERR_SPI_CLOSE_ERR  Close Spi Error.	 	   CNcomment:SPIï¿½è±¸ï¿½Ø±ï¿½Ê§ï¿½Ü¡ï¿½CNend
  \see \n
 N/A
  */
@@ -184,12 +184,12 @@ HI_S32 HI_UNF_SPI_Close(HI_UNF_SPI_DEV_E enDev);
 
 /**
  \brief  Set the SPI working mode.
-CNcomment:\ÉèÖÃSPI¹¤×÷·½Ê½¡£CNend
+CNcomment:\ï¿½ï¿½ï¿½ï¿½SPIï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê½ï¿½ï¿½CNend
 
- \param[in] enDev  select device		  CNcomment:Ö¸¶¨Éè±¸¡£CNend
- \param[in] stAttr  The attribute of the SPI . CNcomment:SPIµÄÊôÐÔ¡£CNend
+ \param[in] enDev  select device		  CNcomment:Ö¸ï¿½ï¿½ï¿½è±¸ï¿½ï¿½CNend
+ \param[in] stAttr  The attribute of the SPI . CNcomment:SPIï¿½ï¿½ï¿½ï¿½ï¿½Ô¡ï¿½CNend
 
- \retval 0 Success                                                 CNcomment: ³É¹¦¡£CNend
+ \retval 0 Success                                                 CNcomment: ï¿½É¹ï¿½ï¿½ï¿½CNend
  \retval ::	 
  \see \n
 N/A
@@ -199,12 +199,12 @@ HI_S32 HI_UNF_SPI_SetAttr(HI_UNF_SPI_DEV_E enDev, HI_UNF_SPI_ATTR_S *stAttr);
 
 /**
  \brief  Get the SPI working mode.
-CNcomment:\»ñÈ¡SPI¹¤×÷·½Ê½Ïà¹ØÊôÐÔ¡£CNend
+CNcomment:\ï¿½ï¿½È¡SPIï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ê½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ô¡ï¿½CNend
 
- \param[in] enDev  select device          CNcomment:Ö¸¶¨Éè±¸¡£CNend
- \param[out] stAttr  The attribute of the SPI . CNcomment:SPIµÄÊôÐÔ¡£CNend
+ \param[in] enDev  select device          CNcomment:Ö¸ï¿½ï¿½ï¿½è±¸ï¿½ï¿½CNend
+ \param[out] stAttr  The attribute of the SPI . CNcomment:SPIï¿½ï¿½ï¿½ï¿½ï¿½Ô¡ï¿½CNend
  
- \retval 0 Success                                                 CNcomment: ³É¹¦¡£CNend
+ \retval 0 Success                                                 CNcomment: ï¿½É¹ï¿½ï¿½ï¿½CNend
  \retval ::	 
  \see \n
 N/A
@@ -214,17 +214,17 @@ HI_S32 HI_UNF_SPI_GetAttr(HI_UNF_SPI_DEV_E enDev, HI_UNF_SPI_ATTR_S *stAttr);
 
 /**
  \brief Trans data by using the SPI.
-CNcomment:\brief SPIÊý¾Ý´«Êä¡£CNend
+CNcomment:\brief SPIï¿½ï¿½ï¿½Ý´ï¿½ï¿½ä¡£CNend
 
  \attention \n
 N/A
- \param[in] enDev  select device          CNcomment:Ö¸¶¨Éè±¸¡£CNend
- \param[in] pu8Send  Buffer for storing the data to be written       CNcomment:´æ·Å´ýÐ´ÈëÊý¾Ý¡£CNend
- \param[in] u32SendCnt  Length of the data to be written        CNcomment:´ýÐ´Êý¾ÝµÄ³¤¶È¡£CNend
- \param[in] pu8Read  Buffer for storing the data to be read . CNcomment:´æ·Å½ÓÊÕÊý¾Ý¡£CNend
- \param[in] u32ReadCnt  Length of the data to be read                                    CNcomment:Òª¶ÁÈ¡µÄÊý¾Ý³¤¶È¡£CNend
- \retval 0 Success                                                                      CNcomment:³É¹¦¡£CNend
- \retval ::HI_FAILURE	Read data failed					  	CNcomment:Ê§°Ü¡£CNend
+ \param[in] enDev  select device          CNcomment:Ö¸ï¿½ï¿½ï¿½è±¸ï¿½ï¿½CNend
+ \param[in] pu8Send  Buffer for storing the data to be written       CNcomment:ï¿½ï¿½Å´ï¿½Ð´ï¿½ï¿½ï¿½ï¿½ï¿½Ý¡ï¿½CNend
+ \param[in] u32SendCnt  Length of the data to be written        CNcomment:ï¿½ï¿½Ð´ï¿½ï¿½ï¿½ÝµÄ³ï¿½ï¿½È¡ï¿½CNend
+ \param[in] pu8Read  Buffer for storing the data to be read . CNcomment:ï¿½ï¿½Å½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ý¡ï¿½CNend
+ \param[in] u32ReadCnt  Length of the data to be read                                    CNcomment:Òªï¿½ï¿½È¡ï¿½ï¿½ï¿½ï¿½ï¿½Ý³ï¿½ï¿½È¡ï¿½CNend
+ \retval 0 Success                                                                      CNcomment:ï¿½É¹ï¿½ï¿½ï¿½CNend
+ \retval ::HI_FAILURE	Read data failed					  	CNcomment:Ê§ï¿½Ü¡ï¿½CNend
  \see \n
 N/A
  */
@@ -233,16 +233,16 @@ HI_S32 HI_UNF_SPI_ReadExt(HI_UNF_SPI_DEV_E enDev, HI_U8 *pu8Send, HI_U32 u32Send
 
 /**
  \brief Reads data by using the SPI.
-CNcomment:\brief SPIÊý¾Ý½ÓÊÕ¡£CNend
+CNcomment:\brief SPIï¿½ï¿½ï¿½Ý½ï¿½ï¿½Õ¡ï¿½CNend
 
  \attention \n
 N/A
- \param[in] enDev  select device          CNcomment:Ö¸¶¨Éè±¸¡£CNend
- \param[out] pu8Read  Buffer for storing the data to be read . CNcomment:´æ·Å½ÓÊÕÊý¾Ý¡£CNend
- \param[in] u32ReadCnt  Length of the data to be read                                    CNcomment:Òª¶ÁÈ¡µÄÊý¾Ý³¤¶È¡£CNend
+ \param[in] enDev  select device          CNcomment:Ö¸ï¿½ï¿½ï¿½è±¸ï¿½ï¿½CNend
+ \param[out] pu8Read  Buffer for storing the data to be read . CNcomment:ï¿½ï¿½Å½ï¿½ï¿½ï¿½ï¿½ï¿½ï¿½Ý¡ï¿½CNend
+ \param[in] u32ReadCnt  Length of the data to be read                                    CNcomment:Òªï¿½ï¿½È¡ï¿½ï¿½ï¿½ï¿½ï¿½Ý³ï¿½ï¿½È¡ï¿½CNend
 
- \retval 0 Success                                                                      CNcomment:³É¹¦¡£CNend
- \retval ::HI_FAILURE	Read data failed					  	CNcomment:Ê§°Ü¡£CNend
+ \retval 0 Success                                                                      CNcomment:ï¿½É¹ï¿½ï¿½ï¿½CNend
+ \retval ::HI_FAILURE	Read data failed					  	CNcomment:Ê§ï¿½Ü¡ï¿½CNend
  \see \n
 N/A
  */
@@ -251,16 +251,16 @@ HI_S32 HI_UNF_SPI_Read(HI_UNF_SPI_DEV_E enDev, HI_U8 *pu8Read, HI_U32 u32ReadCnt
 
 /**
  \brief Reads data by using the SPI.
-CNcomment:\brief SPIÊý¾Ý·¢ËÍ¡£CNend
+CNcomment:\brief SPIï¿½ï¿½ï¿½Ý·ï¿½ï¿½Í¡ï¿½CNend
 
  \attention \n
 N/A
- \param[in] enDev  select device          CNcomment:Ö¸¶¨Éè±¸¡£CNend
- \param[in] pu8Send  Buffer for storing the data to be written       CNcomment:´æ·Å´ýÐ´ÈëÊý¾Ý¡£CNend
- \param[in] u32SendCnt  Length of the data to be written        CNcomment:´ýÐ´Êý¾ÝµÄ³¤¶È¡£CNend
+ \param[in] enDev  select device          CNcomment:Ö¸ï¿½ï¿½ï¿½è±¸ï¿½ï¿½CNend
+ \param[in] pu8Send  Buffer for storing the data to be written       CNcomment:ï¿½ï¿½Å´ï¿½Ð´ï¿½ï¿½ï¿½ï¿½ï¿½Ý¡ï¿½CNend
+ \param[in] u32SendCnt  Length of the data to be written        CNcomment:ï¿½ï¿½Ð´ï¿½ï¿½ï¿½ÝµÄ³ï¿½ï¿½È¡ï¿½CNend
  
- \retval 0 Success                                                                      CNcomment:³É¹¦¡£CNend
- \retval ::HI_FAILURE	Read data failed					  	CNcomment:Ê§°Ü¡£CNend
+ \retval 0 Success                                                                      CNcomment:ï¿½É¹ï¿½ï¿½ï¿½CNend
+ \retval ::HI_FAILURE	Read data failed					  	CNcomment:Ê§ï¿½Ü¡ï¿½CNend
  \see \n
 N/A
  */

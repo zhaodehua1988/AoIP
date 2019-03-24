@@ -8,6 +8,7 @@
 #include "PCA9555.h"
 #include "his_dis.h"
 #include "iTE6615_Init.h"
+#include "fpga_igmp.h"
 
 #define _FPGA_CONF_FILEPATH_WIN_D "./env/win.ini"
 #define _FPGA_CONF_FILEPATH_ETH_D "./env/eth.ini"
@@ -37,6 +38,10 @@ typedef struct _FPGA_CONF_WIN_INFO_T
 }_FPGA_CONF_WIN_INFO_T;
 
 static _FPGA_CONF_WIN_INFO_T gWinInfo[FPGA_CONF_WINNUM_D];//这里主要保存由ip地址转换为第几路网卡第几个ip用
+
+
+
+
 /*******************************************************************
 WV_S32 fpga_conf_getMacInt(WV_S8 *pSrc,WV_S8* pMac);
 *******************************************************************/
@@ -114,11 +119,11 @@ WV_S32 fpga_conf_getIpInt(WV_S8 *pSrc,WV_S8* pIp)
 }
 
 /****************************************************
- * WV_S32 FPGA_CONF_GetWinFreeze(WV_S32 winID)
+ * WV_S32 FPGA_CONF_GetWinFreezeVal(WV_S32 winID)
  * 查询窗口的视频值
  * 返回值 视频R值的叠加
  * *************************************************/
-WV_U32 FPGA_CONF_GetWinFreeze(WV_S32 winID)
+WV_U32 FPGA_CONF_GetWinFreezeVal(WV_S32 winID)
 {
     if(winID<0 || winID > 15) return 0;
     WV_U16 baseAddr,regAddr,data=0;
@@ -152,6 +157,7 @@ WV_U32 FPGA_CONF_GetWinFreeze(WV_S32 winID)
     return video_r_sum;
 }
 
+
 /****************************************************
  * WV_S32 FPGA_CONF_GetWinStream(WV_S32 winID)
  * 查询窗口是否有视频流
@@ -177,7 +183,30 @@ WV_S32 FPGA_CONF_GetWinStream(WV_S32 winID)
 
     return videoStreamEffective;
 }
+#if 0
+/****************************************************
+ * WV_S32 FPGA_CONF_GetWinStream()
+ * 查询窗口是否有视频流
+ * 返回值 bit[0~15],1表示有视频，0表示无视频
+ * *************************************************/
+WV_S32 FPGA_CONF_GetWinStream()
+{
+    // if(winID<0 || winID > 15) return -1;
+     WV_U16 regAddr,data=0;
+    // WV_S32 videoStreamEffective;//视频流是否有效
+    regAddr = 0x18;
+    
+    HIS_SPI_FpgaRd(regAddr,&data);
+    // if(((1<<winID) & data) != 0 )
+    // {
+    //     videoStreamEffective = 1;
+    // }else{
+    //     videoStreamEffective = 0;
+    // }
 
+    return data;
+}
+#endif
 /*****************************************************
 WV_S32 fpga_conf_DisChangeEna(WV_U16 winena)
 *设置视频输出更新（包括窗口坐标更新生效）
@@ -350,6 +379,7 @@ WV_S32 fpga_conf_SetWinIpAndSdp(FPGA_CONF_WIN_T pWin[])
                 memset(ip,0,sizeof(ip));
                 fpga_conf_getIpInt(srcAddr[i][j].ipv6,ip);
                 ret += HIS_SPI_FpgaWd(regAddr + 0x20 + j * 9, (ip[2] << 8) | ip[3]);
+                //printf("set [0x%X] = [0x%x][%d]",regAddr+0x20+j*9,(ip[2] << 8) | ip[3]);
                 ret += HIS_SPI_FpgaWd(regAddr + 0x21 + j * 9, (ip[0] << 8) | ip[1]);            
             }else{  //ipv6
                 //测试阶段暂不处理
@@ -359,7 +389,6 @@ WV_S32 fpga_conf_SetWinIpAndSdp(FPGA_CONF_WIN_T pWin[])
     }
 
     //设置sdp信息
-
 
     for(i=0;i<FPGA_CONF_ETHNUM_D;i++){
         for(j=0;j<4;j++){
@@ -383,6 +412,8 @@ WV_S32 fpga_conf_SetWinIpAndSdp(FPGA_CONF_WIN_T pWin[])
         }
 
     }
+
+
 
 
     //设置视频源选通选项
@@ -490,10 +521,24 @@ fpga窗口设置
 WV_S32 FPGA_CONF_SetWin(FPGA_CONF_WIN_T winArray[])
 {
 
-
+    
     WV_S32 i, ret = 0;
     WV_U16 baseAddr = 0x0500;
     WV_U16 regAddr,winEna=0;
+
+
+    //
+    WV_S32 mode = 0;//1080
+    for(i=0;i<FPGA_CONF_WINNUM_D;i++){
+        if(winArray[i].win_ena == 1){
+            if(winArray[i].sdpInfo.video_width > 1920 || winArray[i].sdpInfo.video_height >1080) 
+            {
+                mode = 1;// 4k
+                break;
+            }
+        }
+    }
+    FPGA_IGMP_SetMode(mode);
 
     //set src ip
     ret +=fpga_conf_SetWinIpAndSdp(winArray);
@@ -1055,7 +1100,7 @@ WV_S32 FPGA_CONF_GetCmd(WV_S32 argc, WV_S8 **argv, WV_S8 *prfBuff)
                 {
                     prfBuff += sprintf(prfBuff, "win[%d] video stream is ok\r\n",i);
                     //if(FPGA_CONF_GetWinFreeze(i) == 1){
-                        prfBuff += sprintf(prfBuff, "win[%d] video stream r sum=0x%X\r\n",i,FPGA_CONF_GetWinFreeze(i));
+                        prfBuff += sprintf(prfBuff, "win[%d] video stream r sum=0x%X\r\n",i,FPGA_CONF_GetWinFreezeVal(i));
                     //}
                 }else{
                     prfBuff += sprintf(prfBuff, "win[%d] video stream is error\r\n",i);
@@ -1078,6 +1123,19 @@ WV_S32 FPGA_CONF_Reset()
     usleep(100000);
     PCA9555_Set(0x3,0x2);
     usleep(100000);
+    WV_U16 reg=0x4,data=0;
+    WV_S32  i;
+    for(i=0;i<50;i++){
+        HIS_SPI_FpgaRd(reg,&data); 
+        if(data==0x3210){
+            HIS_SPI_FpgaWd(reg,0x123);
+        }     
+        if(data == 0x123){
+            break;
+        }
+        usleep(100000);
+    }
+
     return WV_SOK;
 }
 /*******************************************************************
@@ -1108,6 +1166,9 @@ void FPGA_CONF_Init()
     HIS_SPI_FpgaWd(0x603,0x0);
     //sdp init
     FPGA_SDP_Init();
+    FPGA_IGMP_Open();
+    //FPGA_UPDATE_Init();
+    
     WV_CMD_Register("set", "fpga", " set fpga", FPGA_CONF_SetCmd);
     WV_CMD_Register("get", "fpga", "pca9555 get reg", FPGA_CONF_GetCmd);
     
@@ -1120,6 +1181,7 @@ void FPGA_CONF_DeInit()
     pthread_mutex_destroy(&gMutexWin);
     pthread_mutex_destroy(&gMutexAlpha);
 #endif
+    FPGA_IGMP_Close();
     free(gpFpgaConfDev);
     //sdp init
     FPGA_SDP_DeInit();

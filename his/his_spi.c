@@ -75,7 +75,6 @@ WV_S32  HIS_SPI_FpgaWd_buffer(WV_U16 *pBuffer,WV_U16 length);
 // length include addr, all pBuffer content means data to spi driver. addr only meaning to fpga
 
 *******************************************************************************************************/
-
 WV_S32 HIS_SPI_FpgaWd_buffer(WV_U16 *pBuffer, WV_U16 length)
 {
 	HI_UNF_SPI_DEV_E dev;
@@ -99,19 +98,32 @@ WV_S32  HIS_SPI_FpgaRd(WV_U16 addr,WV_U16 * pData);
 WV_S32 HIS_SPI_FpgaRd(WV_U16 addr, WV_U16 *pData)
 {
 	//printf("FPGA read : 0x%04x\n",addr);
+	// HI_UNF_SPI_DEV_E dev;
+	// WV_U16 rBuf[20], wBuf[20];
+	// WV_S32 ret;
+	// dev = HIS_SPI_DEV_SEL;
+	// wBuf[0] = (addr << 4) & 0x7fff;
+	// ret = HI_UNF_SPI_ReadExt(dev, (HI_U8 *)wBuf, 2, (HI_U8 *)rBuf, 2);
+	// *pData = rBuf[0];
+	// if (ret != 0)
+	// {
+	// 	HIS_SPI_printf("FPGA read : 0x%04x  = 0x%04x", addr, rBuf[0]);
+	// }
+
 	HI_UNF_SPI_DEV_E dev;
-	WV_U16 rBuf[20], wBuf[20];
+	WV_U8 rBuf[20], wBuf[20];
 	WV_S32 ret;
 	dev = HIS_SPI_DEV_SEL;
-	wBuf[0] = (addr << 4) & 0x7fff;
+	wBuf[0] = (addr >> 4) & 0x7f;
+	wBuf[1] = (addr << 4) & 0xff;
 	ret = HI_UNF_SPI_ReadExt(dev, (HI_U8 *)wBuf, 2, (HI_U8 *)rBuf, 2);
-	*pData = rBuf[0];
+	*pData = (rBuf[0] << 8) | rBuf[1];
 	if (ret != 0)
 	{
 		HIS_SPI_printf("FPGA read : 0x%04x  = 0x%04x", addr, rBuf[0]);
 	}
-	//printf("FPGA read : 0x%04x  = 0x%04x[%d]\n", addr, rBuf[0],rBuf[0]);
-
+	*pData = (rBuf[0] << 8) | rBuf[1];
+	printf("FPGA read : w0=%02x,w1=%02x  =r0= 0x%02x r1=0x%02x[%d]\n", wBuf[0],wBuf[1], rBuf[0],rBuf[1]);
 	return WV_SOK;
 }
 #endif
@@ -123,11 +135,18 @@ WV_S32  HIS_SPI_FpgaRdNum(WV_U16 addr,WV_U16 * pData,WV_U32 dataNum);
 WV_S32 HIS_SPI_FpgaRdNum(WV_U16 addr, WV_U16 *pData, WV_U32 dataNum)
 {
 	HI_UNF_SPI_DEV_E dev;
-	WV_U16  wBuf[20];
-	WV_S32 ret;
+	WV_U8  wBuf[20];
+	WV_U8  rBuf[1024]={0};
+	WV_S32 ret,i;
 	dev = HIS_SPI_DEV_SEL;
-	wBuf[0] = (addr << 4) & 0x7fff;
-	ret = HI_UNF_SPI_ReadExt(dev, (HI_U8 *)wBuf, 2, (HI_U8 *)pData, dataNum * 2);
+	//wBuf[0] = (addr << 4) & 0x7fff;
+	wBuf[0] = (addr >> 4) & 0x7f;
+	wBuf[1] = (addr << 4) & 0xff;
+	ret = HI_UNF_SPI_ReadExt(dev, (HI_U8 *)wBuf, 2, (HI_U8 *)rBuf, dataNum * 2);
+	for(i=0;i<dataNum;i++){
+		pData[i] = (rBuf[2*i] << 8) | rBuf[2*i+1];
+	}
+
 	if (ret != 0)
 	{
 		HIS_SPI_printf("FPGA read : 0x%04x err\r\n.", addr);
@@ -284,7 +303,7 @@ WV_S32 HIS_SPI_CMDRead(WV_S32 argc, WV_S8 **argv, WV_S8 *prfBuff)
 
 	addr = temp & 0xffff;
 	prfBuff += sprintf(prfBuff, "spi read 0x%0X ,dataNum=%d\n", addr, dataNum);
-	ret = HIS_SPI_FpgaRdNum(addr, data, dataNum);
+	ret = HIS_SPI_FpgaRdNum(addr, data,dataNum);
 	if (ret != 0)
 	{
 		prfBuff += sprintf(prfBuff, "get spi err \r\n");
@@ -293,9 +312,12 @@ WV_S32 HIS_SPI_CMDRead(WV_S32 argc, WV_S8 **argv, WV_S8 *prfBuff)
 	{
 		for (i = 0; i < dataNum; i++)
 		{
-			prfBuff += sprintf(prfBuff, "spi read fpga   0x%x = 0x%x[%d] \r\n", addr + i, data[i],data[i]);
+			prfBuff += sprintf(prfBuff, "spi read fpga   0x%x = 0x%x[%d] \r\n", addr, data[i],data[i]);
 		}
 	}
+	//prfBuff += sprintf(prfBuff, "spi read fpga   0x%x = 0x%x[%d] \r\n", addr, data[0],data[0]);
+	//prfBuff += sprintf(prfBuff, "spi read fpga   0x%x = 0x%x[%d] \r\n", addr, data[1],data[1]);
+	
 	/*
 	for(i=0;i<dataNum;i++){
 		//temp=temp+i;
@@ -341,13 +363,34 @@ WV_S32 HIS_SPI_Init()
   HIS_SPI_printf("attr.enSpoh[%d]",attr.unExtAttr.stMoto.enSpo);
   //HIS_SPI_printf("attr.unExtAttr[%d]",attr.unExtAttr); 
   */
+	// attr.enDev = dev;
+	// attr.csCfg = HI_UNF_SPI_LOGIC_CS;
+	// attr.u32Baud = 25;
+	// attr.enFrf = HI_UNF_SPI_FRF_MOTO;
+	// attr.u32Dss = 16;
+	// attr.unExtAttr.stMoto.enSph = HI_UNF_SPI_SPH_1;
+	// attr.unExtAttr.stMoto.enSpo = HI_UNF_SPI_SPO_1;
+	// attr.enBigend = HI_UNF_SPI_BIGEND_BIG;
+
 	attr.enDev = dev;
 	attr.csCfg = HI_UNF_SPI_LOGIC_CS;
-	attr.u32Baud = 25;
-	attr.enFrf = HI_UNF_SPI_FRF_MOTO;
-	attr.u32Dss = 16;
+	attr.u32Baud = 10;
+	attr.enFrf = HI_UNF_SPI_FRF_MOTO;//HI_UNF_SPI_FRF_NM;//HI_UNF_SPI_FRF_TI;//HI_UNF_SPI_FRF_MOTO;
+	attr.u32Dss = 8;
 	attr.unExtAttr.stMoto.enSph = HI_UNF_SPI_SPH_1;
 	attr.unExtAttr.stMoto.enSpo = HI_UNF_SPI_SPO_1;
+	attr.enBigend = HI_UNF_SPI_BIGEND_LITTLE;
+
+	// attr.enDev = dev;
+	// attr.csCfg = HI_UNF_SPI_LOGIC_CS;
+	// attr.u32Baud = 25;
+	// attr.enFrf = HI_UNF_SPI_FRF_MOTO;
+	// attr.u32Dss = 8;
+	// attr.unExtAttr.stMoto.enSph = HI_UNF_SPI_SPH_1;
+	// attr.unExtAttr.stMoto.enSpo = HI_UNF_SPI_SPO_1;
+	// attr.enBigend = HI_UNF_SPI_BIGEND_BIG;
+
+
 	WV_ASSERT_RET(HI_UNF_SPI_SetAttr(dev, &attr));
 
 	// u32Baud = 100 /(cpsdvr * (1+ scr));
@@ -367,7 +410,7 @@ WV_S32 HIS_SPI_Init()
 	// HIS_SPI_printf("WriteRegister(0x%04x,0x%04x)",regAddr,regData);
 
 	WV_ASSERT_RET(HI_UNF_SPI_GetAttr(dev, &attr));
-	/*
+	
   HIS_SPI_printf("attr.enDev[%d]",attr.enDev);
   HIS_SPI_printf("attr.csCfg[%d]",attr.csCfg);
   HIS_SPI_printf("attr.u32Baud[%d]",attr.u32Baud);
@@ -376,7 +419,7 @@ WV_S32 HIS_SPI_Init()
   HIS_SPI_printf("attr.enBigend[%d]",attr.enBigend);
   HIS_SPI_printf("attr.enSph[%d]",attr.unExtAttr.stMoto.enSph);
   HIS_SPI_printf("attr.enSpoh[%d]",attr.unExtAttr.stMoto.enSpo);
-  */
+  
 
 	//
 	WV_CMD_Register("set", "spi", "spi bus write fpga1 sigle", HIS_SPI_CMDWrite);
@@ -401,4 +444,29 @@ WV_S32 HIS_SPI_DeInit()
 	WV_ASSERT_RET(HI_UNF_SPI_DeInit());
 
 	return WV_SOK;
+}
+
+
+/********************************************************************************************
+ * WV_S32 HIS_SPI_Write_then_Read(HI_U8 *pu8WtBuf,HI_U32 u32WtNum,HI_U8 *pu8RdBuf,HI_U32 u32RdNum)
+ * ******************************************************************************************/
+WV_S32 HIS_SPI_Write_then_Read(WV_U8 *pu8WtBuf,WV_U32 u32WtNum,WV_U8 *pu8RdBuf,WV_U32 u32RdNum)
+{
+	HI_UNF_SPI_DEV_E dev = HIS_SPI_DEV_SEL;
+
+	return HI_UNF_SPI_ReadExt(dev, pu8WtBuf, u32WtNum, pu8RdBuf, u32RdNum);
+}
+/******************************************************************************************
+ * WV_S32 HIS_SPI_Read(HI_U8 *pu8RdBuf,HI_U32 u32RdNum)
+ * ***************************************************************************************/
+WV_S32 HIS_SPI_Read(WV_U8 *pu8RdBuf,WV_U32 u32RdNum)
+{
+	HI_UNF_SPI_DEV_E dev = HIS_SPI_DEV_SEL;
+	return HI_UNF_SPI_Read(dev,pu8RdBuf,u32RdNum); 
+}
+
+WV_S32 HIS_SPI_Write(WV_U8 *pu8WtBuf,WV_U32 u32WtNum)
+{
+	HI_UNF_SPI_DEV_E dev = HIS_SPI_DEV_SEL;
+	return HI_UNF_SPI_Write(dev,pu8WtBuf,u32WtNum); 
 }
