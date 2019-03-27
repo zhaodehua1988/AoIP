@@ -50,6 +50,13 @@ typedef struct FPGA_CONF_ETH_T
     WV_S8 getway[FPGA_CONF_IPLEN];      //网关//
 }FPGA_CONF_ETH_T;
 
+typedef struct FPGA_CONF_VER
+{
+    WV_U16 year;
+    WV_U16 month;
+    WV_U16 day;
+    WV_U16 ver;
+}FPGA_CONF_VER;
 typedef struct FPGA_CONF_DEV
 {
     WV_S8 fpgaVer[24];
@@ -61,7 +68,7 @@ typedef struct FPGA_CONF_DEV
 } FPGA_CONF_DEV;
 
 //查询fpga版本号
-WV_S32 FPGA_CONF_GetVersion(WV_S8 *pFpgaVer);
+WV_S32 FPGA_CONF_GetVersion(FPGA_CONF_VER *pFpgaVer);
 
 //设置16个窗口的信息，必须时一次设置16个窗口
 WV_S32 FPGA_CONF_SetWin(FPGA_CONF_WIN_T winArray[]);
@@ -181,6 +188,15 @@ WV_U32 FPGA_CONF_GetWinFreezeVal(WV_S32 winID);
  * *************************************************/
 WV_S32 FPGA_CONF_GetWinStream(WV_S32 winID);
 
+
+/*******************************************************************
+WV_S32 FPGA_CONF_UpdateFpga(WV_S8 *pFpgaBin);
+* fpga升级
+* 参数: pFpgabin 为需要升级的fpga二进制文件路径
+* 返回值 0:成功
+*       其他:失败
+*******************************************************************/
+WV_S32 FPGA_CONF_UpdateFpga(WV_S8 *pFpgaBin);
 
 void FPGA_CONF_Init();
 void FPGA_CONF_DeInit();

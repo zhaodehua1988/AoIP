@@ -576,6 +576,9 @@ void *FPGA_IGMP_Proc(void *prm)
         FPGA_IGMP_enable();
         sleep(2);
     }
+    pDev->open = 0;
+    pDev->close = 1;
+    return NULL;
 }
 
 /************************************************************

@@ -107,7 +107,7 @@ WV_S32 SYS_IP_SwitchChar(WV_S8 *pStr, WV_S32 *pValue)
 /*******************************************************************
 WV_S32 SYS_IP_getIpInt(WV_S8 *pName,WV_U8* pIp);
 *******************************************************************/
-WV_S32 SYS_IP_getIpInt(WV_S8 *pName, WV_U8 *pIp)
+/*WV_S32 SYS_IP_getIpInt(WV_S8 *pName, WV_U8 *pIp)
 {
 
 	WV_S8 pSrc[20];
@@ -149,8 +149,49 @@ WV_S32 SYS_IP_getIpInt(WV_S8 *pName, WV_U8 *pIp)
 	}
 
 	return WV_SOK;
-}
+}*/
+/*******************************************************************
+WV_S32 SYS_IP_getIpInt(WV_S8 *pName,WV_U8* pIp);
+*******************************************************************/
+WV_S32 SYS_IP_getIpInt(WV_S8 *pName,WV_U8* pIp)
+{
 
+	WV_S8 pSrc[20];
+	SYS_ENV_Get(pName,pSrc);
+	WV_S8* pData = pSrc;	
+	WV_S32 len;
+	WV_S32 i,j,k,data=0;
+	WV_S32 des;
+	len = strlen(pSrc);
+	if(strncmp(pData,".",1) == 0){
+		printf("get ip error\r\n");
+		return WV_EFAIL;
+	}
+	j = 3;
+	k = 1;
+	for(i=len-1;i>=0;i--){
+		 
+		if(SYS_IP_SwitchChar(&pData[i],&des)==0){
+		
+			data += des*k;
+			pIp[j] = data;
+			printf("%d = %d\n",j,pIp[j]);
+			k*=10;
+		
+		}else{
+			
+			k=1;
+			data = 0;
+		
+			j--;
+			if(j<0){
+				break;
+			}
+		}
+	}
+
+	return WV_SOK;	
+}
 /*******************************************************************
 WV_S32 SYS_IP_getMacInt(WV_U8* pMac);
 *******************************************************************/
@@ -170,7 +211,7 @@ WV_S32 SYS_IP_getMacInt(WV_U8 *pMac)
 		printf("get ip error\r\n");
 		return WV_EFAIL;
 	}
-*/
+   */
 	j = 5;
 	k = 1;
 	for (i = len - 1; i >= 0; i--)
@@ -386,16 +427,22 @@ WV_S32 SYS_IP_SetGw(WV_S8 *pGw)
 
 WV_S32 SYS_IP_GetGw(WV_S8 *pGw)
 {
-
 	WV_CONF_CpyStr(gSysIpConf.gw, pGw, 20);
 	return WV_SOK;
 }
 /**********************************************************************
- * WV_S32 SYS_IP_SetETH(WV_S8 *pIp,WV_S8 *pMask,WV_S8 *pGetWay)
+ * WV_S32 SYS_IP_SetEthIpConf(WV_U8 ip[], WV_U8 mask[], WV_U8 gw[])
  * 设置ip，网关等
  * ********************************************************************/
-WV_S32 SYS_IP_SetEthIpConf(WV_S8 *pIp, WV_S8 *pMask, WV_S8 *pGetWay)
+WV_S32 SYS_IP_SetEthIpConf(WV_U8 ip[], WV_U8 mask[], WV_U8 gw[])
 {
+	WV_S8 pIp[32]={0};
+	WV_S8 pMask[32]={0};
+	WV_S8 pGetWay[32]={0};
+	
+	sprintf(pIp,"%d.%d.%d.%d",ip[0],ip[1],ip[2],ip[3]);
+	sprintf(pMask,"%d.%d.%d.%d",mask[0],mask[1],mask[2],mask[3]);
+	sprintf(pGetWay,"%d.%d.%d.%d",gw[0],gw[1],gw[2],gw[3]);
 
 	SYS_IP_SetIp(pIp);
 	SYS_IP_SetMask(pMask);
@@ -405,13 +452,34 @@ WV_S32 SYS_IP_SetEthIpConf(WV_S8 *pIp, WV_S8 *pMask, WV_S8 *pGetWay)
 	return WV_SOK;
 }
 /**********************************************************************
- * WV_S32 SYS_IP_SetETH(WV_S8 *pIp,WV_S8 *pMask,WV_S8 *pGetWay)
+ * WV_S32 SYS_IP_SetEthMacConf(WV_U8 mac[])
  * 设置mac地址，因为mac地址不经常改变，所以mac地址单独设置，跟ip网关掩码分开
  * ********************************************************************/
-WV_S32 SYS_IP_SetEthMacConf(WV_S8 *pMac)
+WV_S32 SYS_IP_SetEthMacConf(WV_U8 mac[])
 {
+	WV_S8 pMac[32]={0};
+	sprintf(pMac,"%02x:%02x:%02x:%02x:%02x:%02x",mac[0],mac[1],mac[2],mac[3],mac[4],mac[5]);
 	SYS_IP_SetMac(pMac);
 	SYS_IP_SaveConf();
+
+	return WV_SOK;
+}
+/**********************************************************************
+ * WV_S32 SYS_IP_GetEthConf(WV_U8 ip[], WV_U8 mask[], WV_U8 gw[],WV_U8 mac[])
+ * 查询ip地址
+ * ********************************************************************/
+WV_S32 SYS_IP_GetEthConf(WV_U8 ip[], WV_U8 mask[], WV_U8 gw[],WV_U8 mac[])
+{
+	SYS_IP_getIpInt("IP_Ip",ip);
+	SYS_IP_getIpInt("IP_Mask",mask);
+	SYS_IP_getIpInt("IP_Gatway",gw);
+	SYS_IP_getMacInt(mac);
+
+	WV_printf("ip    %d.%d.%d.%d \n",ip[0],ip[1],ip[2],ip[3]);
+	WV_printf("mask  %d.%d.%d.%d\n",mask[0],mask[1],mask[2],mask[3]);
+	WV_printf("gw    %d.%d.%d.%d\n",gw[0],gw[1],gw[2],gw[3]);
+	WV_printf("mask  %02x:%02x:%02x:%02x:%02x:%02x\n",mac[0],mac[1],mac[2],mac[3],mac[4],mac[5]);
+	
 
 	return WV_SOK;
 }
@@ -428,6 +496,14 @@ WV_S32 SYS_IP_CMDGet(WV_S32 argc, WV_S8 **argv, WV_S8 *prfBuff)
 	prfBuff += sprintf(prfBuff, "ip  addr :  %s[%s]\r\n", gSysIpConf.ip, ip);
 	prfBuff += sprintf(prfBuff, "ip  mask :  %s\r\n", gSysIpConf.mask);
 	prfBuff += sprintf(prfBuff, "gate way :  %s\r\n", gSysIpConf.gw);
+
+	// WV_U8 u8Ip[4];
+	// WV_U8 u8Mask[4];
+	// WV_U8 u8Gw[4]={0};
+	// WV_U8 u8Mac[6];
+	
+	// SYS_IP_GetEthConf(u8Ip,u8Mask,u8Gw,u8Mac);
+
 	return WV_SOK;
 }
 

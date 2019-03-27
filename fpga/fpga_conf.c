@@ -9,7 +9,7 @@
 #include "his_dis.h"
 #include "iTE6615_Init.h"
 #include "fpga_igmp.h"
-
+#include "fpga_update.h"
 #define _FPGA_CONF_FILEPATH_WIN_D "./env/win.ini"
 #define _FPGA_CONF_FILEPATH_ETH_D "./env/eth.ini"
 #define _FPGA_CONF_FILEPATH_ALPHA_D "./env/volAlpha.ini"
@@ -719,27 +719,19 @@ WV_S32 FPGA_CONF_GetETH(FPGA_CONF_ETH_T *pEth,WV_S32 ethID)
 * WV_S32 FPGA_CONF_GetVersion(WV_S8 *pFpgaVer);
 *查询版本信息
 *************************************************************/
-WV_S32 FPGA_CONF_GetVersion(WV_S8 *pFpgaVer)
+WV_S32 FPGA_CONF_GetVersion(FPGA_CONF_VER *pFpgaVer)
 {
 
-    WV_U16 temp;
-    WV_U16 year;
-    WV_U16 month;
-    WV_U16 day;
-    WV_U16 ver;
-    
-    HIS_SPI_FpgaRd(0, &ver);
-    //HIS_SPI_FpgaRd(0x1, &pVer->type);
-    HIS_SPI_FpgaRd(0x2, &year);
-
+    WV_U16 temp;    
+    HIS_SPI_FpgaRd(0, &pFpgaVer->ver);
+    HIS_SPI_FpgaRd(0x2, &pFpgaVer->year);
     HIS_SPI_FpgaRd(0x3, &temp);
+    pFpgaVer->month = (temp & 0xf00) >> 8;
+    pFpgaVer->day = temp & 0xff;
+    // WV_S8 buf[32]={0};
 
-    month = (temp & 0xf00) >> 8;
-    day = temp & 0xff >> 8;
-    sprintf(pFpgaVer,"%d-%d-%d:%d",(WV_S32)year,(WV_S32)month,(WV_S32)day,(WV_S32)ver);
-    FPGA_printf("fpga version=%s\r\n", pFpgaVer);
-
-    //sprintf(pMainVer,"%s:%s",SYS_ENV_VERSION_NO,SYS_ENV_DAYE);
+    // sprintf(buf,"%d-%d-%d:%d",(WV_S32)year,(WV_S32)month,(WV_S32)day,(WV_S32)ver);
+    // FPGA_printf("fpga version=%s\r\n", buf);
 
     return WV_SOK;
 }
@@ -1125,7 +1117,7 @@ WV_S32 FPGA_CONF_Reset()
     usleep(100000);
     WV_U16 reg=0x4,data=0;
     WV_S32  i;
-    for(i=0;i<50;i++){
+    for(i=0;i<100;i++){
         HIS_SPI_FpgaRd(reg,&data); 
         if(data==0x3210){
             HIS_SPI_FpgaWd(reg,0x123);
@@ -1137,6 +1129,14 @@ WV_S32 FPGA_CONF_Reset()
     }
 
     return WV_SOK;
+}
+/*******************************************************************
+WV_S32 FPGA_CONF_UpdateFpga(WV_S8 *pFpgaBin);
+fpga升级
+*******************************************************************/
+WV_S32 FPGA_CONF_UpdateFpga(WV_S8 *pFpgaBin)
+{
+    return FPGA_CONF_UpdateFpga(pFpgaBin);
 }
 /*******************************************************************
 void FPGA_CONF_Init();
@@ -1166,8 +1166,8 @@ void FPGA_CONF_Init()
     HIS_SPI_FpgaWd(0x603,0x0);
     //sdp init
     FPGA_SDP_Init();
-    FPGA_IGMP_Open();
-    //FPGA_UPDATE_Init();
+    //FPGA_IGMP_Open();
+    FPGA_UPDATE_Init();
     
     WV_CMD_Register("set", "fpga", " set fpga", FPGA_CONF_SetCmd);
     WV_CMD_Register("get", "fpga", "pca9555 get reg", FPGA_CONF_GetCmd);

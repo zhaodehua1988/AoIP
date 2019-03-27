@@ -151,7 +151,7 @@ WV_S32 FPGA_CONF_WinAnalysisJson(char *json,FPGA_CONF_WIN_T *gWin)
                 gWin[i].sdpInfo.video_pt = cJSON_GetObjectItem( client_list , "videoPt")->valueint;
                 gWin[i].sdpInfo.audio_pt = cJSON_GetObjectItem( client_list , "audioPt")->valueint;
                 gWin[i].sdpInfo.audio_depth = cJSON_GetObjectItem( client_list , "audioDepth")->valueint;
-				sprintf(gWin[i].sdpInfo.audio_chl,"%s",cJSON_GetObjectItem( client_list , "audioChl")->valuestring);
+				sprintf(gWin[i].sdpInfo.audio_channel,"%s",cJSON_GetObjectItem( client_list , "audioChl")->valuestring);
 
 				client_list = client_list->next;
 				i++;
@@ -199,7 +199,7 @@ WV_S32 FPGA_CONF_EthAnalysisJson(char *json,FPGA_CONF_ETH_T *gEth)
 	//FPGA_CONF_WIN_T gWin[16]={0};	
     //FPGA_SDP_Info gSdp[16]={0};
 	cJSON * root,*dataJson,*ethJson;
-	WV_S32 ena = 0;
+	//WV_S32 ena = 0;
     printf("%s\n",out);
 	root = cJSON_Parse(out);
 	int i=0;

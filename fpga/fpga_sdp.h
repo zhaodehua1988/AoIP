@@ -90,7 +90,8 @@ typedef struct FPGA_SDP_Info{
     unsigned short video_pt;
     unsigned short audio_pt;
     unsigned short audio_depth;
-    char audio_chl[128];
+    char audio_channel[128];
+    unsigned short audio_chl_num;
 
 }FPGA_SDP_Info;
 struct sdp_payload *sdp_parse(const char *payload);

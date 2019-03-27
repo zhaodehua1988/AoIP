@@ -686,11 +686,11 @@ int fpga_sdp_GetInfo(struct sdp_payload *sdp, FPGA_SDP_Info *pGetInfo)
                             {
                                 break;
                             }
-                            pGetInfo->audio_chl[i] = p[0];
+                            pGetInfo->audio_channel[i] = p[0];
                             p++;
                         }
                     }
-                    WV_printf("\naudio_chl=%s\n", pGetInfo->audio_chl);
+                    WV_printf("\naudio_chl=%s\n", pGetInfo->audio_channel);
                 }
             }
         }
@@ -965,9 +965,12 @@ int FPGA_SDP_SetInfo(FPGA_SDP_Info *pSetInfo, WV_U16 eth, WV_U16 ipSel)
     */
     //audio chl 因为fpga文档没有更新，暂时保留
 
-    WV_S32 chl = fpga_sdp_getAudioChlNum(pSetInfo->audio_chl);
-
-    audioInfo = 0xff & chl;
+    WV_S32 chl = fpga_sdp_getAudioChlNum(pSetInfo->audio_channel);
+    if(chl != 0){
+        pSetInfo->audio_chl_num = (WV_U16) chl;
+    }
+    //audioInfo = 0xff & chl;
+    audioInfo = 0xff & pSetInfo->audio_chl_num;
     //audio_depth
     if (8 == pSetInfo->audio_depth)
     {

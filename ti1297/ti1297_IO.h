@@ -4,6 +4,6 @@
 
 WV_S32 i2c_1297_write_byte(WV_U8 devAddr, WV_U8 regAddr,  WV_U8 data);
 
-WV_S32 i2c_1297_read_byte(WV_U8 devAddr, WV_U8 regAddr,  WV_U8 data);
+WV_S32 i2c_1297_read_byte(WV_U8 devAddr, WV_U8 regAddr,  WV_U8 *data);
 
 #endif

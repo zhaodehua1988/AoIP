@@ -21,11 +21,17 @@ WV_S32 SYS_IP_SwitchChar(WV_S8 *pStr,WV_S32 *pValue);
  * WV_S32 SYS_IP_SetETH(WV_S8 *pIp,WV_S8 *pMask,WV_S8 *pGetWay)
  * 设置ip，网关等
  * ********************************************************************/
-WV_S32 SYS_IP_SetEthIpConf(WV_S8 *pIp,WV_S8 *pMask,WV_S8 *pGetWay);
+WV_S32 SYS_IP_SetEthIpConf(WV_U8 ip[], WV_U8 mask[], WV_U8 gw[]);
 
 /**********************************************************************
  * WV_S32 SYS_IP_SetETH(WV_S8 *pIp,WV_S8 *pMask,WV_S8 *pGetWay)
  * 设置mac地址，因为mac地址不经常改变，所以mac地址单独设置，跟ip网关掩码分开
  * ********************************************************************/
-WV_S32 SYS_IP_SetEthMacConf(WV_S8 *pMac);
+WV_S32 SYS_IP_SetEthMacConf(WV_U8 mac[]);
+
+/**********************************************************************
+ * WV_S32 SYS_IP_GetEthConf(WV_U8 ip[], WV_U8 mask[], WV_U8 gw[],WV_U8 mac[])
+ * 查询ip地址
+ * ********************************************************************/
+WV_S32 SYS_IP_GetEthConf(WV_U8 ip[], WV_U8 mask[], WV_U8 gw[],WV_U8 mac[]);
 #endif

@@ -22,24 +22,75 @@
 
 #define OVERLAY_PARAMETER_DATA_PORT 0X20
 
-/*******************************************************************************************************
-
-WV_S32  HIS_SPI_SpiWrit(WV_U16 addr,WV_U16 data);
-
-*******************************************************************************************************/
-WV_S32 HIS_SPI_SpiWrit(WV_U16 addr, WV_U16 data)
+typedef struct _S_HIS_SPI_Mutex
 {
-	HI_UNF_SPI_DEV_E dev;
-	WV_U16 buf[20];
-	WV_S32 ret;
-	dev = HIS_SPI_DEV_SEL;
-	buf[0] = addr;
-	buf[1] = data;
 
-	ret = HI_UNF_SPI_Write(dev, (HI_U8 *)buf, 4);
+	pthread_mutex_t _mutex;
+	WV_S32 fpgaUpdateEna;
 
-	//HIS_SPI_printf("SPI write : 0x%04x  = 0x%04x",buf[0],buf[1]);
-	//return WV_SOK;
+} S_HIS_SPI_Mutex;
+
+S_HIS_SPI_Mutex gHisSpiMutex;
+
+/*******************************************************************************************
+ * void HIS_SPI_SetFpgaUpdateEna()
+ * fpga升级
+ * *****************************************************************************************/
+void HIS_SPI_SetFpgaUpdateEna()
+{
+	gHisSpiMutex.fpgaUpdateEna = 1;
+}
+/*******************************************************************************************
+ * void HIS_SPI_SetFpgaUpdateDisable()
+ * fpga升级完成
+ * *****************************************************************************************/
+void HIS_SPI_SetFpgaUpdateDisable()
+{
+	gHisSpiMutex.fpgaUpdateEna = 0;
+}
+
+/********************************************************************************************
+ * WV_S32 HIS_SPI_Write_then_Read(HI_U8 *pu8WtBuf,HI_U32 u32WtNum,HI_U8 *pu8RdBuf,HI_U32 u32RdNum)
+ * ******************************************************************************************/
+WV_S32 HIS_SPI_Write_then_Read(WV_U8 *pu8WtBuf, WV_U32 u32WtNum, WV_U8 *pu8RdBuf, WV_U32 u32RdNum)
+{
+
+	if (pthread_mutex_lock(&gHisSpiMutex._mutex) != 0)
+	{
+		return WV_EFAIL;
+	}
+	HI_UNF_SPI_DEV_E dev = HIS_SPI_DEV_SEL;
+
+	WV_S32 ret = HI_UNF_SPI_ReadExt(dev, pu8WtBuf, u32WtNum, pu8RdBuf, u32RdNum);
+	pthread_mutex_unlock(&gHisSpiMutex._mutex);
+	return ret;
+}
+/******************************************************************************************
+ * WV_S32 HIS_SPI_Read(HI_U8 *pu8RdBuf,HI_U32 u32RdNum)
+ * ***************************************************************************************/
+WV_S32 HIS_SPI_Read(WV_U8 *pu8RdBuf, WV_U32 u32RdNum)
+{
+	if (pthread_mutex_lock(&gHisSpiMutex._mutex) != 0)
+	{
+		return WV_EFAIL;
+	}
+	HI_UNF_SPI_DEV_E dev = HIS_SPI_DEV_SEL;
+	WV_S32 ret = HI_UNF_SPI_Read(dev, pu8RdBuf, u32RdNum);
+	pthread_mutex_unlock(&gHisSpiMutex._mutex);
+	return ret;
+}
+/******************************************************************************************
+ * WV_S32 HIS_SPI_Write(WV_U8 *pu8WtBuf, WV_U32 u32WtNum)
+ * ***************************************************************************************/
+WV_S32 HIS_SPI_Write(WV_U8 *pu8WtBuf, WV_U32 u32WtNum)
+{
+	if (pthread_mutex_lock(&gHisSpiMutex._mutex) != 0)
+	{
+		return WV_EFAIL;
+	}
+	HI_UNF_SPI_DEV_E dev = HIS_SPI_DEV_SEL;
+	WV_S32 ret = HI_UNF_SPI_Write(dev, pu8WtBuf, u32WtNum);
+	pthread_mutex_unlock(&gHisSpiMutex._mutex);
 	return ret;
 }
 
@@ -50,53 +101,41 @@ WV_S32  HIS_SPI_FpgaWd(WV_U16 addr,WV_U16 data);
 *******************************************************************************************************/
 WV_S32 HIS_SPI_FpgaWd(WV_U16 addr, WV_U16 data)
 {
-	//printf("FPGA write : 0x%04x  = 0x%04x[%d] \n", addr,data,data);
-	HI_UNF_SPI_DEV_E dev;
-	WV_U16 buf[20];
-	WV_S32 ret;
-	dev = HIS_SPI_DEV_SEL;
-	buf[0] = (addr << 4) | 0x8000;
-	buf[1] = data;
+	if (gHisSpiMutex.fpgaUpdateEna == 1)
+	{
+		WV_ERROR("fpga is updating !!");
+		return WV_EFAIL;
+	}
 
-	ret = HI_UNF_SPI_Write(dev, (HI_U8 *)buf, 4);
+	WV_S32 ret;
+	WV_U8 wBuf[20] = {0};
+	wBuf[0] = (addr >> 4) | 0x80;
+	wBuf[1] = (addr << 4) & 0xff;
+	wBuf[2] = (data >> 8) & 0xff;
+	wBuf[3] = data & 0xff;
+
+	ret = HIS_SPI_Write(wBuf, 4);
 	usleep(1);
 	if (ret != 0)
 	{
-		HIS_SPI_printf("FPGA write : 0x%04x  = 0x%04x[%d]", addr, buf[1], buf[1]);
+		HIS_SPI_printf("FPGA write : 0x%04x  = 0x%04x[%d]", addr, data, data);
 	}
-	//return WV_SOK;
 	return ret;
 }
 
-/*******************************************************************************************************
-
-WV_S32  HIS_SPI_FpgaWd_buffer(WV_U16 *pBuffer,WV_U16 length);
-// pBuffer[0]  =  addrs|0x8000;  first addr indicate write to fpga.
-// length include addr, all pBuffer content means data to spi driver. addr only meaning to fpga
-
-*******************************************************************************************************/
-WV_S32 HIS_SPI_FpgaWd_buffer(WV_U16 *pBuffer, WV_U16 length)
-{
-	HI_UNF_SPI_DEV_E dev;
-	WV_S32 ret;
-	dev = HIS_SPI_DEV_SEL;
-	//buf[0] = addr | 0x8000;
-	//buf[1] = data;
-
-	ret = HI_UNF_SPI_Write(dev, (HI_U8 *)pBuffer, sizeof(WV_U16) * length);
-
-	return ret;
-
-	//return WV_SOK;
-}
 /*******************************************************************************************************
 
 WV_S32  HIS_SPI_FpgaRd(WV_U16 addr,WV_U16 * pData);
 
 *******************************************************************************************************/
-#if 1
 WV_S32 HIS_SPI_FpgaRd(WV_U16 addr, WV_U16 *pData)
 {
+
+	if (gHisSpiMutex.fpgaUpdateEna == 1)
+	{
+		WV_ERROR("fpga is updating !!");
+		return WV_SOK;
+	}
 
 	WV_U8 rBuf[20], wBuf[20];
 	WV_S32 ret;
@@ -111,7 +150,6 @@ WV_S32 HIS_SPI_FpgaRd(WV_U16 addr, WV_U16 *pData)
 	*pData = (rBuf[0] << 8) | rBuf[1];
 	return WV_SOK;
 }
-#endif
 /*******************************************************************************************************
 
 WV_S32  HIS_SPI_FpgaRdNum(WV_U16 addr,WV_U16 * pData,WV_U32 dataNum);
@@ -119,6 +157,13 @@ WV_S32  HIS_SPI_FpgaRdNum(WV_U16 addr,WV_U16 * pData,WV_U32 dataNum);
 *******************************************************************************************************/
 WV_S32 HIS_SPI_FpgaRdNum(WV_U16 addr, WV_U16 *pData, WV_U32 dataNum)
 {
+
+	if (gHisSpiMutex.fpgaUpdateEna == 1)
+	{
+		WV_ERROR("fpga is updating !!");
+		return WV_SOK;
+	}
+
 	WV_U8 wBuf[20];
 	WV_U8 rBuf[1024] = {0};
 	WV_S32 ret, i;
@@ -170,10 +215,8 @@ WV_S32 HIS_SPI_CMDWrite(WV_S32 argc, WV_S8 **argv, WV_S8 *prfBuff)
 		return WV_SOK;
 	}
 	data = temp & 0xffff;
-	//
-	//WV_ASSERT_RET(HIS_SPI_SpiWrit(addr,data));
 	HIS_SPI_FpgaWd(addr, data);
-	prfBuff += sprintf(prfBuff, "spi writ fpga1   0x%x = 0x%x \r\n", addr, data);
+	prfBuff += sprintf(prfBuff, "spi writ fpga   0x%x = 0x%x \r\n", addr, data);
 	return WV_SOK;
 }
 
@@ -303,7 +346,6 @@ WV_S32 HIS_SPI_CMDRead(WV_S32 argc, WV_S8 **argv, WV_S8 *prfBuff)
 
 	return WV_SOK;
 }
-
 /*******************************************************************************************************
 
 WV_S32  HIS_SPI_Init();
@@ -321,17 +363,8 @@ WV_S32 HIS_SPI_Init()
 	dev = HIS_SPI_DEV_SEL;
 	WV_ASSERT_RET(HI_UNF_SPI_Open(dev));
 	WV_ASSERT_RET(HI_UNF_SPI_GetAttr(dev, &attr));
-	/*
-  HIS_SPI_printf("attr.enDev[%d]",attr.enDev);
-  HIS_SPI_printf("attr.csCfg[%d]",attr.csCfg);
-  HIS_SPI_printf("attr.u32Baud[%d]",attr.u32Baud);
-  HIS_SPI_printf("attr.enFrf[%d]",attr.enFrf);
-  HIS_SPI_printf("attr.u32Dss[%d]",attr.u32Dss);
-  HIS_SPI_printf("attr.enBigend[%d]",attr.enBigend);
-  HIS_SPI_printf("attr.enSph[%d]",attr.unExtAttr.stMoto.enSph);
-  HIS_SPI_printf("attr.enSpoh[%d]",attr.unExtAttr.stMoto.enSpo);
-  //HIS_SPI_printf("attr.unExtAttr[%d]",attr.unExtAttr); 
-  */
+
+	//最初
 	// attr.enDev = dev;
 	// attr.csCfg = HI_UNF_SPI_LOGIC_CS;
 	// attr.u32Baud = 25;
@@ -341,6 +374,7 @@ WV_S32 HIS_SPI_Init()
 	// attr.unExtAttr.stMoto.enSpo = HI_UNF_SPI_SPO_1;
 	// attr.enBigend = HI_UNF_SPI_BIGEND_BIG;
 
+	//可用1
 	attr.enDev = dev;
 	attr.csCfg = HI_UNF_SPI_LOGIC_CS;
 	attr.u32Baud = 10;
@@ -349,15 +383,6 @@ WV_S32 HIS_SPI_Init()
 	attr.unExtAttr.stMoto.enSph = HI_UNF_SPI_SPH_1;
 	attr.unExtAttr.stMoto.enSpo = HI_UNF_SPI_SPO_1;
 	attr.enBigend = HI_UNF_SPI_BIGEND_LITTLE;
-
-	// attr.enDev = dev;
-	// attr.csCfg = HI_UNF_SPI_LOGIC_CS;
-	// attr.u32Baud = 25;
-	// attr.enFrf = HI_UNF_SPI_FRF_MOTO;
-	// attr.u32Dss = 8;
-	// attr.unExtAttr.stMoto.enSph = HI_UNF_SPI_SPH_1;
-	// attr.unExtAttr.stMoto.enSpo = HI_UNF_SPI_SPO_1;
-	// attr.enBigend = HI_UNF_SPI_BIGEND_BIG;
 
 	WV_ASSERT_RET(HI_UNF_SPI_SetAttr(dev, &attr));
 
@@ -389,6 +414,12 @@ WV_S32 HIS_SPI_Init()
 	WV_CMD_Register("get", "spi", "spi bus read fpga1 sigle", HIS_SPI_CMDRead);
 	WV_CMD_Register("set", "spif", "spi bus read fpga1 sigle", HIS_SPI_CMDWriteFromFile);
 
+	if (pthread_mutex_init(&gHisSpiMutex._mutex, NULL) != 0)
+	{
+		WV_ERROR("spi mutex init err!!!");
+	}
+
+	gHisSpiMutex.fpgaUpdateEna = 0;
 	return WV_SOK;
 }
 
@@ -406,30 +437,4 @@ WV_S32 HIS_SPI_DeInit()
 	WV_ASSERT_RET(HI_UNF_SPI_DeInit());
 
 	return WV_SOK;
-}
-
-/********************************************************************************************
- * WV_S32 HIS_SPI_Write_then_Read(HI_U8 *pu8WtBuf,HI_U32 u32WtNum,HI_U8 *pu8RdBuf,HI_U32 u32RdNum)
- * ******************************************************************************************/
-WV_S32 HIS_SPI_Write_then_Read(WV_U8 *pu8WtBuf, WV_U32 u32WtNum, WV_U8 *pu8RdBuf, WV_U32 u32RdNum)
-{
-	HI_UNF_SPI_DEV_E dev = HIS_SPI_DEV_SEL;
-
-	return HI_UNF_SPI_ReadExt(dev, pu8WtBuf, u32WtNum, pu8RdBuf, u32RdNum);
-}
-/******************************************************************************************
- * WV_S32 HIS_SPI_Read(HI_U8 *pu8RdBuf,HI_U32 u32RdNum)
- * ***************************************************************************************/
-WV_S32 HIS_SPI_Read(WV_U8 *pu8RdBuf, WV_U32 u32RdNum)
-{
-	HI_UNF_SPI_DEV_E dev = HIS_SPI_DEV_SEL;
-	return HI_UNF_SPI_Read(dev, pu8RdBuf, u32RdNum);
-}
-/******************************************************************************************
- * WV_S32 HIS_SPI_Write(WV_U8 *pu8WtBuf, WV_U32 u32WtNum)
- * ***************************************************************************************/
-WV_S32 HIS_SPI_Write(WV_U8 *pu8WtBuf, WV_U32 u32WtNum)
-{
-	HI_UNF_SPI_DEV_E dev = HIS_SPI_DEV_SEL;
-	return HI_UNF_SPI_Write(dev, pu8WtBuf, u32WtNum);
 }
