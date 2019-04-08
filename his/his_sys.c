@@ -60,7 +60,7 @@ WV_S32   HIS_SYS_Init()
   HIS_SND_Init();
   HIS_SO_Init();
   HIS_DEMUX_Init(); 
-  HIS_DIS_Init(gHisConf.disFormat,0);
+  HIS_DIS_Init(gHisConf.disFormat,7);
   HIS_HDMI_Init(gHisConf.disFormat);  
   HIS_AVP_Init();
   HIS_VENC_Init();

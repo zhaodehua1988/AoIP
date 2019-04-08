@@ -40,9 +40,8 @@ WV_S32 main()
 #ifdef HELLO_DEBUG
 	PCA9548_Init();
 	PCA9555_Init();
-	//ADV_7619_Init();
-	FPGA_UPDATE_Init();
-	//FPGA_CONF_Init();
+	ADV_7619_Init();
+	FPGA_CONF_Init();
 
 	//TSK_PLAYER_Open();
 

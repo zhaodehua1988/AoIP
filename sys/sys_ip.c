@@ -497,13 +497,6 @@ WV_S32 SYS_IP_CMDGet(WV_S32 argc, WV_S8 **argv, WV_S8 *prfBuff)
 	prfBuff += sprintf(prfBuff, "ip  mask :  %s\r\n", gSysIpConf.mask);
 	prfBuff += sprintf(prfBuff, "gate way :  %s\r\n", gSysIpConf.gw);
 
-	// WV_U8 u8Ip[4];
-	// WV_U8 u8Mask[4];
-	// WV_U8 u8Gw[4]={0};
-	// WV_U8 u8Mac[6];
-	
-	// SYS_IP_GetEthConf(u8Ip,u8Mask,u8Gw,u8Mac);
-
 	return WV_SOK;
 }
 

@@ -3,8 +3,8 @@
 
 #include "wv_common.h"
 
-void FPGA_IGMP_join();
-void FPGA_IGMP_exit();
+// void FPGA_IGMP_join();
+// void FPGA_IGMP_exit();
 void FPGA_IGMP_enable();
 void FPGA_IGMP_SetMode(WV_S32 mode);
 

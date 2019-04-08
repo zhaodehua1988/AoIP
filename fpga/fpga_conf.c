@@ -375,6 +375,7 @@ WV_S32 fpga_conf_SetWinIpAndSdp(FPGA_CONF_WIN_T pWin[])
         
         for (j = 0; j < 4; j++)
         { 
+            if(srcAddr[i][j].ena == 0) continue;
             if(srcAddr[i][j].ipv4OrIpv6 == 0){ //ipv4
                 memset(ip,0,sizeof(ip));
                 fpga_conf_getIpInt(srcAddr[i][j].ipv6,ip);
@@ -420,12 +421,26 @@ WV_S32 fpga_conf_SetWinIpAndSdp(FPGA_CONF_WIN_T pWin[])
      baseAddr = 0x0500;
     //config windows location and video info
     for (i = 0; i < FPGA_CONF_WINNUM_D; i++)
-    {
+    {   
+        if(pWin[i].win_ena == 0) continue;
         regAddr = ((baseAddr >> 4) + i) << 4;
         //printf("set spi 0x%04x 0x%04x\n",regAddr+4,av_sel[i]);
          ret += HIS_SPI_FpgaWd(regAddr + 4, av_sel[i]);
     }
     
+
+    //设置窗口位置信息
+    
+    // for (i = 0; i < FPGA_CONF_WINNUM_D; i++)
+    // {
+    //     winEna |= winArray[i].win_ena << i;
+    //     if(winArray[i].win_ena == 0) continue;
+    //     regAddr = ((baseAddr >> 4) + i) << 4;        
+    //     ret += HIS_SPI_FpgaWd(regAddr, winArray[i].x);
+    //     ret += HIS_SPI_FpgaWd(regAddr + 1, winArray[i].y);
+    //     ret += HIS_SPI_FpgaWd(regAddr + 2, winArray[i].w);
+    //     ret += HIS_SPI_FpgaWd(regAddr + 3, winArray[i].h);
+
     if(ret != 0 ){
 
         return WV_EFAIL;
@@ -522,7 +537,7 @@ WV_S32 FPGA_CONF_SetWin(FPGA_CONF_WIN_T winArray[])
 {
 
     
-    WV_S32 i, ret = 0;
+    WV_S32 i,j, ret = 0;
     WV_U16 baseAddr = 0x0500;
     WV_U16 regAddr,winEna=0;
 
@@ -538,21 +553,40 @@ WV_S32 FPGA_CONF_SetWin(FPGA_CONF_WIN_T winArray[])
             }
         }
     }
-    FPGA_IGMP_SetMode(mode);
+    //FPGA_IGMP_SetMode(mode);
 
     //set src ip
     ret +=fpga_conf_SetWinIpAndSdp(winArray);
-    //设置窗口位置信息
+    // //设置窗口位置信息
     
-    for (i = 0; i < FPGA_CONF_WINNUM_D; i++)
-    {
-        winEna |= winArray[i].win_ena << i;
-        regAddr = ((baseAddr >> 4) + i) << 4;
-        ret += HIS_SPI_FpgaWd(regAddr, winArray[i].x);
-        ret += HIS_SPI_FpgaWd(regAddr + 1, winArray[i].y);
-        ret += HIS_SPI_FpgaWd(regAddr + 2, winArray[i].w);
-        ret += HIS_SPI_FpgaWd(regAddr + 3, winArray[i].h);
+    //for (i = 0; i < FPGA_CONF_WINNUM_D; i++)
+    // {
+    //     winEna |= winArray[i].win_ena << i;
+    //     if(winArray[i].win_ena == 0) continue;
+    //     regAddr = ((baseAddr >> 4) + i) << 4;        
+    //     ret += HIS_SPI_FpgaWd(regAddr, winArray[i].x);
+    //     ret += HIS_SPI_FpgaWd(regAddr + 1, winArray[i].y);
+    //     ret += HIS_SPI_FpgaWd(regAddr + 2, winArray[i].w);
+    //     ret += HIS_SPI_FpgaWd(regAddr + 3, winArray[i].h);
         
+    // }
+    WV_S32 ipNum=0;
+    for(i=0; i<FPGA_CONF_ETHNUM_D;i++){
+        ipNum=0;
+        for(j=0;j<FPGA_CONF_WINNUM_D;j++){
+            if(winArray[i].win_ena == 1 && winArray[i].channel == i ){
+                regAddr = ((baseAddr >> 4) + i*4) << 4;
+                regAddr = regAddr |  (ipNum < 4);
+                WV_printf("regAddr = %X, x=%d,y=%d,w=%d,h=%d\n",regAddr,winArray[i].x,winArray[i].y,winArray[i].w,winArray[i].h);
+                ret += HIS_SPI_FpgaWd(regAddr, winArray[i].x);
+                ret += HIS_SPI_FpgaWd(regAddr + 1, winArray[i].y);
+                ret += HIS_SPI_FpgaWd(regAddr + 2, winArray[i].w);
+                ret += HIS_SPI_FpgaWd(regAddr + 3, winArray[i].h);
+                ipNum ++;
+                if(ipNum >3) break;
+            }
+        }
+
     }
     //设置窗口使能
     ret +=fpga_conf_DisChangeEna(winEna);
@@ -714,7 +748,28 @@ WV_S32 FPGA_CONF_GetETH(FPGA_CONF_ETH_T *pEth,WV_S32 ethID)
     return WV_SOK;
 }
 
+WV_S32 FPGA_CONF_GetEthInt(WV_U8 ip[],WV_U8 mac[],WV_S32 ethID)
+{
+    if(ethID > 3 || ethID < 0 ) return WV_EFAIL;
+    WV_S8 ipInt[16]={0};
+    WV_S8 macInt[6]={0};
+    WV_S8 netMask[4]={0};
+    WV_S8 getWay[4]={0};
+    fpga_conf_getIpInt(gpFpgaConfDev->eth[ethID].ipv6,ipInt);
+    fpga_conf_getMacInt(gpFpgaConfDev->eth[ethID].mac,macInt);
+    fpga_conf_getIpInt(gpFpgaConfDev->eth[ethID].subnet_mask,netMask);
+    fpga_conf_getIpInt(gpFpgaConfDev->eth[ethID].getway,getWay);
+    WV_S32 i;
+    for(i=0;i<4;i++){
+        ip[i] = ipInt[i];
+    }
+    for(i=0;i<6;i++){
+        mac[i] = macInt[i];
+    }    
 
+    return WV_SOK;
+
+}
 /**************************************************************
 * WV_S32 FPGA_CONF_GetVersion(WV_S8 *pFpgaVer);
 *查询版本信息
@@ -1164,11 +1219,25 @@ void FPGA_CONF_Init()
     HIS_SPI_FpgaWd(0x601,0x0);
     HIS_SPI_FpgaWd(0x602,0x0);
     HIS_SPI_FpgaWd(0x603,0x0);
+    
     //sdp init
     FPGA_SDP_Init();
-    //FPGA_IGMP_Open();
+
+    
     FPGA_UPDATE_Init();
     
+    int i;
+    FPGA_CONF_ETH_T ethCfg;
+    for(i=0;i<4;i++){
+        ethCfg.ipv6Ena = 0;
+        sprintf(ethCfg.ipv6,"192.168.1.%d",11+i);
+        sprintf(ethCfg.subnet_mask,"255.255.255.0");
+        sprintf(ethCfg.getway,"192.168.1.1");
+        sprintf(ethCfg.mac,"80:9f:fb:88:88:%02x",1+i);
+        FPGA_CONF_SetETH(&ethCfg,i);
+    }
+    
+    FPGA_IGMP_Open();
     WV_CMD_Register("set", "fpga", " set fpga", FPGA_CONF_SetCmd);
     WV_CMD_Register("get", "fpga", "pca9555 get reg", FPGA_CONF_GetCmd);
     
@@ -1181,7 +1250,7 @@ void FPGA_CONF_DeInit()
     pthread_mutex_destroy(&gMutexWin);
     pthread_mutex_destroy(&gMutexAlpha);
 #endif
-    FPGA_IGMP_Close();
+    //FPGA_IGMP_Close();
     free(gpFpgaConfDev);
     //sdp init
     FPGA_SDP_DeInit();

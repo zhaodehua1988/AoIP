@@ -12,6 +12,7 @@
 #define FPGA_CONF_IPLEN  64
 #define FPGA_CONF_MACLEN 24
 
+
 typedef struct FPGA_CONF_WIN
 {
     WV_U16 win_ena; //窗口是否有效
@@ -19,13 +20,15 @@ typedef struct FPGA_CONF_WIN
     WV_U16 y;
     WV_U16 w;
     WV_U16 h;
-    WV_S8 type[16];  //"eth" /"sdi" /"hdmi"
+    WV_S8 type[16];  //"eth" /"sdi" /"hdmi" //暂时没用
     WV_U16 channel;  //代表第几路输入
     WV_U16 video_ipv6_ena;  //0 ipv4;  1 ipv6;
-    WV_S8  video_ip[FPGA_CONF_IPLEN]; 
+    WV_S8  video_ip[FPGA_CONF_IPLEN];
+    WV_S8  video_igmpSrc[FPGA_CONF_IPLEN]; //如果是组播地址，则需要设置源ip地址(如果没有设置源地址，则默认为0)
     WV_U16 video_port;   
     WV_U16 audio_ipv6_ena;//0 ipv4;1 ipv6
     WV_S8  audio_ip[FPGA_CONF_IPLEN];
+    WV_S8  audio_igmpSrc[FPGA_CONF_IPLEN]; 
     WV_U16 audio_port;
     WV_U16 sdp_ena;   //sdp是否有效
     FPGA_SDP_Info sdpInfo; //sdp信息
@@ -66,6 +69,8 @@ typedef struct FPGA_CONF_DEV
     //FPGA_CONF_DIS display;
 
 } FPGA_CONF_DEV;
+//查询对应网卡的ip和mac
+WV_S32 FPGA_CONF_GetEthInt(WV_U8 ip[],WV_U8 mac[],WV_S32 ethID);
 
 //查询fpga版本号
 WV_S32 FPGA_CONF_GetVersion(FPGA_CONF_VER *pFpgaVer);
