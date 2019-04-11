@@ -465,12 +465,10 @@ void *fpga_igmp_proc(void *prm)
     {
         if(pDev->autoSendIgmpEna == 1){
             fpga_igmp_Send();
-            //WV_printf("************send ****************\n");
         }
 
         for(pDev->times=0;pDev->times < pDev->secondOfIgmpSend;pDev->times++){
             sleep(1);
-            //WV_printf("total waite =%d,times = %d \n",pDev->secondOfIgmpSend,pDev->times);
         }
 
     }

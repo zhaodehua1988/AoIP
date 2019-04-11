@@ -66,10 +66,8 @@ typedef struct FPGA_CONF_VER
 typedef struct FPGA_CONF_DEV
 {
     WV_S8 fpgaVer[24];
-    FPGA_CONF_WIN_T win[FPGA_CONF_WINNUM_D];
+    //FPGA_CONF_WIN_T win[FPGA_CONF_WINNUM_D];
     FPGA_CONF_ETH_T eth[FPGA_CONF_ETHNUM_D];
-    //FPGA_CONF_SHOW_INFO showInfo;
-    //FPGA_CONF_DIS display;
 
 } FPGA_CONF_DEV;
 //查询对应网卡的ip和mac
@@ -80,11 +78,7 @@ WV_S32 FPGA_CONF_GetVersion(FPGA_CONF_VER *pFpgaVer);
 
 //设置16个窗口的信息，必须时一次设置16个窗口
 WV_S32 FPGA_CONF_SetWin(FPGA_CONF_WIN_T winArray[]);
-//查询16个窗口的信息
-WV_S32 FPGA_CONF_GetWin(FPGA_CONF_WIN_T winArray[]);
 
-//WV_S32 FPGA_CONF_SetWin(FPGA_CONF_WIN_T *pWin);
-//WV_S32 FPGA_CONF_GetWin(FPGA_CONF_WIN_T *pWin);
 
 //设置fpga万兆网卡信息
 WV_S32 FPGA_CONF_SetETH(FPGA_CONF_ETH_T *pEth,WV_S32 ethID);
@@ -135,7 +129,7 @@ void FPGA_CONF_SetOutPutDisColorInfo(WV_S32 colorDepth);
  * 参数说明:
  *    winID(选择哪个窗口): 取值范围[0~15]
  *    audioChl:声道信息来自该窗口查询的sdp信息的audiochl
- *        audioChl供使用4个bit,每个bit0～bit3 代表两个通道声音输出
+ *        audioChl供使用4个bit,每个bit0～bit3 音频控制，bit0-bit3为通道使能，每一个bit对应2个声道，
  * ***********************************************************/
 void FPGA_CONF_SetOutPutAudioSel(WV_U16 winID,WV_U16 audioChl); 
 
