@@ -317,8 +317,8 @@ WV_S32  TSK_PLAYER_Open()
     gTskPlayer.winRect.s32X = 0;
     gTskPlayer.winRect.s32Y = 0;
     gTskPlayer.winRect.s32Width = 1920;
-    gTskPlayer.winRect.s32Height = 1080;
-    sprintf(gTskPlayer.fileName, "%s", "./kaoya.mp4");
+    gTskPlayer.winRect.s32Height = 2160;
+    sprintf(gTskPlayer.fileName, "%s", "./mov/mov0.mp4");
 
 
     HIS_PLAYER_Init();

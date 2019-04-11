@@ -4,13 +4,14 @@
 #include "wv_common.h"
 #include "fpga_sdp.h"
 
-#define FPGA_CONF_WIN_VIDEO_ETH 0
-#define FPGA_CONF_WIN_VIDEO_SDI 1
-#define FPGA_CONF_WIN_VIDEO_HDMI 2
-#define FPGA_CONF_WINNUM_D 16
-#define FPGA_CONF_ETHNUM_D 4
-#define FPGA_CONF_IPLEN  64
-#define FPGA_CONF_MACLEN 24
+#define FPGA_CONF_WIN_VIDEO_ETH (0)
+#define FPGA_CONF_WIN_VIDEO_SDI (1)
+#define FPGA_CONF_WIN_VIDEO_HDMI (2)
+#define FPGA_CONF_WINNUM_D (16)
+#define FPGA_CONF_ETHNUM_D (4)
+#define FPGA_CONF_SRCNUM_D (4)
+#define FPGA_CONF_IPLEN  (64)
+#define FPGA_CONF_MACLEN (24)
 
 
 typedef struct FPGA_CONF_WIN
@@ -41,6 +42,8 @@ typedef struct FPGA_CONF_SRC_ADDR
     WV_U16 ipv4OrIpv6;
     WV_S8 ipv6[FPGA_CONF_IPLEN];
     WV_U16 port;
+    WV_U16 video_interlace; //0:逐行 1:隔行
+    
 } FPGA_CONF_SRC_ADDR_T;
 
 //本地网卡信息设置
@@ -131,10 +134,10 @@ void FPGA_CONF_SetOutPutDisColorInfo(WV_S32 colorDepth);
  * 函数说明:设置音频输出参数(选通哪一路窗口)
  * 参数说明:
  *    winID(选择哪个窗口): 取值范围[0~15]
- *    audioChl(选择第几个声道输出)  :声道信息来自该窗口查询的sdp信息的audiochl
- *        例如"M,M,ST,51"，选择51声道 audioChl=3
+ *    audioChl:声道信息来自该窗口查询的sdp信息的audiochl
+ *        audioChl供使用4个bit,每个bit0～bit3 代表两个通道声音输出
  * ***********************************************************/
-void FPGA_CONF_SetOutPutAudioSel(WV_S32 winID,WV_S32 audioChl);
+void FPGA_CONF_SetOutPutAudioSel(WV_U16 winID,WV_U16 audioChl); 
 
 
 /*****************************************************************
@@ -203,6 +206,12 @@ WV_S32 FPGA_CONF_UpdateFpga(WV_S8 *pFpgaBin);
 *******************************************************************/
 WV_S32 FPGA_CONF_UpdateFpga(WV_S8 *pFpgaBin);
 
+/****************************************************
+ * void FPGA_CONF_SetIgmpSendSecond(WV_U32 sec)
+ * 函数功能：设置组播发送时间间隔
+ * 参说说明：sec 时间，单位 秒
+ * *************************************************/
+void FPGA_CONF_SetIgmpSendSecond(WV_U32 sec);
 void FPGA_CONF_Init();
 void FPGA_CONF_DeInit();
 

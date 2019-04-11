@@ -3,11 +3,10 @@
 
 #include "wv_common.h"
 
-// void FPGA_IGMP_join();
-// void FPGA_IGMP_exit();
-void FPGA_IGMP_enable();
-void FPGA_IGMP_SetMode(WV_S32 mode);
-
+void FPGA_IGMP_SetSecondOfIgmpSend(WV_U32 sec);
+void FPGA_IGMP_join(WV_S32 ethID, WV_S32 srcID, WV_U8 multicastAddr[], WV_U8 sourceIp[]);
+void FPGA_IGMP_exit(WV_S32 ethID, WV_S32 srcID, WV_U8 multicastAddr[]);
+void FPGA_IGMP_Reset();
 void FPGA_IGMP_Open();
 void FPGA_IGMP_Close();
 

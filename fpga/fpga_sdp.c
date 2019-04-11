@@ -987,6 +987,14 @@ int FPGA_SDP_SetInfo(FPGA_SDP_Info *pSetInfo, WV_U16 eth, WV_U16 ipSel)
     /****************video width /hight***********************************************/
     videoWidth = pSetInfo->video_width;
     videoHight = pSetInfo->video_height;
+    // if(pSetInfo->video_interlace == 1){
+    //     //如果时隔行发送，则设置视频高度为原始高度的一半
+    //     WV_printf("设置网卡");
+    //     videoHight = pSetInfo->video_height/2;
+    // }else{
+    //     videoHight = pSetInfo->video_height;
+    // }
+
     //avPt
     avPt = (pSetInfo->video_pt << 8) | (pSetInfo->audio_pt & 0xff);
     baseAddr = 0x100;

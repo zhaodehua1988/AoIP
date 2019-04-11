@@ -152,7 +152,8 @@ WV_S32 FPGA_CONF_WinAnalysisJson(char *json,FPGA_CONF_WIN_T *gWin)
                 gWin[i].sdpInfo.audio_pt = cJSON_GetObjectItem( client_list , "audioPt")->valueint;
                 gWin[i].sdpInfo.audio_depth = cJSON_GetObjectItem( client_list , "audioDepth")->valueint;
 				sprintf(gWin[i].sdpInfo.audio_channel,"%s",cJSON_GetObjectItem( client_list , "audioChl")->valuestring);
-
+				
+				gWin[i].sdpInfo.audio_chl_num = 2;
 				client_list = client_list->next;
 				i++;
 				if(i == 16) {
@@ -165,6 +166,7 @@ WV_S32 FPGA_CONF_WinAnalysisJson(char *json,FPGA_CONF_WIN_T *gWin)
 		
 	}
 #endif
+	
 #if 0
 	printf("winEna = 0x%X\n",ena);
 	for(i=0;i<16;i++){

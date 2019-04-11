@@ -47,23 +47,72 @@ typedef struct FPGA_IGMP_DEV
     WV_THR_HNDL_T thrHndl;
     WV_U32 open;
     WV_U32 close;
-    WV_U32 secondOfIgmpSend;          //组播报文加入每隔多长时间执行一次，用户可以设置
+    WV_U32 secondOfIgmpSend;                              //组播报文加入每隔多长时间执行一次，用户可以设置，总时间 单位秒
+    WV_U32 times;                                         //组播报文发送当恰能等待时间 单位秒
+    WV_S32 autoSendIgmpEna;                               //自动发送组播使能，默认为字段发送 1
     WV_S32 ena[_D_ETH_NUM_][_D_SRC_NUM_];                 //组播是否使能
     _S_FPGA_IGMP_DATA igmpData[_D_ETH_NUM_][_D_SRC_NUM_]; //4个网卡，每个网卡4个报文
-    
+
 } FPGA_IGMP_DEV;
 
 #pragma pack(pop)
-FPGA_IGMP_DEV gFpgaIgmpDev;
-static WV_S32 gIgmpMode = 0;
+static FPGA_IGMP_DEV gFpgaIgmpDev;
+
+static pthread_mutex_t _g_igmp_mutex;
+
+/*******************************************************************
+WV_S32 fpga_igmp_getIpInt(WV_S8 *pName,WV_U8* pIp);
+*******************************************************************/
+static WV_S32 fpga_igmp_getIpInt(WV_S8 *pSrc, WV_S8 *pIp)
+{
+
+    WV_S8 *pData = pSrc;
+    WV_S32 len;
+    WV_S32 i, j, k, data = 0;
+    WV_S32 des;
+    len = strlen(pSrc);
+    if (strncmp(pData, ".", 1) == 0)
+    {
+        WV_printf("get ip error\r\n");
+        return WV_EFAIL;
+    }
+    j = 3;
+    k = 1;
+    for (i = len - 1; i >= 0; i--)
+    {
+
+        if (SYS_IP_SwitchChar(&pData[i], &des) == 0)
+        {
+
+            data += des * k;
+            pIp[j] = data;
+            k *= 10;
+        }
+        else
+        {
+
+            k = 1;
+            data = 0;
+
+            j--;
+            if (j < 0)
+            {
+                break;
+            }
+        }
+    }
+
+    return WV_SOK;
+}
+
 /****************************************************************
- * void _fpga_igmp_checkSum(WV_U8 *buf,WV_S32 len,WV_U16 *checkSum)
+ * void fpga_igmp_checkSum(WV_U8 *buf,WV_S32 len,WV_U16 *checkSum)
  * 功能：获取校验和
  * 参数说明：buf：需要校验的数据
  *         len：需要校验的数据长度
  *         checkSum：校验和（网络字节序）
  * *************************************************************/
-void _fpga_igmp_checkSum(WV_U8 *buf, WV_S32 len, WV_U16 *checkSum)
+static void fpga_igmp_checkSum(WV_U8 *buf, WV_S32 len, WV_U16 *checkSum)
 {
     //求ipHeaderChecksum，ip首部校验和
     WV_U16 ipData;
@@ -81,11 +130,10 @@ void _fpga_igmp_checkSum(WV_U8 *buf, WV_S32 len, WV_U16 *checkSum)
     *checkSum = u16ipSum >> 8 | u16ipSum << 8;
 }
 /************************************************************************
- * WV_S32 _fpga_igmp_join(WV_S32 ethID,WV_U8 multicastAddr[],WV_U8 sourceIp[])
- * 
- * 
+ * WV_S32 fpga_igmp_join(WV_S32 ethID,WV_U8 multicastAddr[],WV_U8 sourceIp[])
+ * 加入组播 
  * *********************************************************************/
-WV_S32 _fpga_igmp_join(WV_S32 ethID, WV_U8 multicastAddr[], WV_U8 sourceIp[])
+static WV_S32 fpga_igmp_join(WV_S32 ethID, WV_S32 srcID, WV_U8 multicastAddr[], WV_U8 sourceIp[])
 {
     if (ethID >= 4)
     {
@@ -97,47 +145,9 @@ WV_S32 _fpga_igmp_join(WV_S32 ethID, WV_U8 multicastAddr[], WV_U8 sourceIp[])
     WV_U8 srcMac[6] = {0};
     WV_U8 srcIp[4] = {0};
 
-    WV_S32 i, emptyNum = -1;
+    WV_S32 i, emptyNum = srcID;
     FPGA_CONF_GetEthInt(srcIp, srcMac, ethID);
-    //检查当前网卡是否超过最大ip限制,查询当前空余的组播地址
-    for (i = 0; i < FPGA_CONF_ETHNUM_D; i++)
-    {
-        if (gFpgaIgmpDev.ena[ethID][i] == 0)
-        {
-            emptyNum = i;
-            break;
-        }
-    }
-    if (emptyNum == -1)
-    {
-        WV_printf("不得超过当前网卡[%d]可加入组播的总数 4个\n", ethID);
-        return WV_EFAIL;
-    }
-    WV_printf("\nemptyNum=%d\n", emptyNum);
-    //检查是否已经加入组播，如果加入则返回。
-    for (i = 0; i < FPGA_CONF_ETHNUM_D; i++)
-    {
-        if (gFpgaIgmpDev.ena[ethID][i] == 0)
-            continue;
-        /*
-        if(strncmp((WV_S8 *)gFpgaIgmpDev.igmpData[ethID][i].srcMac,(WV_S8 *)srcMac,6) == 0 && \
-            strncmp((WV_S8 *)gFpgaIgmpDev.igmpData[ethID][i].ipSrc,(WV_S8 *)srcIp,4) == 0 && \
-            strncmp((WV_S8 *)gFpgaIgmpDev.igmpData[ethID][i].igmpMulTicastAddr,(WV_S8 *)multicastAddr,4) && \
-            strncmp((WV_S8 *)gFpgaIgmpDev.igmpData[ethID][i].igmpSourceAddr,(WV_S8 *)sourceIp,4) == 0){
-
-            WV_printf("已经加入了组播%d.%d.%d.%d,源%d.%d.%d.%d\n",multicastAddr[0],multicastAddr[1],multicastAddr[2],multicastAddr[3],
-                                                                sourceIp[0],sourceIp[1],sourceIp[2],sourceIp[3]);
-            return WV_SOK;
-        }*/
-        if (strncmp((WV_S8 *)gFpgaIgmpDev.igmpData[ethID][i].igmpMulTicastAddr, (WV_S8 *)multicastAddr, 4) == 0 &&
-            strncmp((WV_S8 *)gFpgaIgmpDev.igmpData[ethID][i].igmpSourceAddr, (WV_S8 *)sourceIp, 4) == 0)
-        {
-
-            WV_printf("已经加入了组播%d.%d.%d.%d,源%d.%d.%d.%d,\n", multicastAddr[0], multicastAddr[1], multicastAddr[2], multicastAddr[3],
-                      sourceIp[0], sourceIp[1], sourceIp[2], sourceIp[3]);
-            return WV_SOK;
-        }
-    }
+   
     //生成组播报文
     //80:9f:fb:88:88:01
     //本地网卡mac地址
@@ -191,13 +201,13 @@ WV_S32 _fpga_igmp_join(WV_S32 ethID, WV_U8 multicastAddr[], WV_U8 sourceIp[])
     //get ip checksum
     gFpgaIgmpDev.igmpData[ethID][emptyNum].ipHeaderChecksum = 0;
     WV_U8 *pipHeadData = &gFpgaIgmpDev.igmpData[ethID][emptyNum].ipVerion;
-    _fpga_igmp_checkSum(pipHeadData, ipDataLen, &gFpgaIgmpDev.igmpData[ethID][emptyNum].ipHeaderChecksum);
+    fpga_igmp_checkSum(pipHeadData, ipDataLen, &gFpgaIgmpDev.igmpData[ethID][emptyNum].ipHeaderChecksum);
     //WV_printf("check sum = 0x%04x\n",gFpgaIgmpDev.igmpData[ethID][emptyNum].ipHeaderChecksum);
 
     //get igmp checksum
     gFpgaIgmpDev.igmpData[ethID][emptyNum].igmpHeaderChecksum = 0;
     WV_U8 *pigmpData = &gFpgaIgmpDev.igmpData[ethID][emptyNum].igmpType;
-    _fpga_igmp_checkSum(pigmpData, igmpDataLen, &gFpgaIgmpDev.igmpData[ethID][emptyNum].igmpHeaderChecksum);
+    fpga_igmp_checkSum(pigmpData, igmpDataLen, &gFpgaIgmpDev.igmpData[ethID][emptyNum].igmpHeaderChecksum);
 
     //加入组播
     WV_U16 data, regAddr;
@@ -217,19 +227,19 @@ WV_S32 _fpga_igmp_join(WV_S32 ethID, WV_U8 multicastAddr[], WV_U8 sourceIp[])
         {
             data = 0;
         }
-
+        data |= (srcID << 10);
         data |= pIgmpBuf[i];
         HIS_SPI_FpgaWd(regAddr, data);
-        WV_printf("igmp set 0x%04x = 0x%04x\n", regAddr, data);
+        //WV_printf("igmp set 0x%04x = 0x%04x\n", regAddr, data);
     }
 
     gFpgaIgmpDev.ena[ethID][emptyNum] = 1;
     return WV_SOK;
 }
 /************************************************************
- * WV_S32 _fpga_igmp_exti(WV_S32 ethID,WV_U8 srcIp[])
+ * WV_S32 fpga_igmp_exit(WV_S32 ethID,WV_U8 srcIp[])
  * *********************************************************/
-WV_S32 _fpga_igmp_exti(WV_S32 ethID, WV_U8 multicastAddr[])
+static WV_S32 fpga_igmp_exit(WV_S32 ethID, WV_S32 srcID, WV_U8 multicastAddr[])
 {
 
     if (ethID >= 4)
@@ -242,31 +252,9 @@ WV_S32 _fpga_igmp_exti(WV_S32 ethID, WV_U8 multicastAddr[])
     WV_U8 srcMac[6] = {0};
     WV_U8 srcIp[4] = {0};
 
-    WV_S32 i, multicastAddrIsExist = -1;
+    WV_S32 i, multicastAddrIsExist = srcID;
     FPGA_CONF_GetEthInt(srcIp, srcMac, ethID);
-    //检查当前网卡是否包含这个组播地址
-    for (i = 0; i < FPGA_CONF_ETHNUM_D; i++)
-    {
-        if (gFpgaIgmpDev.ena[ethID][i] == 0)
-            continue;
-        WV_printf("组播地址 %d.%d.%d.%d \n", gFpgaIgmpDev.igmpData[ethID][i].igmpMulTicastAddr[0],
-                  gFpgaIgmpDev.igmpData[ethID][i].igmpMulTicastAddr[1],
-                  gFpgaIgmpDev.igmpData[ethID][i].igmpMulTicastAddr[2],
-                  gFpgaIgmpDev.igmpData[ethID][i].igmpMulTicastAddr[3]);
-        if (strncmp((WV_S8 *)gFpgaIgmpDev.igmpData[ethID][i].igmpMulTicastAddr, (WV_S8 *)multicastAddr, 4) == 0)
-        {
-            WV_printf("当前网卡包含组播%d.%d.%d.%d 地址\n", multicastAddr[0], multicastAddr[1], multicastAddr[2], multicastAddr[3]);
-            multicastAddrIsExist = i;
-            break;
-        }
-    }
-    if (multicastAddrIsExist == -1)
-    {
-        WV_printf("当前eth[%d]没有加入%d.%d.%d.%d组播地址\n", ethID, multicastAddr[0], multicastAddr[1], multicastAddr[2], multicastAddr[3]);
-        //WV_printf("当前eth[%d]没有加入%d.%d.%d.%d组播地址\n", ethID,multicastAddr[0],multicastAddr[1],multicastAddr[2],multicastAddr[3]);
 
-        return WV_EFAIL;
-    }
     //生成组播报文
     //80:9f:fb:88:88:01
     //本地网卡mac地址
@@ -302,16 +290,16 @@ WV_S32 _fpga_igmp_exti(WV_S32 ethID, WV_U8 multicastAddr[])
     //get ip checksum
     gFpgaIgmpDev.igmpData[ethID][multicastAddrIsExist].ipHeaderChecksum = 0;
     WV_U8 *pipHeadData = &gFpgaIgmpDev.igmpData[ethID][multicastAddrIsExist].ipVerion;
-    _fpga_igmp_checkSum(pipHeadData, ipDataLen, &gFpgaIgmpDev.igmpData[ethID][multicastAddrIsExist].ipHeaderChecksum);
+    fpga_igmp_checkSum(pipHeadData, ipDataLen, &gFpgaIgmpDev.igmpData[ethID][multicastAddrIsExist].ipHeaderChecksum);
     //WV_printf("check sum = 0x%04x\n",gFpgaIgmpDev.igmpData[ethID][emptyNum].ipHeaderChecksum);
 
     //get igmp checksum
     gFpgaIgmpDev.igmpData[ethID][multicastAddrIsExist].igmpHeaderChecksum = 0;
     WV_U8 *pigmpData = &gFpgaIgmpDev.igmpData[ethID][multicastAddrIsExist].igmpType;
     igmpDataLen = 16; //离开组播因为没有设置离开哪个源，所以直接没有源地址
-    _fpga_igmp_checkSum(pigmpData, igmpDataLen, &gFpgaIgmpDev.igmpData[ethID][multicastAddrIsExist].igmpHeaderChecksum);
+    fpga_igmp_checkSum(pigmpData, igmpDataLen, &gFpgaIgmpDev.igmpData[ethID][multicastAddrIsExist].igmpHeaderChecksum);
 
-    //加入组播
+    //退出组播
     WV_U16 data, regAddr;
     WV_U8 *pIgmpBuf = (WV_U8 *)&gFpgaIgmpDev.igmpData[ethID][multicastAddrIsExist];
     regAddr = 0x81 | (ethID + 1) << 8;
@@ -329,97 +317,271 @@ WV_S32 _fpga_igmp_exti(WV_S32 ethID, WV_U8 multicastAddr[])
         {
             data = 0;
         }
-
+        data |= (srcID << 10);
         data |= pIgmpBuf[i];
         HIS_SPI_FpgaWd(regAddr, data);
-        WV_printf("igmp exit 0x%04x = 0x%04x\n", regAddr, data);
+
     }
     gFpgaIgmpDev.ena[ethID][multicastAddrIsExist] = 0;
     return WV_SOK;
 }
 /****************************************************
-*组播协议测试加入
+*发送组播协议
+*void fpga_igmp_sendIGMPData(WV_S32 ethID,WV_S32 srcID);
 ****************************************************/
-void _fpga_igmp_SendEna()
+static void fpga_igmp_sendIGMPData(WV_S32 ethID, WV_S32 srcID)
 {
-    WV_U16 baseAddr = 0x100, regAddr = 0, data = 0;
-    WV_S32 i, j;
-    for (i = 0; i < FPGA_CONF_ETHNUM_D; i++)
+
+    if (ethID > 3 || ethID < 0 || srcID > 3 || srcID < 0)
     {
-        regAddr = (((baseAddr >> 8) + i) << 8) | 0x82;
+        WV_ERROR("fpga send igmp data err!! ethID=[%d],srcID=[%d]\n", ethID, srcID);
+        return;
+    }
+    WV_U16 regAddr, data;
+    regAddr = ((ethID + 1) << 8) | 0x82;
+    do
+    {
         HIS_SPI_FpgaRd(regAddr, &data);
-        data = 0xf0;
-        for (j = 0; j < 4; j++)
+        usleep(10000);
+    } while ((data & (1 << (srcID + 4))) == 0);
+    data = 1 << srcID;
+
+    HIS_SPI_FpgaWd(regAddr, data);
+    //WV_printf("**send igmp*****reg=0x%X ,data=0x%X\n", regAddr, data);
+}
+/****************************************************
+*void fpga_igmp_Send()
+*发送当前所有的组播协议
+****************************************************/
+static void fpga_igmp_Send()
+{
+
+    pthread_mutex_lock(&_g_igmp_mutex);
+    WV_S32 i, j;
+    WV_U16 reg, data = 0;
+
+    for (i = 0; i < _D_ETH_NUM_; i++)
+    {
+        data = 0;
+        reg = 0x82 | ((i + 1) << 8);
+        do
         {
-            if (gFpgaIgmpDev.ena[i][j] == 1)
-            {
-                data |= (1 << j);
-            }
+            HIS_SPI_FpgaRd(reg, &data);
+            usleep(10000);
+        } while ((data & 0xf0 ) != 0xf0);
+        data = 0;
+        for (j = 0; j < _D_SRC_NUM_; j++)
+        {
+            if (gFpgaIgmpDev.ena[i][j] == 0)
+                continue;
+
+            data |= (1 << j);
         }
-        WV_printf("set ena reg=0x%X,data=0x%X\n", regAddr, data);
-        HIS_SPI_FpgaWd(regAddr, data);
+        if (data != 0)
+        {
+            HIS_SPI_FpgaWd(reg, data);
+        }
+    }
+    pthread_mutex_unlock(&_g_igmp_mutex);
+}
+/****************************************************
+*组播协议自动发送开关
+*void fpga_igmp_autoSendData(WV_S32 ena)
+****************************************************/
+void fpga_igmp_autoSendData(WV_S32 ena)
+{
+    if(ena == 0)
+    {
+        gFpgaIgmpDev.autoSendIgmpEna = 0;
+    }else{
+        gFpgaIgmpDev.autoSendIgmpEna = 1;
     }
 }
-
+/****************************************************
+*组播协议发送时间间隔
+*void FPGA_IGMP_SetSecondOfIgmpSend(WV_S32 sec)
+****************************************************/
+void FPGA_IGMP_SetSecondOfIgmpSend(WV_U32 sec)
+{
+    gFpgaIgmpDev.secondOfIgmpSend = sec;
+    //WV_printf("set second of igmp data send ,sec=%d\n", sec);
+}
 /****************************************************
 *组播协议加入
 *void FPGA_IGMP_join(WV_S32 ethID, WV_U8 multicastAddr[], WV_U8 sourceIp[])
 ****************************************************/
-void FPGA_IGMP_join(WV_S32 ethID, WV_U8 multicastAddr[], WV_U8 sourceIp[])
+void FPGA_IGMP_join(WV_S32 ethID, WV_S32 srcID, WV_U8 multicastAddr[], WV_U8 sourceIp[])
 {
-    _fpga_igmp_join(ethID, multicastAddr, sourceIp);
+    if(multicastAddr[0] < 224 || multicastAddr[0] > 239) return;
+    pthread_mutex_lock(&_g_igmp_mutex);
+    fpga_igmp_join(ethID, srcID, multicastAddr, sourceIp);
+    fpga_igmp_sendIGMPData(ethID, srcID);
+    pthread_mutex_unlock(&_g_igmp_mutex);
 }
 /****************************************************
 *组播协议退出
-*void FPGA_IGMP_exit(WV_S32 ethID, WV_U8 multicastAddr[])
+*void FPGA_IGMP_exit(WV_S32 ethID,  WV_S32 srcID, WV_U8 multicastAddr[])
 ****************************************************/
-void FPGA_IGMP_exit(WV_S32 ethID, WV_U8 multicastAddr[])
+void FPGA_IGMP_exit(WV_S32 ethID, WV_S32 srcID, WV_U8 multicastAddr[])
 {
-    _fpga_igmp_exti(ethID, multicastAddr);
+    if(multicastAddr[0] < 224 || multicastAddr[0] > 239) return;
+    pthread_mutex_lock(&_g_igmp_mutex);
+    fpga_igmp_exit(ethID, srcID, multicastAddr);
+    fpga_igmp_sendIGMPData(ethID, srcID);
+    pthread_mutex_unlock(&_g_igmp_mutex);
 }
 
-/*****************************************************
- * void FPGA_IGMP_enable()
- * 设置fpga发送组播协议
- * ***************************************************/
-void FPGA_IGMP_enable()
+/****************************************************
+*重新加入组播，这个一般在设置完万兆网卡以后进行重新加入组播
+*void FPGA_IGMP_Reset()
+****************************************************/
+void FPGA_IGMP_Reset()
 {
-
-    WV_U16 baseAddr = 0x100, regAddr = 0;
-    WV_S32 i;
-    for (i = 0; i < 4; i++)
+    WV_S32 i, j;
+    for (i = 0; i < _D_ETH_NUM_; i++)
     {
-        regAddr = (((baseAddr >> 8) + i) << 8) | 0x82;
-
-        HIS_SPI_FpgaWd(regAddr, 0xf);
-        printf("igmp 1080 set [0x%0X] = [0x%0X]\n", regAddr, 0xf);
+        for (j = 0; j < _D_SRC_NUM_; j++)
+        {
+            if (gFpgaIgmpDev.ena[i][j] == 0)
+                continue;
+            //FPGA_IGMP_exit(i, j, gFpgaIgmpDev.igmpData[i][j].igmpMulTicastAddr);
+            FPGA_IGMP_join(i, j, gFpgaIgmpDev.igmpData[i][j].igmpMulTicastAddr, gFpgaIgmpDev.igmpData[i][j].igmpSourceAddr);
+        }
     }
 }
+
 /*****************************************************
- * void FPGA_IGMP_enable()
- * 设置fpga发送组播协议
+ * void *fpga_igmp_proc(void *prm)
+ * 组播定时发送
  * ***************************************************/
-void *FPGA_IGMP_Proc(void *prm)
+void *fpga_igmp_proc(void *prm)
 {
 
     FPGA_IGMP_DEV *pDev = (FPGA_IGMP_DEV *)prm;
     pDev->open = 1;
     pDev->close = 0;
-    //iTE6615_fsm();
 
     while (pDev->open == 1)
     {
-        FPGA_IGMP_enable();
-        sleep(2);
+        if(pDev->autoSendIgmpEna == 1){
+            fpga_igmp_Send();
+            //WV_printf("************send ****************\n");
+        }
+
+        for(pDev->times=0;pDev->times < pDev->secondOfIgmpSend;pDev->times++){
+            sleep(1);
+            //WV_printf("total waite =%d,times = %d \n",pDev->secondOfIgmpSend,pDev->times);
+        }
+
     }
     pDev->open = 0;
     pDev->close = 1;
     return NULL;
 }
 
-void FPGA_IGMP_Init()
+/****************************************************************************
+
+WV_S32 FPGA_CONF_SetCmd(WV_S32 argc, WV_S8 **argv,WV_S8 *prfBuff)
+
+****************************************************************************/
+WV_S32 FPGA_IGMP_SetCmd(WV_S32 argc, WV_S8 **argv, WV_S8 *prfBuff)
 {
+    WV_U32 id, srcId;
+    WV_S32 ret = 0;
+    if (argc < 1)
+    {
+        prfBuff += sprintf(prfBuff, "set igmp <cmd>;//cmd like: join/exit/send/sec/auto\r\n");
+        return 0;
+    }
+
+    if (strcmp(argv[0], "join") == 0)
+    {
+
+        if (argc < 5)
+        {
+
+            prfBuff += sprintf(prfBuff, "set igmp join <ethID> <srcID> <muticastAddr> <srcAddr>\r\n");
+            return WV_SOK;
+        }
+        ret = WV_STR_S2v(argv[1], &id);
+        ret = WV_STR_S2v(argv[2], &srcId);
+        WV_U8 muticastAddr[4] = {0};
+        WV_U8 srcAddr[4] = {0};
+        fpga_igmp_getIpInt(argv[3], (WV_S8 *)muticastAddr);
+        fpga_igmp_getIpInt(argv[4], (WV_S8 *)srcAddr);
+        prfBuff += sprintf(prfBuff, "igmp join eth[%d],muticastAddr=%d.%d.%d.%d,srcAddr=%d.%d.%d.%d\r\n", id,
+                           muticastAddr[0], muticastAddr[1], muticastAddr[2], muticastAddr[3],
+                           srcAddr[0], srcAddr[1], srcAddr[2], srcAddr[3]);
+        FPGA_IGMP_join(id, srcId, muticastAddr, srcAddr);
+        return WV_SOK;
+    }
+    else if (strcmp(argv[0], "exit") == 0)
+    {
+        if (argc < 3)
+        {
+
+            prfBuff += sprintf(prfBuff, "set igmp exit <ethID><srcID> <muticastAddr>\r\n");
+            return WV_SOK;
+        }
+
+        ret = WV_STR_S2v(argv[1], &id);
+        ret = WV_STR_S2v(argv[2], &srcId);
+
+        WV_U8 muticastAddr[4] = {0};
+        fpga_igmp_getIpInt(argv[3], (WV_S8 *)muticastAddr);
+        FPGA_IGMP_exit(id, srcId, muticastAddr);
+        prfBuff += sprintf(prfBuff, "igmp exit eth[%d][%d],muticastAddr=%d.%d.%d.%d\r\n", id, srcId, muticastAddr[0], muticastAddr[1], muticastAddr[2], muticastAddr[3]);
+    }
+    else if (strcmp(argv[0], "send") == 0)
+    {
+        fpga_igmp_Send();
+    }
+    else if (strcmp(argv[0], "sec") == 0)
+    {
+        if (argc < 2)
+        {
+
+            prfBuff += sprintf(prfBuff, "set igmp sec <time sec>\r\n");
+            return WV_SOK;
+        }
+        WV_U32 sec;
+        ret = WV_STR_S2v(argv[1], &sec);
+        FPGA_IGMP_SetSecondOfIgmpSend(sec);
+    }
+    else if (strcmp(argv[0], "auto") == 0)
+    {
+        if (argc < 2)
+        {
+
+            prfBuff += sprintf(prfBuff, "set igmp auto <0 or 1>\r\n");
+            return WV_SOK;
+        }
+        WV_U32 ena;
+        ret = WV_STR_S2v(argv[1], &ena);
+        fpga_igmp_autoSendData((WV_S32 )ena);
+    }
+    else
+    {
+        prfBuff += sprintf(prfBuff, "err!there is no cmd like:set igmp %s\r\n", argv[0]);
+    }
+
+    return WV_SOK;
+}
+
+/****************************************************************************
+ * //初始化igmp
+ * void fpga_igmp_init()
+****************************************************************************/
+void fpga_igmp_init()
+{
+    //初始化线程锁
+    pthread_mutex_init(&_g_igmp_mutex, NULL);
     memset(&gFpgaIgmpDev, 0, sizeof(FPGA_IGMP_DEV));
+
+    //secondOfIgmpSend
+    gFpgaIgmpDev.secondOfIgmpSend = 1;
+    gFpgaIgmpDev.times = 0;
+    gFpgaIgmpDev.autoSendIgmpEna = 1;
     WV_S32 i, j;
     for (i = 0; i < 4; i++)
     {
@@ -459,146 +621,24 @@ void FPGA_IGMP_Init()
         }
     }
 }
-
-/*******************************************************************
-WV_S32 fpga_igmp_getIpInt(WV_S8 *pName,WV_U8* pIp);
-*******************************************************************/
-WV_S32 fpga_igmp_getIpInt(WV_S8 *pSrc, WV_S8 *pIp)
-{
-
-    WV_S8 *pData = pSrc;
-    WV_S32 len;
-    WV_S32 i, j, k, data = 0;
-    WV_S32 des;
-    len = strlen(pSrc);
-    if (strncmp(pData, ".", 1) == 0)
-    {
-        WV_printf("get ip error\r\n");
-        return WV_EFAIL;
-    }
-    j = 3;
-    k = 1;
-    for (i = len - 1; i >= 0; i--)
-    {
-
-        if (SYS_IP_SwitchChar(&pData[i], &des) == 0)
-        {
-
-            data += des * k;
-            pIp[j] = data;
-            k *= 10;
-        }
-        else
-        {
-
-            k = 1;
-            data = 0;
-
-            j--;
-            if (j < 0)
-            {
-                break;
-            }
-        }
-    }
-
-    return WV_SOK;
-}
-
 /****************************************************************************
-
-WV_S32 FPGA_CONF_SetCmd(WV_S32 argc, WV_S8 **argv,WV_S8 *prfBuff)
-
+ * //去初始化igmp
+ * void FPGA_IGMP_DeInit()
 ****************************************************************************/
-WV_S32 FPGA_IGMP_SetCmd(WV_S32 argc, WV_S8 **argv, WV_S8 *prfBuff)
+void fpga_igmp_deInit()
 {
-    WV_U32 id;
-    WV_S32 ret = 0;
-    if (argc < 1)
-    {
-        prfBuff += sprintf(prfBuff, "set igmp <cmd>;//cmd like: join/exit/send\r\n");
-        return 0;
-    }
-
-    if (strcmp(argv[0], "join") == 0)
-    {
-
-        if (argc < 4)
-        {
-
-            prfBuff += sprintf(prfBuff, "set igmp join <ethID> <muticastAddr> <srcAddr>\r\n");
-            return WV_SOK;
-        }
-        ret = WV_STR_S2v(argv[1], &id);
-
-        WV_U8 muticastAddr[4] = {0};
-        WV_U8 srcAddr[4] = {0};
-        fpga_igmp_getIpInt(argv[2], (WV_S8 *)muticastAddr);
-        fpga_igmp_getIpInt(argv[3], (WV_S8 *)srcAddr);
-        prfBuff += sprintf(prfBuff, "igmp join eth[%d],muticastAddr=%d.%d.%d.%d,srcAddr=%d.%d.%d.%d\r\n", id,
-                           muticastAddr[0], muticastAddr[1], muticastAddr[2], muticastAddr[3],
-                           srcAddr[0], srcAddr[1], srcAddr[2], srcAddr[3]);
-        _fpga_igmp_join(id, muticastAddr, srcAddr);
-        return WV_SOK;
-    }
-    else if (strcmp(argv[0], "exit") == 0)
-    {
-        if (argc < 3)
-        {
-
-            prfBuff += sprintf(prfBuff, "set igmp exit <ethID> <muticastAddr>\r\n");
-            return WV_SOK;
-        }
-
-        ret = WV_STR_S2v(argv[1], &id);
-
-        WV_U8 muticastAddr[4] = {0};
-        fpga_igmp_getIpInt(argv[2], (WV_S8 *)muticastAddr);
-        _fpga_igmp_exti(id, muticastAddr);
-        prfBuff += sprintf(prfBuff, "igmp exit eth[%d],muticastAddr=%d.%d.%d.%d\r\n", id, muticastAddr[0], muticastAddr[1], muticastAddr[2], muticastAddr[3]);
-    }
-    else if (strcmp(argv[0], "send") == 0)
-    {
-        _fpga_igmp_SendEna();
-    }
-    else
-    {
-        prfBuff += sprintf(prfBuff, "err!there is no cmd like:set igmp %s\r\n", argv[0]);
-    }
-
-    return WV_SOK;
+    pthread_mutex_destroy(&_g_igmp_mutex);
 }
-
 /************************************************************
  * void FPGA_IGMP_Open()
  * *********************************************************/
 void FPGA_IGMP_Open()
 {
-    FPGA_IGMP_Init();
-    //FPGA_IGMP_join();
-    //加入组播 232.2.2.2 源：169.254.11.254
-    WV_U8 multicastAddr[4] = {0};
-    WV_U8 srcAddr[4] = {0};
-    multicastAddr[0] = 230;
-    multicastAddr[1] = 2;
-    multicastAddr[2] = 2;
-    multicastAddr[3] = 2;
-    //srcAddr[0] = 169;
-    //srcAddr[1] = 254;
-    //srcAddr[2] = 11;
-    //srcAddr[3] = 254;
+    fpga_igmp_init();
 
-    srcAddr[0] = 0;
-    srcAddr[1] = 0;
-    srcAddr[2] = 0;
-    srcAddr[3] = 0;
-
-    WV_printf("\n大小为%d", sizeof(_S_FPGA_IGMP_DATA));
-    // _fpga_igmp_join(0, multicastAddr, srcAddr);
-    // _fpga_igmp_exti(0, multicastAddr);
-    WV_THR_Create(&gFpgaIgmpDev.thrHndl, FPGA_IGMP_Proc, WV_THR_PRI_DEFAULT, WV_THR_STACK_SIZE_DEFAULT, &gFpgaIgmpDev);
+    WV_THR_Create(&gFpgaIgmpDev.thrHndl, fpga_igmp_proc, WV_THR_PRI_DEFAULT, WV_THR_STACK_SIZE_DEFAULT, &gFpgaIgmpDev);
     WV_CMD_Register("set", "igmp", " set igmp", FPGA_IGMP_SetCmd);
-    WV_printf("fpga igmp init end \n");
+    WV_printf("\nfpga igmp init end \n");
 }
 /************************************************************
  * void FPGA_IGMP_Close()
@@ -613,6 +653,6 @@ void FPGA_IGMP_Close()
             ;
         WV_THR_Destroy(&gFpgaIgmpDev.thrHndl);
     }
-    //FPGA_IGMP_exit();
-    WV_printf("fpga igmp deinit ok..");
+    fpga_igmp_deInit();
+    WV_printf("\nfpga igmp deinit ok..\n");
 }
