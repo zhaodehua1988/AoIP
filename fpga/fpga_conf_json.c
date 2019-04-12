@@ -96,7 +96,6 @@ WV_S32 FPGA_CONF_WinAnalysisJson(char *json,FPGA_CONF_WIN_T *gWin)
 	fp=fopen(json,"r");
 	if(fp == NULL){
 		printf("analysis json file %s err\n",json);	
-		fclose(fp);
 		return WV_EFAIL;
 	}
 	fread(out,1,4096*4,fp);

@@ -96,32 +96,6 @@ WV_S32 FPGA_CONF_GetETH(FPGA_CONF_ETH_T *pEth,WV_S32 ethID);
 *************************************************************/
 WV_S32 FPGA_CONF_Resolution(WV_S32 resolution);
 
-/**************************************************************************
- * WV_S32 FPGA_CONF_SetOutPutDisColorDepth(WV_S32 colorDepth,WV_S32 colorSpace);
- * 函数说明:设置输出颜色位宽
- * 参数说明:
- *     colorDepth(输出色位宽):  0 10bit;    1 8bit;    其他:不支持
- * ************************************************************************/
-void FPGA_CONF_SetOutPutDisColorDepth(WV_S32 colorDepth);
-
-
-/**************************************************************************
- * WV_S32 FPGA_CONF_SetOutPutDiscolorSpace(WV_S32 colorDepth,WV_S32 colorSpace);
- * 函数说明:设置输出色彩空间
- * 参数说明:
- *     colorSpace(色彩空间):    0 709;     1 2020;     其他:不支持
- * ************************************************************************/
-void FPGA_CONF_SetOutPutDisColorSpace(WV_S32 colorSpace);
-
-
-/**************************************************************************
- * WV_S32 FPGA_CONF_SetOutPutDisColorInfo(WV_S32 colorDepth,WV_S32 colorSpace);
- * 函数说明:设置输出颜色位宽和色彩空间
- * 参数说明:
- *     colorDepth(输出色位宽):  0 10bit;    1 8bit;    其他:不支持
- * ************************************************************************/
-void FPGA_CONF_SetOutPutDisColorInfo(WV_S32 colorDepth);
-
 
 /*************************************************************
  * void FPGA_CONF_SetOutPutAudioSel(WV_S32 audioSel，WV_S32 audioChl);

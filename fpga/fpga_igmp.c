@@ -1,4 +1,5 @@
 #include "fpga_igmp.h"
+#include "fpga_common.h"
 #include "wv_thr.h"
 #include "his_spi.h"
 #include "fpga_conf.h"
@@ -60,51 +61,6 @@ static FPGA_IGMP_DEV gFpgaIgmpDev;
 
 static pthread_mutex_t _g_igmp_mutex;
 
-/*******************************************************************
-WV_S32 fpga_igmp_getIpInt(WV_S8 *pName,WV_U8* pIp);
-*******************************************************************/
-static WV_S32 fpga_igmp_getIpInt(WV_S8 *pSrc, WV_S8 *pIp)
-{
-
-    WV_S8 *pData = pSrc;
-    WV_S32 len;
-    WV_S32 i, j, k, data = 0;
-    WV_S32 des;
-    len = strlen(pSrc);
-    if (strncmp(pData, ".", 1) == 0)
-    {
-        WV_printf("get ip error\r\n");
-        return WV_EFAIL;
-    }
-    j = 3;
-    k = 1;
-    for (i = len - 1; i >= 0; i--)
-    {
-
-        if (SYS_IP_SwitchChar(&pData[i], &des) == 0)
-        {
-
-            data += des * k;
-            pIp[j] = data;
-            k *= 10;
-        }
-        else
-        {
-
-            k = 1;
-            data = 0;
-
-            j--;
-            if (j < 0)
-            {
-                break;
-            }
-        }
-    }
-
-    return WV_SOK;
-}
-
 /****************************************************************
  * void fpga_igmp_checkSum(WV_U8 *buf,WV_S32 len,WV_U16 *checkSum)
  * 功能：获取校验和
@@ -137,7 +93,7 @@ static WV_S32 fpga_igmp_join(WV_S32 ethID, WV_S32 srcID, WV_U8 multicastAddr[], 
 {
     if (ethID >= 4)
     {
-        WV_printf("igmp join set ethID err!! ethID=%d \n", ethID);
+        FPGA_printf("igmp join set ethID err!! ethID=%d \n", ethID);
     }
 
     WV_S32 igmpDataLen = 0;
@@ -202,7 +158,7 @@ static WV_S32 fpga_igmp_join(WV_S32 ethID, WV_S32 srcID, WV_U8 multicastAddr[], 
     gFpgaIgmpDev.igmpData[ethID][emptyNum].ipHeaderChecksum = 0;
     WV_U8 *pipHeadData = &gFpgaIgmpDev.igmpData[ethID][emptyNum].ipVerion;
     fpga_igmp_checkSum(pipHeadData, ipDataLen, &gFpgaIgmpDev.igmpData[ethID][emptyNum].ipHeaderChecksum);
-    //WV_printf("check sum = 0x%04x\n",gFpgaIgmpDev.igmpData[ethID][emptyNum].ipHeaderChecksum);
+    //FPGA_printf("check sum = 0x%04x\n",gFpgaIgmpDev.igmpData[ethID][emptyNum].ipHeaderChecksum);
 
     //get igmp checksum
     gFpgaIgmpDev.igmpData[ethID][emptyNum].igmpHeaderChecksum = 0;
@@ -230,7 +186,7 @@ static WV_S32 fpga_igmp_join(WV_S32 ethID, WV_S32 srcID, WV_U8 multicastAddr[], 
         data |= (srcID << 10);
         data |= pIgmpBuf[i];
         HIS_SPI_FpgaWd(regAddr, data);
-        //WV_printf("igmp set 0x%04x = 0x%04x\n", regAddr, data);
+        //FPGA_printf("igmp set 0x%04x = 0x%04x\n", regAddr, data);
     }
 
     gFpgaIgmpDev.ena[ethID][emptyNum] = 1;
@@ -244,7 +200,7 @@ static WV_S32 fpga_igmp_exit(WV_S32 ethID, WV_S32 srcID, WV_U8 multicastAddr[])
 
     if (ethID >= 4)
     {
-        WV_printf("igmp exit set ethID err!! ethID=%d \n", ethID);
+        FPGA_printf("igmp exit set ethID err!! ethID=%d \n", ethID);
     }
 
     WV_S32 igmpDataLen = 0;
@@ -291,7 +247,7 @@ static WV_S32 fpga_igmp_exit(WV_S32 ethID, WV_S32 srcID, WV_U8 multicastAddr[])
     gFpgaIgmpDev.igmpData[ethID][multicastAddrIsExist].ipHeaderChecksum = 0;
     WV_U8 *pipHeadData = &gFpgaIgmpDev.igmpData[ethID][multicastAddrIsExist].ipVerion;
     fpga_igmp_checkSum(pipHeadData, ipDataLen, &gFpgaIgmpDev.igmpData[ethID][multicastAddrIsExist].ipHeaderChecksum);
-    //WV_printf("check sum = 0x%04x\n",gFpgaIgmpDev.igmpData[ethID][emptyNum].ipHeaderChecksum);
+    //FPGA_printf("check sum = 0x%04x\n",gFpgaIgmpDev.igmpData[ethID][emptyNum].ipHeaderChecksum);
 
     //get igmp checksum
     gFpgaIgmpDev.igmpData[ethID][multicastAddrIsExist].igmpHeaderChecksum = 0;
@@ -347,7 +303,7 @@ static void fpga_igmp_sendIGMPData(WV_S32 ethID, WV_S32 srcID)
     data = 1 << srcID;
 
     HIS_SPI_FpgaWd(regAddr, data);
-    //WV_printf("**send igmp*****reg=0x%X ,data=0x%X\n", regAddr, data);
+    FPGA_printf("**send igmp*****reg=0x%X ,data=0x%X\n", regAddr, data);
 }
 /****************************************************
 *void fpga_igmp_Send()
@@ -404,7 +360,7 @@ void fpga_igmp_autoSendData(WV_S32 ena)
 void FPGA_IGMP_SetSecondOfIgmpSend(WV_U32 sec)
 {
     gFpgaIgmpDev.secondOfIgmpSend = sec;
-    //WV_printf("set second of igmp data send ,sec=%d\n", sec);
+    //FPGA_printf("set second of igmp data send ,sec=%d\n", sec);
 }
 /****************************************************
 *组播协议加入
@@ -505,8 +461,8 @@ WV_S32 FPGA_IGMP_SetCmd(WV_S32 argc, WV_S8 **argv, WV_S8 *prfBuff)
         ret = WV_STR_S2v(argv[2], &srcId);
         WV_U8 muticastAddr[4] = {0};
         WV_U8 srcAddr[4] = {0};
-        fpga_igmp_getIpInt(argv[3], (WV_S8 *)muticastAddr);
-        fpga_igmp_getIpInt(argv[4], (WV_S8 *)srcAddr);
+        FPGA_COMMON_getIpInt(argv[3], muticastAddr);
+        FPGA_COMMON_getIpInt(argv[4], srcAddr);
         prfBuff += sprintf(prfBuff, "igmp join eth[%d],muticastAddr=%d.%d.%d.%d,srcAddr=%d.%d.%d.%d\r\n", id,
                            muticastAddr[0], muticastAddr[1], muticastAddr[2], muticastAddr[3],
                            srcAddr[0], srcAddr[1], srcAddr[2], srcAddr[3]);
@@ -526,7 +482,7 @@ WV_S32 FPGA_IGMP_SetCmd(WV_S32 argc, WV_S8 **argv, WV_S8 *prfBuff)
         ret = WV_STR_S2v(argv[2], &srcId);
 
         WV_U8 muticastAddr[4] = {0};
-        fpga_igmp_getIpInt(argv[3], (WV_S8 *)muticastAddr);
+        FPGA_COMMON_getIpInt(argv[3], muticastAddr);
         FPGA_IGMP_exit(id, srcId, muticastAddr);
         prfBuff += sprintf(prfBuff, "igmp exit eth[%d][%d],muticastAddr=%d.%d.%d.%d\r\n", id, srcId, muticastAddr[0], muticastAddr[1], muticastAddr[2], muticastAddr[3]);
     }
@@ -636,7 +592,7 @@ void FPGA_IGMP_Open()
 
     WV_THR_Create(&gFpgaIgmpDev.thrHndl, fpga_igmp_proc, WV_THR_PRI_DEFAULT, WV_THR_STACK_SIZE_DEFAULT, &gFpgaIgmpDev);
     WV_CMD_Register("set", "igmp", " set igmp", FPGA_IGMP_SetCmd);
-    WV_printf("\nfpga igmp init end \n");
+    FPGA_printf("\nfpga igmp init end \n");
 }
 /************************************************************
  * void FPGA_IGMP_Close()
@@ -652,5 +608,5 @@ void FPGA_IGMP_Close()
         WV_THR_Destroy(&gFpgaIgmpDev.thrHndl);
     }
     fpga_igmp_deInit();
-    WV_printf("\nfpga igmp deinit ok..\n");
+    FPGA_printf("\nfpga igmp deinit ok..\n");
 }
