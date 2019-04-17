@@ -67,7 +67,6 @@ WV_S32 main()
 	//TSK_PLAYER_Close();
 	FPGA_CONF_DeInit();
 #endif
-
 	SYS_IP_DeInit();
 	HIS_SYS_DeInit();
 	WV_TEL_Close();

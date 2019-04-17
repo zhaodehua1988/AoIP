@@ -12,7 +12,7 @@
 #define FPGA_CONF_SRCNUM_D (4)
 #define FPGA_CONF_IPLEN  (64)
 #define FPGA_CONF_MACLEN (24)
-
+#define FPGA_CONF_SDP_DATALEN (2048)
 
 typedef struct FPGA_CONF_WIN
 {
@@ -66,9 +66,7 @@ typedef struct FPGA_CONF_VER
 typedef struct FPGA_CONF_DEV
 {
     WV_S8 fpgaVer[24];
-    //FPGA_CONF_WIN_T win[FPGA_CONF_WINNUM_D];
     FPGA_CONF_ETH_T eth[FPGA_CONF_ETHNUM_D];
-
 } FPGA_CONF_DEV;
 //查询对应网卡的ip和mac
 WV_S32 FPGA_CONF_GetEthInt(WV_U8 ip[],WV_U8 mac[],WV_S32 ethID);
@@ -124,46 +122,29 @@ void FPGA_CONF_SetOutPutVolume(WV_S32 volume);
  * ***************************************************************/
 void FPGA_CONF_SetDisAlpha(WV_S32 alpha);
 
-/*****************************************************************
- * WV_S32 FPGA_CONF_GetSdpInfo(WV_S32 winID,FPGA_SDP_Info *pSdpInfoOut);
- * 函数说明:获取窗口的sdp信息
- * 参数说明:
- *    winID 窗口ID
- *    pSdpInfoOut 获取到的sdp信息
- * 返回值 0:代表获取sdp信息成功
- *      -1:获取sdp信息失败
- * ***************************************************************/
-WV_S32 FPGA_CONF_GetSdpInfo(WV_S32 winID,FPGA_SDP_Info *pSdpInfoOut);
-
-
-/*****************************************************************
- * WV_S32 FPGA_CONF_SetSdpInfo(WV_S32 winID,FPGA_SDP_Info *pSdpInfoIn);
- * 函数说明:设置窗口的sdp信息
- * 参数说明:
- *    winID 窗口ID
- *    pSdpInfoOut 设置的sdp信息
- * 返回值  0:代表设置sdp信息成功
- *       -1:代表设置sdp信息失败
- * ***************************************************************/
-WV_S32 FPGA_CONF_SetSdpInfo(WV_S32 winID,FPGA_SDP_Info *pSdpInfoIn);
-
+/***************************************************
+ * void FPGA_CONF_SetCheckTimeValue(WV_U32 time)
+ * 设置检测静帧的时间,单位 秒
+ * ************************************************/
+void FPGA_CONF_SetCheckTimeValue(WV_U32 time_s);
 
 /****************************************************
- * WV_S32 FPGA_CONF_GetWinFreezeVal(WV_S32 winID)
- * 查询窗口的视频值
- * 返回值 视频R值的叠加（需要保留上次的R值，跟这次的做对比，来查询是否信号静帧）
+ * WV_S32 FPGA_CONF_GetWinFreezeVal(WV_U32 winID)
+ * 函数说明：查询窗口的是否静帧
+ * 返回值  0：没有静帧
+ *        1：视频静帧
+ *        -1：查询错误
  * *************************************************/
-WV_U32 FPGA_CONF_GetWinFreezeVal(WV_S32 winID);
+WV_U32 FPGA_CONF_GetWinFreezeVal(WV_U32 winID);
 
 /****************************************************
- * WV_S32 FPGA_CONF_GetWinStream(WV_S32 winID)
- * 查询窗口是否有视频流
- * 返回值 0:无视频流
- *       1:有视频流
+ * WV_S32 FPGA_CONF_CheckNoSignal(WV_U32 winID)
+ * 函数说明：查询窗口是否有视频流
+ * 返回值 0:流播放正常
+ *       1:没有视频流
  *      -1:查询错误，包括输入窗口id超出范围，id范围[0~15]
  * *************************************************/
-WV_S32 FPGA_CONF_GetWinStream(WV_S32 winID);
-
+WV_S32 FPGA_CONF_CheckNoSignal(WV_U32 winID);
 
 /*******************************************************************
 WV_S32 FPGA_CONF_UpdateFpga(WV_S8 *pFpgaBin);
@@ -180,6 +161,16 @@ WV_S32 FPGA_CONF_UpdateFpga(WV_S8 *pFpgaBin);
  * 参说说明：sec 时间，单位 秒
  * *************************************************/
 void FPGA_CONF_SetIgmpSendSecond(WV_U32 sec);
+
+/****************************************************************************
+void FPGA_CONF_GetVolume(WV_U16 winID,WV_U16 volume[])
+函数说明：查询某个窗口的音量
+参数说明：
+    winID：窗口id
+    volume：获取到的音量值，8字节数组，代表8个声道
+****************************************************************************/
+void FPGA_CONF_GetVolume(WV_U16 winID,WV_U16 volume[]);
+
 void FPGA_CONF_Init();
 void FPGA_CONF_DeInit();
 

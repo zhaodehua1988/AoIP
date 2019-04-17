@@ -537,12 +537,27 @@ int FPGA_SDP_GetParmUint(char *pData, char *pItem, unsigned int *pOutUint)
     return 0;
 }
 /****************************************************************************
- * int fpga_sdp_GetInfo(struct sdp_payload *sdp,FPGA_SDP_Info *pGetInfo)
- * description：获取fpga所需要的sdp media info
- * 
+ * int FPGA_SDP_AnalysisSdpInfo(char *pSdpData, FPGA_SDP_Info *pGetInfo)
+ * 函数说明：解析sdp信息
+ * 参数说明：
+ *     pSdpData：输入的sdp报文
+ *     pGetInfo：输出为FPGA_SDP_Info结构体信息
+ * 返回值： 
+ *     0  ：代表解析成功
+ *     -1 ：代表解析失败
  * *************************************************************************/
-int fpga_sdp_GetInfo(struct sdp_payload *sdp, FPGA_SDP_Info *pGetInfo)
+int FPGA_SDP_AnalysisSdpInfo(char *pSdpData, FPGA_SDP_Info *pGetInfo)
 {
+
+    if(pSdpData == NULL) return -1;
+    struct sdp_payload *sdp;
+    sdp = sdp_parse(pSdpData);
+    if(sdp == NULL)
+    {
+        WV_printf("invalid SDP\n");
+        return -1;
+    }
+
     size_t i, j;
     char pOut[24] = {0};
     unsigned int data;
@@ -551,8 +566,7 @@ int fpga_sdp_GetInfo(struct sdp_payload *sdp, FPGA_SDP_Info *pGetInfo)
         videoWidth = -1, videoHight = -1, videoFmtp = -1;
     if (!sdp)
     {
-        WV_printf("invalid SDP\n");
-        return -1;
+
     }
 
     for (i = 0; i < sdp->medias_count; i++)
@@ -696,360 +710,40 @@ int fpga_sdp_GetInfo(struct sdp_payload *sdp, FPGA_SDP_Info *pGetInfo)
         }
     }
 
+    sdp_destroy(sdp);
     if (audioST2110 != 1 && videoST2110 != 1)
     {
-        return WV_EFAIL;
+        return -1;
     }
     //判断所需的sdp信息是否都已经获取，如果没有获取完整，则说明这个sdp信息时错误的，则返回错误
     if (colorimetry != 1 || interlace != 1 || videoDepth != 1 || sampling != 1 || videoWidth != 1 || videoHight != 1 || videoFmtp != 1)
     {
-        return WV_EFAIL;
+        return -1;
     }
 
-    return WV_SOK;
+    return 0;
 }
 
-/**********************************************************
- * int strstr_cnt(const char *string ,const char *substring)
- * 查询某个字符串在另外一个字符串中出现的次数
-**********************************************************/
-int strstr_cnt(const char *string, const char *substring)
-{
-
-    int i, j, k, count = 0;
-    for (i = 0; string[i]; i++)
-    {
-        for (j = i, k = 0; string[j] == substring[k]; j++, k++)
-        {
-            if (j == strlen(string))
-                break;
-
-            if (!substring[k + 1])
-            {
-                count++;
-            }
-        }
-    }
-
-    return (count);
-}
-/**********************************************************
- * int fpga_sdp_getAudioChlNum(char *pAudioChlIn)
- * 查询sdp音频声道数量
-**********************************************************/
-int fpga_sdp_getAudioChlNum(char *pAudioChlIn)
-{
-    //printf();
-    //audiochl = "ST,51"
-    int chlNum = 0;
-    int undefinedChl = 0, i = 0;
-    int M = 0, DM = 0, ST = 0, LtRt = 0, _51 = 0, _71 = 0, _222 = 0, SGRP = 0, U = 0;
-    M = strstr_cnt(pAudioChlIn, "M") - strstr_cnt(pAudioChlIn, "DM");
-    DM = strstr_cnt(pAudioChlIn, "DM") * 2;
-    ST = strstr_cnt(pAudioChlIn, "ST") * 2;
-    LtRt = strstr_cnt(pAudioChlIn, "LtRt") * 2;
-    _51 = strstr_cnt(pAudioChlIn, "51") * 6;
-    _71 = strstr_cnt(pAudioChlIn, "71") * 8;
-    _222 = strstr_cnt(pAudioChlIn, "222") * 24;
-    SGRP = strstr_cnt(pAudioChlIn, "SGRP") * 4;
-
-    undefinedChl = strstr_cnt(pAudioChlIn, "U");
-
-    char *p = strstr(pAudioChlIn, "U");
-
-    for (i = 0; i < undefinedChl; i++)
-    {
-
-        if (strlen(p) >= 3)
-        {
-            int num;
-            if (sscanf(&p[1], "%d", &num) != 1)
-            {
-                //printf("can not get the item(%s) val(uint)\n", pItem);
-                return -1;
-            }
-            else
-            {
-                //printf("U%02d = %d |",num,num);
-                U += num;
-            }
-        }
-    }
-    chlNum = M + DM + ST + LtRt + _51 + _71 + _222 + SGRP + U;
-#ifdef FPGA_SDP_DEBUG
-    printf("\r\nchlNum=%d,M=%d, DM=%d, ST=%d, LtRt=%d, 51=%d, 71=%d, 222=%d,SGPR=%d,U=%d\n", chlNum, M, DM, ST, LtRt, _51, _71, _222, SGRP, U);
-#endif
-    return chlNum;
-}
-/**********************************************************************************
- * int FPGA_SDP_SetInfo(FPGA_SDP_Info *pSetInfo,unsigned short eth,unsigned short ipSel)
- * 功能：配置网络接收的sdp信息
+/****************************************************************************
+ * int FPGA_SDP_MakeSdpData(char *pSdpData, FPGA_SDP_Info *pGetInfo)
+ * 函数说明：生成sdp报文
  * 参数说明：
- * pSetInfo:sdp数据
- * type: 0=videosdp 1=audiosdp 2=videoAndAudio sdp
- * eth:网卡id【0～3】
- * ipSel:第几个ip地址
- * *******************************************************************************/
-int FPGA_SDP_SetInfo(FPGA_SDP_Info *pSetInfo, WV_U16 eth, WV_U16 ipSel)
+ *     pInputInfo：输入的sdp参数
+ *     pSdpOutData：输出的sdp报文
+ *     sdpLen：sdp报文长度
+ * 返回值： 
+ *     0  ：代表生存sdp报文成功
+ *     -1 ：代表生成sdp报文失败
+ * *************************************************************************/
+int FPGA_SDP_MakeSdpData(FPGA_SDP_Info *pInputInfo,char *pSdpOutData,unsigned int *sdpLen)
 {
-    if (pthread_mutex_lock(&gMutexUpdateSdpInfo) != 0)
-    {
-        FPGA_printf("fpga update sdp info err!mutex lock err!\n");
-        return WV_EFAIL;
-    }
-    WV_S32 ret = 0;
-    WV_U16 baseAddr;
-    WV_U16 regAddr;
-    WV_U16 videoInfo = 0, videoWidth = 0, videoHight = 0, avPt = 0, audioInfo = 0;
-    //video_sampling
-    //0：YCbCr:4:4:4    1:YCbCr:4:2:2    ：YCbCr:4:2:0      3：RGB             4：CLYCbCr-4:4:4    5：CLYCbCr-4:2:2
-    //6：CLYCbCr-4:2:0  7：ICtCp-4:4:4   8：ICtCp-4:2:2      9：ICtCp-4:2:0    10：XYZ 其他：预留
-    // Bit[3:0]
-    if (0 == strcmp(pSetInfo->video_sampling, "YCbCr-4:4:4") || 0 == strcmp(pSetInfo->video_sampling, "YCbCr:4:4:4"))
-    {
-        videoInfo |= 0x0;
-    }
-    else if (0 == strcmp(pSetInfo->video_sampling, "YCbCr-4:2:2") || 0 == strcmp(pSetInfo->video_sampling, "YCbCr:4:2:2"))
-    {
-        videoInfo |= 0x1;
-    }
-    else if (0 == strcmp(pSetInfo->video_sampling, "YCbCr-4:2:0") || 0 == strcmp(pSetInfo->video_sampling, "YCbCr:4:2:0"))
-    {
-        videoInfo |= 0x2;
-    }
-    else if (0 == strcmp(pSetInfo->video_sampling, "RGB") || 0 == strcmp(pSetInfo->video_sampling, "rgb"))
-    {
-        videoInfo |= 0x3;
-    }
-    else if (0 == strcmp(pSetInfo->video_sampling, "CLYCbCr-4:4:4") || 0 == strcmp(pSetInfo->video_sampling, "CLYCbCr:4:4:4"))
-    {
-        videoInfo |= 0x4;
-    }
-    else if (0 == strcmp(pSetInfo->video_sampling, "CLYCbCr-4:2:2") || 0 == strcmp(pSetInfo->video_sampling, "CLYCbCr:4:2:2"))
-    {
-        videoInfo |= 0x5;
-    }
-    else if (0 == strcmp(pSetInfo->video_sampling, "CLYCbCr-4:2:0") || 0 == strcmp(pSetInfo->video_sampling, "CLYCbCr:4:2:0"))
-    {
-        videoInfo |= 0x6;
-    }
-    else if (0 == strcmp(pSetInfo->video_sampling, "ICtCp-4:4:4") || 0 == strcmp(pSetInfo->video_sampling, "ICtCp:4:4:4"))
-    {
-        videoInfo |= 0x7;
-    }
-    else if (0 == strcmp(pSetInfo->video_sampling, "ICtCp-4:2:2") || 0 == strcmp(pSetInfo->video_sampling, "ICtCp:4:2:2"))
-    {
-        videoInfo |= 0x8;
-    }
-    else if (0 == strcmp(pSetInfo->video_sampling, "ICtCp-4:2:0") || 0 == strcmp(pSetInfo->video_sampling, "ICtCp:4:2:0"))
-    {
-        videoInfo |= 0x9;
-    }
-    else
-    {
-        videoInfo |= 0x1; //默认YCbCr-4:2:2
-    }
-    //video_depth
-    if (8 == pSetInfo->video_depth)
-    {
-        videoInfo |= 0x0 << 4;
-    }
-    else if (10 == pSetInfo->video_depth)
-    {
-        videoInfo |= 0x1 << 4;
-    }
-    else if (12 == pSetInfo->video_depth)
-    {
-        videoInfo |= 0x2 << 4;
-    }
-    else if (16 == pSetInfo->video_depth)
-    {
-        videoInfo |= 0x3 << 4;
-    }
-    else if (24 == pSetInfo->video_depth)
-    {
-        videoInfo |= 0x4 << 4;
-    }
-    else
-    {
-        videoInfo |= 0x0 << 4; //默认为 video_depth=8
-    }
-    //video_framerate
-    if (strstr(pSetInfo->video_framerate, "50") != NULL)
-    {
-        videoInfo |= 0x0 << 7;
-    }
-    else if (strstr(pSetInfo->video_framerate, "60") != NULL)
-    {
-        videoInfo |= 0x1 << 7;
-    }
-    else if (strstr(pSetInfo->video_framerate, "23.98") != NULL || strstr(pSetInfo->video_framerate, "23") != NULL)
-    {
-        videoInfo |= 0x2 << 7;
-    }
-    else if (strstr(pSetInfo->video_framerate, "24") != NULL)
-    {
-        videoInfo |= 0x3 << 7;
-    }
-    else if (strstr(pSetInfo->video_framerate, "47.95") != NULL || strstr(pSetInfo->video_framerate, "47") != NULL)
-    {
-        videoInfo |= 0x4 << 7;
-    }
-    else if (strstr(pSetInfo->video_framerate, "25") != NULL)
-    {
-        videoInfo |= 0x5 << 7;
-    }
-    else if (strstr(pSetInfo->video_framerate, "29.97") != NULL || strstr(pSetInfo->video_framerate, "29") != NULL)
-    {
-        videoInfo |= 0x6 << 7;
-    }
-    else if (strstr(pSetInfo->video_framerate, "30") != NULL)
-    {
-        videoInfo |= 0x7 << 7;
-    }
-    else if (strstr(pSetInfo->video_framerate, "48") != NULL)
-    {
-        videoInfo |= 0x8 << 7;
-    }
-    else if (strstr(pSetInfo->video_framerate, "59.94") != NULL || strstr(pSetInfo->video_framerate, "59") != NULL)
-    {
-        videoInfo |= 0x9 << 7;
-    }
-    else
-    {
-        videoInfo |= 0x1 << 7; //默认60MHZ
-    }
-
-    //video_interlace
-    //Bit11 b1 隔行 b0逐行
-
-    if (1 == pSetInfo->video_interlace)
-    {
-        videoInfo |= 0x1 << 11;
-    }
-    else
-    {
-        videoInfo |= 0x0 << 11; //默认逐行
-    }
-    //video_colorimetry
-    if (0 == strcmp(pSetInfo->video_colorimetry, "BT.709") || 0 == strcmp(pSetInfo->video_colorimetry, "BT709"))
-    {
-        videoInfo |= 0x0 << 12;
-    }
-    else if (0 == strcmp(pSetInfo->video_colorimetry, "BT.2020") || 0 == strcmp(pSetInfo->video_colorimetry, "BT2020"))
-    {
-        videoInfo |= 0x1 << 12;
-    }
-    else if (0 == strcmp(pSetInfo->video_colorimetry, "BT.610") || 0 == strcmp(pSetInfo->video_colorimetry, "BT610"))
-    {
-        videoInfo |= 0x2 << 12;
-    }
-    else
-    {
-        videoInfo |= 0x0 << 12; //默认BT.709
-    }
-    /****************audio info***********************************************/
-    /*         Table 1 -- Channel Order Convention Grouping Symbols
-    ------------------------------------------------------------------------------------------------------------------
-    ID      Channel Grouping |  Quantity of Audio | Description of group   | Order of Audio
-            Symbol           |  Channels in group |                        | Channels in group
-                                        
-    0               M               1                   Mono                    Mono
-    1               DM              2                   Dual Mono               M1, M2
-    2               ST              2                   Standard Stereo         Left, Right
-    3               LtRt            2                   Matrix Stereo           Left Total, Right Total
-    4               51              6                   5.1 Surround            L, R, C, LFE, Ls, Rs
-    5               71              8                   7.1 Surround            L, R, C, LFE, Lss, Rss, Lrs, Rrs
-    6               222             24                  22.2 Surround           Order shall be per SMPTE ST 2036-2,
-    7               SGRP            4                   One SDI audio group     1 , 2, 3, 4
-    */
-    //audio chl 因为fpga文档没有更新，暂时保留
-
-    WV_S32 chl = fpga_sdp_getAudioChlNum(pSetInfo->audio_channel);
-    if(chl != 0){
-        pSetInfo->audio_chl_num = (WV_U16) chl;
-    }
-    //audioInfo = 0xff & chl;
-    audioInfo = 0xff & pSetInfo->audio_chl_num;
-    //audio_depth
-    if (8 == pSetInfo->audio_depth)
-    {
-        audioInfo |= 0x0 << 8;
-    }
-    else if (16 == pSetInfo->audio_depth)
-    {
-        audioInfo |= 0x1 << 8;
-    }
-    else
-    {
-        audioInfo |= 0x0 << 8;
-    }
-    /****************video width /hight***********************************************/
-    videoWidth = pSetInfo->video_width;
-    videoHight = pSetInfo->video_height;
-    // if(pSetInfo->video_interlace == 1){
-    //     //如果时隔行发送，则设置视频高度为原始高度的一半
-    //     WV_printf("设置网卡");
-    //     videoHight = pSetInfo->video_height/2;
-    // }else{
-    //     videoHight = pSetInfo->video_height;
-    // }
-
-    //avPt
-    avPt = (pSetInfo->video_pt << 8) | (pSetInfo->audio_pt & 0xff);
-    baseAddr = 0x100;
-    regAddr = ((baseAddr >> 8) + eth) << 8;
-
-    ret += HIS_SPI_FpgaWd(regAddr + 0x46 + ipSel * 5, videoInfo);
-    ret += HIS_SPI_FpgaWd(regAddr + 0x47 + ipSel * 5, videoWidth);
-    ret += HIS_SPI_FpgaWd(regAddr + 0x48 + ipSel * 5, videoHight);
-    ret += HIS_SPI_FpgaWd(regAddr + 0x49 + ipSel * 5, avPt);
-    ret += HIS_SPI_FpgaWd(regAddr + 0x4a + ipSel * 5, audioInfo);
-
-    if (ret != 0)
-    {
-        WV_printf("set sdp info err \n");
-    }
-
-    //gpFpgaConfDev->win[0].sdpInfo = *pSetInfo;//更新sdp信息
-#ifdef FPGA_SDP_DEBUG
-    printf("--------------sdp---------------------------\n");
-    printf("set spi  0x%04x  0x%04x\n", regAddr + 0x46 + ipSel * 5, videoInfo);
-    printf("set spi  0x%04x  0x%04x\n", regAddr + 0x47 + ipSel * 5, videoWidth);
-    printf("set spi  0x%04x  0x%04x\n", regAddr + 0x48 + ipSel * 5, videoHight);
-    printf("set spi  0x%04x  0x%04x\n", regAddr + 0x49 + ipSel * 5, avPt);
-    printf("set spi  0x%04x  0x%04x\n", regAddr + 0x4a + ipSel * 5, audioInfo);
-
-#endif
-    //setSdpInfoEnd:
-    if (pthread_mutex_unlock(&gMutexUpdateSdpInfo) != 0)
-    {
-        FPGA_printf("fpga update sdp info err!mutex unlock err!\n");
-        return WV_EFAIL;
-    }
+    int ret = -1;
+    
     return ret;
 }
 
-/********************************************************************
- * WV_S32 FPGA_SDP_ReadFromFpga(WV_U16 eth,WV_U16 chl,FPGA_SDP_Info *pGetInfo)
- * ******************************************************************/
-WV_S32 FPGA_SDP_ReadFromFpga(WV_U16 eth, WV_U16 chl, FPGA_SDP_Info *pGetInfo)
-{
-    WV_S32 ret = 0;
-    struct sdp_payload *sdp;
-    WV_S8 *pSdpData = (WV_S8 *)malloc(_FPGA_SDP_DATALEN + 8);
-    memset(pSdpData, 0, _FPGA_SDP_DATALEN + 8);
-    //TODO
-    //通过fgpa获取sdp报文
 
-    sdp = sdp_parse(pSdpData);
-    FPGA_SDP_Info info;
-    memset(&info, 0, sizeof(FPGA_SDP_Info));
-    ret = fpga_sdp_GetInfo(sdp, pGetInfo);
-    free(pSdpData);
-    //sdp_parse(pDev->pSdpData);
-    return ret;
-}
+
 #if 0
 /********************************************************************
  * void* FPGA_SDP_Proc(void *prm)
@@ -1085,7 +779,7 @@ void FPGA_SDP_Init()
 {
     //memset(&gFpgaSdpDev,0,sizeof(gFpgaSdpDev));
     //gFpgaSdpDev.pSdpData = (WV_S8 *)malloc(_FPGA_SDP_DATALEN+8);
-    pthread_mutex_init(&gMutexUpdateSdpInfo, NULL);
+    //pthread_mutex_init(&gMutexUpdateSdpInfo, NULL);
 
     //WV_THR_Create(&gFpgaSdpDev.thrHndl,FPGA_SDP_Proc, WV_THR_PRI_DEFAULT, WV_THR_STACK_SIZE_DEFAULT, (void *)&gFpgaSdpDev);
 }
@@ -1102,7 +796,7 @@ void FPGA_SDP_DeInit()
 		WV_THR_Destroy(&gFpgaSdpDev.thrHndl);
 	}
     */
-    pthread_mutex_destroy(&gMutexUpdateSdpInfo);
-    free(gFpgaSdpDev.pSdpData);
+    //pthread_mutex_destroy(&gMutexUpdateSdpInfo);
+    //free(gFpgaSdpDev.pSdpData);
 
 }

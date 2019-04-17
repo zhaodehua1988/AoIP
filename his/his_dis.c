@@ -520,11 +520,21 @@ WV_S32  HIS_DIS_SetCustomTiming(WV_U32 mode)
 			//custTiming.PixFreq = 148500;
 			WV_printf("set resolution 1920*1080 p60\n");
             break;
-        case 4: //1920*1080 i60 
+		case 4:   //1920*1080 p50
+		  	custTiming.VFB = 4;//8
+			custTiming.VBB = 41; //80
+			custTiming.VACT= 1080;//
+			custTiming.HFB = 88;
+			custTiming.HBB = 192;
+			custTiming.HACT= 1920;
+			custTiming.VPW = 5;//5	
+			custTiming.VertFreq = 50000;
+			custTiming.HPW = 88; 
+			//custTiming.PixFreq = 148500;
+			WV_printf("set resolution 1920*1080 p50\n");		
+			break;	
+        case 5: //1920*1080 i60 
             ret = HI_UNF_DISP_SetFormat(HI_UNF_DISPLAY1, HI_UNF_ENC_FMT_1080i_60);             
-			return 0; 
-        case 5: //1920*1080 i50 
-            ret = HI_UNF_DISP_SetFormat(HI_UNF_DISPLAY1, HI_UNF_ENC_FMT_1080i_50);             
 			return 0; 
         case 6: //1920*1080 i30
 		  	custTiming.VFB = 4;//8

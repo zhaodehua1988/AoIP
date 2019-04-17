@@ -26,4 +26,10 @@ WV_S32 FPGA_COMMON_getMacInt(WV_S8 *pSrc, WV_U8 *pMac);
 *******************************************************************/
 WV_S32 FPGA_COMMON_getMacInt(WV_S8 *pSrc, WV_U8 *pMac);
 
+/**********************************************************
+ * WV_S32 strstr_cnt(WV_S8  *string, WV_S8 *substring)
+ * 查询某个字符串在另外一个字符串中出现的次数
+**********************************************************/
+WV_S32 strstr_cnt(WV_S8  *string, WV_S8 *substring);
+
 #endif

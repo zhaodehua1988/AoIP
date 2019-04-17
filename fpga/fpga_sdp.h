@@ -100,9 +100,34 @@ void sdp_dump(struct sdp_payload *sdp);
 
 char *sdp_get_attr(char **attr, size_t nattr, char *key);
 int sdp_has_flag_attr(char **attr, size_t nattr, char *flag);
-//int FPGA_SDP_SetInfo(FPGA_SDP_Info *pSetInfo,WV_U16 eth, WV_U16 channel);
-int FPGA_SDP_SetInfo(FPGA_SDP_Info *pSetInfo,WV_U16 eth, WV_U16 ipSel);
-WV_S32 FPGA_SDP_ReadFromFpga(WV_U16 eth,WV_U16 chl,FPGA_SDP_Info *pGetInfo);
+
+/****************************************************************************
+ * int FPGA_SDP_AnalysisSdpInfo(char *pSdpData, FPGA_SDP_Info *pGetInfo)
+ * 函数说明：解析sdp信息
+ * 参数说明：
+ *     pSdpData：输入的sdp报文
+ *     pGetInfo：输出为FPGA_SDP_Info结构体信息
+ * 返回值： 
+ *     0  ：代表解析成功
+ *     -1 ：代表解析失败
+ * *************************************************************************/
+int FPGA_SDP_AnalysisSdpInfo(char *pSdpData, FPGA_SDP_Info *pGetInfo);
+
+
+
+/****************************************************************************
+ * int FPGA_SDP_MakeSdpData(char *pSdpData, FPGA_SDP_Info *pGetInfo)
+ * 函数说明：生成sdp报文
+ * 参数说明：
+ *     pInputInfo：输入的sdp参数
+ *     pSdpOutData：输出的sdp报文
+ *     sdpLen：sdp报文长度
+ * 返回值： 
+ *     0  ：代表生存sdp报文成功
+ *     -1 ：代表生成sdp报文失败
+ * *************************************************************************/
+int FPGA_SDP_MakeSdpData(FPGA_SDP_Info *pInputInfo,char *pSdpOutData,unsigned int *sdpLen);
+
 void FPGA_SDP_Init();
 void FPGA_SDP_DeInit();
 
