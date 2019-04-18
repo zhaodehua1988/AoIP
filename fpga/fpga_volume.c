@@ -3,18 +3,23 @@
 #include "fpga_volume.h"
 #include "his_spi.h"
 
-#define _D_FPGA_CONF_VOLUME_NUM (128)
-#define _D_FPGA_CONF_READVOLUME_ADDR 0x20
-typedef struct _S_FPGA_CONF_VOLUME
+#define _D_FPGA_VOLUME_NUM (128)
+#define _D_FPGA_VOLUME_READVOLUME_ADDR 0x20
+
+
+
+
+typedef struct _S_FPGA_VOLUME_CONF
 {
     WV_THR_HNDL_T thrHndl;
     WV_U32 open;
     WV_U32 close;
-    WV_U16 volume[_D_FPGA_CONF_VOLUME_NUM];    //fpga获取到的音量值
-    WV_U16 volumeOut[_D_FPGA_CONF_VOLUME_NUM]; //计算以后输出的音量值
+    WV_U16 volume[_D_FPGA_VOLUME_NUM];    //fpga获取到的音量值
+    WV_U16 volumeOut[_D_FPGA_VOLUME_NUM]; //计算以后输出的音量值
 
-}_S_FPGA_CONF_VOLUME;
-static _S_FPGA_CONF_VOLUME   gFpgaVolume;
+}_S_FPGA_VOLUME_CONF;
+static _S_FPGA_VOLUME_CONF   gFpgaVolume;
+
 
 /**************************************************************************
  * void FPGA_VOLUME_Get(WV_U16 ethID,WV_U16 ipID,WV_U8 volume )
@@ -24,7 +29,7 @@ void FPGA_VOLUME_Get(WV_U16 ethID,WV_U16 ipID,WV_U16 volume[] )
 
     WV_U16 winID;
     winID = ethID*4 + ipID;
-    memcpy(volume,&gFpgaVolume.volumeOut[winID*_D_FPGA_VOLUME_CHLNUM],_D_FPGA_VOLUME_CHLNUM);
+    memcpy(volume,&gFpgaVolume.volumeOut[winID*_D_FPGA_VOLUME_CHLNUM],_D_FPGA_VOLUME_CHLNUM*2);
 }
 /**************************************************************************
  * void fpga_volume_readVolume()
@@ -33,11 +38,11 @@ void fpga_volume_readVolume()
 {
     volatile double dVolume;
     WV_S32 j;
-    memset(gFpgaVolume.volume,0x00,_D_FPGA_CONF_VOLUME_NUM);
-    HIS_SPI_FpgaWd(_D_FPGA_CONF_READVOLUME_ADDR, 0x00);
-    HIS_SPI_FpgaRdNum(_D_FPGA_CONF_READVOLUME_ADDR, gFpgaVolume.volume, _D_FPGA_CONF_VOLUME_NUM);
+    memset(gFpgaVolume.volume,0x00,_D_FPGA_VOLUME_NUM);
+    HIS_SPI_FpgaWd(_D_FPGA_VOLUME_READVOLUME_ADDR, 0x00);
+    HIS_SPI_FpgaRdNum(_D_FPGA_VOLUME_READVOLUME_ADDR, gFpgaVolume.volume, _D_FPGA_VOLUME_NUM);
 
-    for(j = 0;j< _D_FPGA_CONF_VOLUME_NUM;j++)
+    for(j = 0;j< _D_FPGA_VOLUME_NUM;j++)
     {
          dVolume = (gFpgaVolume.volume[j] / 32768.0);
          dVolume = fabs(dVolume);
@@ -56,7 +61,7 @@ void fpga_volume_readVolume()
  * ************************************************************************/
 void *fpga_read_volume(void *prm)
 {
-    _S_FPGA_CONF_VOLUME *pDev = (_S_FPGA_CONF_VOLUME *)prm;
+    _S_FPGA_VOLUME_CONF *pDev = (_S_FPGA_VOLUME_CONF *)prm;
     pDev->open = 1;
     pDev->close = 0;
 
@@ -74,7 +79,7 @@ void *fpga_read_volume(void *prm)
  * ************************************************************************/
 void FPGA_VOLUME_Open()
 {
-    memset(&gFpgaVolume,0,sizeof(_S_FPGA_CONF_VOLUME));
+    memset(&gFpgaVolume,0,sizeof(_S_FPGA_VOLUME_CONF));
     WV_THR_Create(&gFpgaVolume.thrHndl, fpga_read_volume, WV_THR_PRI_DEFAULT, WV_THR_STACK_SIZE_DEFAULT, &gFpgaVolume);
 }
 /**************************************************************************

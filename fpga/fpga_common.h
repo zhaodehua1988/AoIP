@@ -15,6 +15,8 @@
 #define FPGA_printf(...)
 #endif
 
+#define _D_FPGA_COMMON_IPLEN (4)
+#define _D_FPGA_COMMON_MACLEN (6)
 
 /*******************************************************************
 WV_S32 FPGA_COMMON_getIpInt(WV_S8 *pName,WV_U8* pIp);

@@ -61,6 +61,20 @@ static FPGA_IGMP_DEV gFpgaIgmpDev;
 
 static pthread_mutex_t _g_igmp_mutex;
 
+/**************************************************************
+ * void FPGA_IGMP_Lock()
+ * ***********************************************************/
+void FPGA_IGMP_Lock()
+{
+    pthread_mutex_lock(&_g_igmp_mutex);
+}
+/**************************************************************
+ * void FPGA_IGMP_UnLock()
+ * ***********************************************************/
+void FPGA_IGMP_UnLock()
+{
+    pthread_mutex_unlock(&_g_igmp_mutex);
+}
 /****************************************************************
  * void fpga_igmp_checkSum(WV_U8 *buf,WV_S32 len,WV_U16 *checkSum)
  * 功能：获取校验和

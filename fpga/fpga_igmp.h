@@ -10,4 +10,7 @@ void FPGA_IGMP_Reset();
 void FPGA_IGMP_Open();
 void FPGA_IGMP_Close();
 
+
+void FPGA_IGMP_Lock();
+void FPGA_IGMP_UnLock();
 #endif

@@ -4,10 +4,10 @@
 
 
 /***************************************************
- * WV_S32 FPGA_CHECK_SetCheckTimeValue(WV_U32 time_s)
- * 设置检测时间,单位时秒
+ * void FPGA_CHECK_SetCheckFreezeTimeValue(WV_U16 ethID, WV_U16 ipID, WV_U16 mutltiple, WV_U32 time_s)
+ * 静帧检测时间和结合音频的倍数
  * ************************************************/
-void FPGA_CHECK_SetCheckTimeValue(WV_U32 time_s);
+void FPGA_CHECK_SetCheckFreezeTimeValue(WV_U16 ethID, WV_U16 ipID, WV_U16 mutltiple, WV_U32 time_s);
 
 /****************************************************
  * WV_S32 FPGA_CHECK_GetWinFreeze(WV_U16 ethID,WV_U16 ipID) 

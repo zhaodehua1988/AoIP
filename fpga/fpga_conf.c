@@ -12,6 +12,7 @@
 #include "fpga_update.h"
 #include "fpga_volume.h"
 #include "fpga_check.h"
+#include "fpga_arp.h"
 #define _FPGA_MUTEX_ENA_D (1)
 #if _FPGA_MUTEX_ENA_D
 static pthread_mutex_t gMutexSetWin;
@@ -30,6 +31,18 @@ typedef struct _S_FPGA_CONF_WIN_INFO
 static _S_FPGA_CONF_WIN_INFO gEthWinInfo[FPGA_CONF_ETHNUM_D][FPGA_CONF_SRCNUM_D];
 static _S_FPGA_CONF_WIN_INFO gEthWinInfoNew[FPGA_CONF_ETHNUM_D][FPGA_CONF_SRCNUM_D];
 
+
+/**************************************************************
+ * void FPGA_CONF_SendArpRequest(WV_U16 ethID,WV_S8 *targetIp)
+ * 函数说明：发送arp请求
+ * ************************************************************/
+void FPGA_CONF_SendArpRequest(WV_U16 ethID,WV_S8 *targetIp)
+{
+    FPGA_IGMP_Lock();
+    FPGA_ARP_Request(ethID,targetIp);
+    FPGA_IGMP_UnLock();
+    FPGA_IGMP_Reset();
+}
 
 /******************************************************************
  * WV_S32 fpga_conf_setIgmp(_S_FPGA_CONF_WIN_INFO (*newAddr)[FPGA_CONF_SRCNUM_D])
@@ -92,7 +105,7 @@ void FPGA_CONF_SetIgmpSendSecond(WV_U32 sec)
  * ************************************************/
 void FPGA_CONF_SetCheckTimeValue(WV_U32 time_s)
 {
-    FPGA_CHECK_SetCheckTimeValue(time_s);
+    //FPGA_CHECK_SetCheckTimeValue(time_s);
 }
 
 /****************************************************
@@ -122,13 +135,13 @@ WV_U32 FPGA_CONF_GetWinFreezeVal(WV_U32 winID)
 }
 
 /****************************************************
- * WV_S32 FPGA_CONF_CheckNoStream(WV_U32 winID)
+ * WV_S32 FPGA_CONF_CheckNoSignal(WV_U32 winID)
  * 查询窗口是否有视频流
  * 返回值 0:流播放正常
  *       1:没有视频流
  *      -1:查询错误，包括输入窗口id超出范围，id范围[0~15]
  * *************************************************/
-WV_S32 FPGA_CONF_CheckNoStream(WV_U32 winID)
+WV_S32 FPGA_CONF_CheckNoSignal(WV_U32 winID)
 {
     if (winID > 15)
         return -1;
@@ -923,14 +936,22 @@ void FPGA_CONF_GetVolume(WV_U16 winID,WV_U8 volume[])
 void FPGA_CONF_GetVolume(WV_U16 winID,WV_U16 volume[])
 {   
     //WV_printf("get volume\n");
-    WV_S32 i, j;
+    WV_S32 i, j,k;
+    WV_U32 sum;
     for (i = 0; i < FPGA_CONF_ETHNUM_D; i++)
     {
         for (j = 0; j < FPGA_CONF_SRCNUM_D; j++)
         {
+            
             if (gEthWinInfo[i][j].winID == winID)
             {
+
                 FPGA_VOLUME_Get(i,j,volume);
+                sum = 0;
+                for(k=0;k<8;k++)
+                {
+                    sum += volume[i];
+                }
                 return;
             }
         }
@@ -1225,7 +1246,7 @@ WV_S32 FPGA_CONF_GetCmd(WV_S32 argc, WV_S8 **argv, WV_S8 *prfBuff)
                 prfBuff += sprintf(prfBuff, "\r\ninput erro!! get fpga win stream <winID>;\r\n");
                 return WV_SOK;
             }
-            ret = FPGA_CONF_CheckNoStream(winID);
+            ret = FPGA_CONF_CheckNoSignal(winID);
             if (ret == 0)
             {
                 prfBuff += sprintf(prfBuff, "\r\n窗口[%d]有视频流\r\n", winID);
@@ -1277,7 +1298,7 @@ WV_S32 FPGA_CONF_GetCmd(WV_S32 argc, WV_S8 **argv, WV_S8 *prfBuff)
     }
     else
     {
-        prfBuff += sprintf(prfBuff, "set fpga <cmd>;//cmd like: win/vol\r\n");
+        prfBuff += sprintf(prfBuff, " get fpga <cmd>;//cmd like: win/vol\r\n");
     }
     return WV_SOK;
 }

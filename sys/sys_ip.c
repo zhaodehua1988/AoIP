@@ -175,7 +175,6 @@ WV_S32 SYS_IP_getIpInt(WV_S8 *pName,WV_U8* pIp)
 		
 			data += des*k;
 			pIp[j] = data;
-			printf("%d = %d\n",j,pIp[j]);
 			k*=10;
 		
 		}else{
@@ -206,12 +205,6 @@ WV_S32 SYS_IP_getMacInt(WV_U8 *pMac)
 	WV_S32 des;
 
 	len = strlen(pSrc);
-	/*
-	if(strncmp(pData,":",1) == 0){
-		printf("get ip error\r\n");
-		return WV_EFAIL;
-	}
-   */
 	j = 5;
 	k = 1;
 	for (i = len - 1; i >= 0; i--)
@@ -475,12 +468,11 @@ WV_S32 SYS_IP_GetEthConf(WV_U8 ip[], WV_U8 mask[], WV_U8 gw[],WV_U8 mac[])
 	SYS_IP_getIpInt("IP_Gatway",gw);
 	SYS_IP_getMacInt(mac);
 
-	WV_printf("ip    %d.%d.%d.%d \n",ip[0],ip[1],ip[2],ip[3]);
-	WV_printf("mask  %d.%d.%d.%d\n",mask[0],mask[1],mask[2],mask[3]);
-	WV_printf("gw    %d.%d.%d.%d\n",gw[0],gw[1],gw[2],gw[3]);
-	WV_printf("mask  %02x:%02x:%02x:%02x:%02x:%02x\n",mac[0],mac[1],mac[2],mac[3],mac[4],mac[5]);
+	// WV_printf("ip    %d.%d.%d.%d \n",ip[0],ip[1],ip[2],ip[3]);
+	// WV_printf("mask  %d.%d.%d.%d\n",mask[0],mask[1],mask[2],mask[3]);
+	// WV_printf("gw    %d.%d.%d.%d\n",gw[0],gw[1],gw[2],gw[3]);
+	// WV_printf("mask  %02x:%02x:%02x:%02x:%02x:%02x\n",mac[0],mac[1],mac[2],mac[3],mac[4],mac[5]);
 	
-
 	return WV_SOK;
 }
 /****************************************************************************

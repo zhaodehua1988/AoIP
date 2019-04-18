@@ -171,6 +171,17 @@ void FPGA_CONF_GetVolume(WV_U16 winID,WV_U16 volume[])
 ****************************************************************************/
 void FPGA_CONF_GetVolume(WV_U16 winID,WV_U16 volume[]);
 
+
+/**************************************************************
+ * void FPGA_CONF_SendArpRequest(WV_U16 ethID,WV_S8 *targetIp)
+ * 函数说明：发送arp请求
+ * 参数说明：
+ *     ethID   ：网卡id
+ *     targetIp：目标ip地址
+ * ************************************************************/
+void FPGA_CONF_SendArpRequest(WV_U16 ethID,WV_S8 *targetIp);
+
+
 void FPGA_CONF_Init();
 void FPGA_CONF_DeInit();
 

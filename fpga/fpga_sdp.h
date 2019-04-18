@@ -78,20 +78,20 @@ struct sdp_payload {
 
 typedef struct FPGA_SDP_Info{
 
-    char video_colorimetry[20]; //
+    char video_colorimetry[20];  //色彩空间
     unsigned short video_interlace;  //0:逐行 1:隔行
-    char video_framerate[24];
-    unsigned short video_depth;
+    char video_framerate[24];    //帧率
+    unsigned short video_depth;  //视频位宽
 
     //0：YCbCr:4:4:4；1:YCbCr:4:2:2；2：YCbCr:4:2:0；3：RGB； 4：CLYCbCr-4:4:4 5：CLYCbCr-4:2:2 ；6：CLYCbCr-4:2:0：7：ICtCp-4:4:48：ICtCp-4:2:2   9：ICtCp-4:2:0
-    char video_sampling[20]; 
-    unsigned short video_width; //图像宽度
+    char video_sampling[20];     //视频编码格式
+    unsigned short video_width;  //图像宽度
     unsigned short video_height; //图像高度
-    unsigned short video_pt;
-    unsigned short audio_pt;
-    unsigned short audio_depth;
+    unsigned short video_pt;     //视频载荷类型
+    unsigned short audio_pt;     //音频载荷类型
+    unsigned short audio_depth;  //音频位宽
     char audio_channel[128];
-    unsigned short audio_chl_num;
+    unsigned short audio_chl_num;//音频通道数
 
 }FPGA_SDP_Info;
 struct sdp_payload *sdp_parse(const char *payload);
