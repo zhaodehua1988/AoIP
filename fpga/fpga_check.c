@@ -13,34 +13,26 @@
 
 #define _D_FPGA_CHECK_VOLUME_AUDIO_CHANNEL_NUM (8)
 
-#define _D_FPGA_CHECK_VOLUME_THRESHOLD_LOW    (20)
-#define _D_FPGA_CHECK_VOLUME_THRESHOLD_HIGHT  (70)
-#define _D_FPGA_CHECK_VOLUME_THRESHOLD_MUTE   (5)
+#define _D_FPGA_CHECK_VOLUME_THRESHOLD_LOW    (-35.0)
+#define _D_FPGA_CHECK_VOLUME_THRESHOLD_HIGHT  (-5.0)
+#define _D_FPGA_CHECK_VOLUME_THRESHOLD_MUTE   (-50.0)
 
-enum _E_VOLUME_STATUS
-{
-    VOLUME_OK = 0, //音量正常
-    VOLUME_MUTE,   //静音
-    VOLUME_LOW,    //音量过低
-    VOLUME_HIGHT   //音量过高
-};
 
 typedef struct _S_FPGA_VOLUME_STATUS
 {
     WV_U16 volChl;
     WV_U16 muteCheckTimes;          //静音检测次数时间
     WV_U16 muteCheckTotalTimes;     //静音检测总次数
-    WV_U16 muteThreshold;           //静音门限值
+    float muteThreshold_dB;           //静音门限值
     
     WV_U16 higthCheckTimes;         //音量过高检测次数
     WV_U16 higthCheckTotalTimes;    //音量过高检测次数
-    WV_U16 hightThreshold;          //音量过高门限值
+    float hightThreshold_dB;          //音量过高门限值
 
     WV_U16 lowCheckTimes;           //音量过低检测次数计数
     WV_U16 lowCheckTotalTimes;      //音量过低检测总数
-    WV_U16 lowThreshold;            //音量过低门限值
-
-    WV_U16 vol[8];          //8个声道音量
+    float lowThreshold_dB;            //音量过低门限值
+    float vol_dB[_D_FPGA_CHECK_VOLUME_AUDIO_CHANNEL_NUM];
     WV_U16 status;          //当前通道音量状态
 } _S_FPGA_CHECK_AUDIO_STATUS;
 
@@ -49,6 +41,7 @@ typedef struct _S_FPGA_CHECK_VIDEO_DATA
     WV_U32 r_sum;
     WV_U32 checkTimes;      //记录检测到几次r_sum相同，如果超过_D_FPGA_CHECK_INTERVAL_TIME，则说明静帧了
     WV_U16 multipleAudio;   //接收上位机设置音频加倍的倍数
+    WV_U16 thousandth;      //千分比rsum的变化范围小于这个千分比，说明图像静帧了
     WV_U16 multiple;        //这个值跟窗口有没有音量有关系，如果没有音量则时原值，如果有音量为multipleAudio的值
     WV_U32 checkTotalTimes; //总共检测多少次，
     WV_S32 isFreeze;        //1代表静帧 0代表没有静帧
@@ -66,50 +59,65 @@ typedef struct _S_FPGA_CHECK_DEV
 } _S_FPGA_CHECK_DEV;
 
 static _S_FPGA_CHECK_DEV gFgpaCheckDev;
-static WV_S32 gFpgaCheckThresholdVal; //颜色们限值设置
+
+
 /***************************************************
- * void FPGA_CHECK_SetAudioMuteCheck(WV_U16 ethID, WV_U16 ipID,WV_U16 threshold,WV_U16 time_s)
+ * void FPGA_CHECK_SetAudioMuteCheck(WV_U16 ethID, WV_U16 ipID,float threshold,WV_U16 time_s)
  * 设置静音的门限值和检测音频丢失的时间
  * ************************************************/
-void FPGA_CHECK_SetAudioMuteCheck(WV_U16 ethID, WV_U16 ipID,WV_U16 threshold,WV_U16 time_s)
+void FPGA_CHECK_SetAudioMuteCheck(WV_U16 ethID, WV_U16 ipID,float threshold,WV_U16 time_s)
 {
-    gFgpaCheckDev.audioStatus[ethID][ipID].muteThreshold = threshold;
-    gFgpaCheckDev.audioStatus[ethID][ipID].muteCheckTimes = time_s;
+    gFgpaCheckDev.audioStatus[ethID][ipID].muteThreshold_dB = threshold;
+    gFgpaCheckDev.audioStatus[ethID][ipID].muteCheckTotalTimes = time_s*10;
 }
 
 /***************************************************
- * void FPGA_CHECK_SetAudioMuteheck(WV_U16 ethID, WV_U16 ipID,WV_U16 threshold,WV_U16 time_s)
+ * void FPGA_CHECK_SetAudioMuteheck(WV_U16 ethID, WV_U16 ipID,float threshold,WV_U16 time_s)
  * 设置静音的门限值和检测音频过高的时间
  * ************************************************/
-void FPGA_CHECK_SetAudioHightCheck(WV_U16 ethID, WV_U16 ipID,WV_U16 threshold,WV_U16 time_s)
+void FPGA_CHECK_SetAudioHightCheck(WV_U16 ethID, WV_U16 ipID,float threshold,WV_U16 time_s)
 {
-    gFgpaCheckDev.audioStatus[ethID][ipID].hightThreshold = threshold;
-    gFgpaCheckDev.audioStatus[ethID][ipID].higthCheckTimes = time_s;
+    //WV_printf("set[%d][%d] Hight(%f dB) times=%d s\n",ethID,ipID,threshold,time_s);
+    gFgpaCheckDev.audioStatus[ethID][ipID].hightThreshold_dB = threshold;
+    gFgpaCheckDev.audioStatus[ethID][ipID].higthCheckTotalTimes = time_s*10;
 }
 
 
 /***************************************************
- * void FPGA_CHECK_SetAudioLowCheck(WV_U16 ethID, WV_U16 ipID,WV_U16 threshold,WV_U16 time_s)
+ * void FPGA_CHECK_SetAudioLowCheck(WV_U16 ethID, WV_U16 ipID,float threshold,WV_U16 time_s)
  * 设置静音的门限值和检测音频过低的时间
  * ************************************************/
-void FPGA_CHECK_SetAudioLowCheck(WV_U16 ethID, WV_U16 ipID,WV_U16 threshold,WV_U16 time_s)
+void FPGA_CHECK_SetAudioLowCheck(WV_U16 ethID, WV_U16 ipID,float threshold,WV_U16 time_s)
 {
-    gFgpaCheckDev.audioStatus[ethID][ipID].lowThreshold = threshold;
-    gFgpaCheckDev.audioStatus[ethID][ipID].lowCheckTimes = time_s;
+    gFgpaCheckDev.audioStatus[ethID][ipID].lowThreshold_dB = threshold;
+    gFgpaCheckDev.audioStatus[ethID][ipID].lowCheckTotalTimes = time_s*10;
 }
 
 /***************************************************
- * void FPGA_CHECK_SetCheckFreezeTimeValue(WV_U16 ethID, WV_U16 ipID, WV_U16 mutltiple, WV_U32 time_s)
+ * void FPGA_CHECK_SetCheckFreezeTimeValue(WV_U16 ethID, WV_U16 ipID, WV_U16 thousandth,WV_U32 time_s,WV_U16 mutltiple)
  * 静帧检测时间和结合音频的倍数
  * ************************************************/
-void FPGA_CHECK_SetCheckFreezeTimeValue(WV_U16 ethID, WV_U16 ipID, WV_U16 mutltiple, WV_U32 time_s)
+void FPGA_CHECK_SetCheckFreezeTimeValue(WV_U16 ethID, WV_U16 ipID, WV_U16 thousandth,WV_U32 time_s,WV_U16 mutltiple)
 {
+    if(time_s == 0)  time_s = 1;
+    
+    if(mutltiple == 0) mutltiple = 1;
 
+    gFgpaCheckDev.videoData[ethID][ipID].thousandth = thousandth;
     gFgpaCheckDev.videoData[ethID][ipID].checkTotalTimes = time_s * 10;
     gFgpaCheckDev.videoData[ethID][ipID].multipleAudio = mutltiple;
 }
 
-
+/****************************************************
+ * WV_U16 FPGA_CHECK_AudioStatus(WV_U16 ethID, WV_U16 ipID)
+ * 返回当前音频的状态
+ * *************************************************/
+WV_U16 FPGA_CHECK_AudioStatus(WV_U16 ethID, WV_U16 ipID)
+{
+    if (ethID > 3 || ipID > 3)
+        return WV_EFAIL;
+    return gFgpaCheckDev.audioStatus[ethID][ipID].status;
+}
 
 /****************************************************
  * WV_S32 FPGA_CHECK_GetWinFreeze(WV_U16 ethID,WV_U16 ipID) 
@@ -158,34 +166,43 @@ void fpga_check_auidoGetStatus(_S_FPGA_CHECK_AUDIO_STATUS *pStatus)
     WV_S32 i;
     WV_U8 muteNum = 0;
     WV_U8 lowNum = 0; 
+    WV_U8 hightNum=0;
     for(i=0;i<_D_FPGA_CHECK_VOLUME_AUDIO_CHANNEL_NUM;i++)
     {
-        
-        if(pStatus->vol[i] >= pStatus->hightThreshold){            //音量值有一个超过最好的门限值(vol > higth)，则说明音量过高
-            pStatus->higthCheckTimes++;
-            pStatus->lowCheckTimes = 0;
-            pStatus->muteCheckTimes = 0;
+        //WV_printf("vol = %f db,hight = %f ,low=%f mute=%f\n",pStatus->vol_dB[i],pStatus->hightThreshold_dB,pStatus->lowThreshold_dB,pStatus->muteThreshold_dB);
+        if(pStatus->vol_dB[i] >= pStatus->hightThreshold_dB){            //音量值有一个超过最好的门限值(vol > higth)，则说明音量过高
+           hightNum ++;
             break;
         }
-        else if(pStatus->vol[i] <= pStatus->muteThreshold){       //音量如果小于静音的值，则说明当前声道没有音频 muteNum+1,lowNum+1;
+        else if(pStatus->vol_dB[i] <= pStatus->muteThreshold_dB){       //音量如果小于静音的值，则说明当前声道没有音频 muteNum+1,lowNum+1;
+            //WV_printf("mute vol=%f,mute=%f\n",pStatus->vol_dB[i],pStatus->muteThreshold_dB);
             muteNum ++;
             lowNum ++;
         }
-        else if(pStatus->vol[i] <= pStatus->lowThreshold){        //音量在low范围内则,lowNum +1 (vol <= low)
+        else if(pStatus->vol_dB[i] <= pStatus->lowThreshold_dB){        //音量在low范围内则,lowNum +1 (vol <= low)
+            //WV_printf("low vol=%f,low=%f\n",pStatus->vol_dB[i],pStatus->lowThreshold_dB);
             lowNum ++;
         }
     }
-    if(muteNum == _D_FPGA_CHECK_VOLUME_AUDIO_CHANNEL_NUM){ //如果时静音状态，那么肯定时音量过低状态
+    if(hightNum > 0 ){
+        pStatus->higthCheckTimes++;
+        pStatus->lowCheckTimes = 0;
+        pStatus->muteCheckTimes = 0;
+        //WV_printf("higth vol= %f,hight=%f hitimes=%d totaltimes=%d\n",pStatus->vol_dB[i],pStatus->hightThreshold_dB,pStatus->higthCheckTimes,pStatus->higthCheckTotalTimes);
+            
+    }
+    else if(muteNum == _D_FPGA_CHECK_VOLUME_AUDIO_CHANNEL_NUM){ //如果时静音状态，那么肯定时音量过低状态
         pStatus->muteCheckTimes++;
         pStatus->lowCheckTimes++;
         pStatus->higthCheckTimes = 0;
-        
+        //WV_printf("mute vol= %f,mute=%f times=%d totaltimes=%d\n",pStatus->vol_dB[i],pStatus->muteThreshold_dB,pStatus->muteCheckTimes,pStatus->muteCheckTotalTimes);    
     }
     else if(lowNum == _D_FPGA_CHECK_VOLUME_AUDIO_CHANNEL_NUM){
         pStatus->lowCheckTimes++;
         pStatus->muteCheckTimes = 0;
         pStatus->higthCheckTimes = 0;
-        
+        //WV_printf("low vol= %f,low=%f times=%d totaltimes=%d\n",pStatus->vol_dB[i],pStatus->lowThreshold_dB,pStatus->lowCheckTimes,pStatus->lowCheckTotalTimes);    
+
     }else{
         pStatus->lowCheckTimes = 0;
         pStatus->muteCheckTimes = 0;
@@ -203,21 +220,27 @@ void fpga_check_auidoStatus(){
     for(i=0;i<FPGA_CONF_ETHNUM_D;i++){
         for(j=0;j<FPGA_CONF_SRCNUM_D;j++){
 
-            FPGA_VOLUME_Get(i, j, gFgpaCheckDev.audioStatus[i][j].vol);
+            FPGA_VOLUME_Get_dB(i, j, gFgpaCheckDev.audioStatus[i][j].vol_dB);
             fpga_check_auidoGetStatus(&gFgpaCheckDev.audioStatus[i][j]);
             if(gFgpaCheckDev.audioStatus[i][j].higthCheckTimes >= gFgpaCheckDev.audioStatus[i][j].higthCheckTotalTimes)
             {
+                //WV_printf("");
                 gFgpaCheckDev.audioStatus[i][j].status = VOLUME_HIGHT;
+                gFgpaCheckDev.audioStatus[i][j].higthCheckTimes = gFgpaCheckDev.audioStatus[i][j].higthCheckTotalTimes;
             }
             else if(gFgpaCheckDev.audioStatus[i][j].muteCheckTimes >= gFgpaCheckDev.audioStatus[i][j].muteCheckTotalTimes){
 
                 gFgpaCheckDev.audioStatus[i][j].status = VOLUME_MUTE;
+                gFgpaCheckDev.audioStatus[i][j].muteCheckTimes = gFgpaCheckDev.audioStatus[i][j].muteCheckTotalTimes;
+                gFgpaCheckDev.audioStatus[i][j].lowCheckTimes = gFgpaCheckDev.audioStatus[i][j].lowCheckTotalTimes;
             }
             else if(gFgpaCheckDev.audioStatus[i][j].lowCheckTimes >= gFgpaCheckDev.audioStatus[i][j].lowCheckTotalTimes){
                 gFgpaCheckDev.audioStatus[i][j].status = VOLUME_LOW;
+                gFgpaCheckDev.audioStatus[i][j].lowCheckTimes = gFgpaCheckDev.audioStatus[i][j].lowCheckTotalTimes;
             }else{
                 gFgpaCheckDev.audioStatus[i][j].status = VOLUME_OK;
             }
+            //WV_printf("[%d][%d]vol status = %d \n",i,j,gFgpaCheckDev.audioStatus[i][j].status);
         }
     }
 }
@@ -281,12 +304,12 @@ void fpga_check_winFreeze()
             if (video_r_sum >= gFgpaCheckDev.videoData[i][j].r_sum)
             {
                 DValue = video_r_sum - gFgpaCheckDev.videoData[i][j].r_sum;
-                checkVal = (video_r_sum * gFpgaCheckThresholdVal) / 1000;
+                checkVal = (video_r_sum * gFgpaCheckDev.videoData[i][j].thousandth) / 1000;
             }
             else
             {
                 DValue = gFgpaCheckDev.videoData[i][j].r_sum - video_r_sum;
-                checkVal = (gFgpaCheckDev.videoData[i][j].r_sum * gFpgaCheckThresholdVal) / 1000;
+                checkVal = (gFgpaCheckDev.videoData[i][j].r_sum * gFgpaCheckDev.videoData[i][j].thousandth) / 1000;
             }
             if (DValue < checkVal)
             {
@@ -323,7 +346,6 @@ void *fpga_check_proc(void *prm)
         fpga_check_winFreeze();
         fpga_check_winStream();
         usleep(100000);
-        //sleep(2);
     }
     pDev->open = 0;
     pDev->close = 1;
@@ -345,17 +367,16 @@ void FGPA_CHECK_Open()
             gFgpaCheckDev.videoData[i][j].multipleAudio = _D_FPGA_CHECK_DEFAULT_MULTIPLE;
             gFgpaCheckDev.videoData[i][j].multiple = _D_FPGA_CHECK_DEFAULT_MULTIPLE;
             gFgpaCheckDev.videoData[i][j].checkTotalTimes = _D_FPGA_CHECK_INTERVAL_TIME * 10;
-            gFgpaCheckDev.audioStatus[i][j].muteCheckTimes = _D_FPGA_CHECK_INTERVAL_TIME * 10;
-            gFgpaCheckDev.audioStatus[i][j].higthCheckTimes = _D_FPGA_CHECK_INTERVAL_TIME * 10;
-            gFgpaCheckDev.audioStatus[i][j].lowCheckTimes = _D_FPGA_CHECK_INTERVAL_TIME * 10;
-
-            gFgpaCheckDev.audioStatus[i][j].lowThreshold = _D_FPGA_CHECK_VOLUME_THRESHOLD_LOW;     //20
-            gFgpaCheckDev.audioStatus[i][j].hightThreshold = _D_FPGA_CHECK_VOLUME_THRESHOLD_HIGHT; //70
-            gFgpaCheckDev.audioStatus[i][j].muteThreshold = _D_FPGA_CHECK_VOLUME_THRESHOLD_MUTE;   //5
+            gFgpaCheckDev.videoData[i][j].thousandth = _D_FPGA_CHECK_R_SUM_THRESHOLD_PERCENT;      //thousandth
+            gFgpaCheckDev.audioStatus[i][j].muteCheckTotalTimes = _D_FPGA_CHECK_INTERVAL_TIME * 10;
+            gFgpaCheckDev.audioStatus[i][j].higthCheckTotalTimes = _D_FPGA_CHECK_INTERVAL_TIME * 10;
+            gFgpaCheckDev.audioStatus[i][j].lowCheckTotalTimes = _D_FPGA_CHECK_INTERVAL_TIME * 10;
+            gFgpaCheckDev.audioStatus[i][j].lowThreshold_dB = _D_FPGA_CHECK_VOLUME_THRESHOLD_LOW;     //-30dB
+            gFgpaCheckDev.audioStatus[i][j].hightThreshold_dB = _D_FPGA_CHECK_VOLUME_THRESHOLD_HIGHT; //-1.0dB
+            gFgpaCheckDev.audioStatus[i][j].muteThreshold_dB = _D_FPGA_CHECK_VOLUME_THRESHOLD_MUTE;   //-50dB
 
         }
     }
-    gFpgaCheckThresholdVal = _D_FPGA_CHECK_R_SUM_THRESHOLD_PERCENT;
     WV_THR_Create(&gFgpaCheckDev.thrHndl, fpga_check_proc, WV_THR_PRI_DEFAULT, WV_THR_STACK_SIZE_DEFAULT, &gFgpaCheckDev);
 }
 /******************************************************

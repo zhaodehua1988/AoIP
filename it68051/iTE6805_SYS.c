@@ -1367,6 +1367,7 @@ void iTE68051_Video_Output_Setting()
 		{
 			HDMIRX_DEBUG_PRINT(("---------------------!!!!!! Set Dual Pixel Mode For 4K60 !!!!!!\n"));
 			iTE6805_Set_LVDS_Video_Path(2);	// 2 lane for dual pixel mode
+			_iTE68051_4K60_Mode_ = MODE_EvenOdd; // not 4k need to set to even odd mode
 		}
 		else
 		{

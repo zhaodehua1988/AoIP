@@ -20,6 +20,7 @@
 #include "sys_ip.h"
 #include "tsk_player.h"
 #include "fpga_update.h"
+#include "RTC_DS3231.h"
 #define HELLO_DEBUG
 
 WV_S32 main()
@@ -38,15 +39,17 @@ WV_S32 main()
 	SYS_IP_Init();
 
 #ifdef HELLO_DEBUG
+
 	PCA9548_Init();
 	PCA9555_Init();
-	ADV_7619_Init();
-	FPGA_CONF_Init();
+	RTC_Init();
+	//ADV_7619_Init();
+	//FPGA_CONF_Init();
 
 	//TSK_PLAYER_Open();
 
-	ITE6805_Open();
-	ITE6615_Open();
+	//ITE6805_Open();
+	//ITE6615_Open();
 
 	//TI1297_Init();
 	//TSK_GO_Open();
@@ -62,10 +65,11 @@ WV_S32 main()
 	}
 #ifdef HELLO_DEBUG
 	//TSK_GO_Close();
-	ITE6615_Close();
-	ITE6805_Close();
+	RTC_DeInit();
+	//ITE6615_Close();
+	//ITE6805_Close();
 	//TSK_PLAYER_Close();
-	FPGA_CONF_DeInit();
+	//FPGA_CONF_DeInit();
 #endif
 	SYS_IP_DeInit();
 	HIS_SYS_DeInit();

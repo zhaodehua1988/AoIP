@@ -103,7 +103,7 @@ WV_S32 HIS_SPI_FpgaWd(WV_U16 addr, WV_U16 data)
 {
 	if (gHisSpiMutex.fpgaUpdateEna == 1)
 	{
-		WV_ERROR("fpga is updating !!");
+		//WV_ERROR("fpga is updating !!");
 		return WV_EFAIL;
 	}
 
@@ -133,7 +133,7 @@ WV_S32 HIS_SPI_FpgaRd(WV_U16 addr, WV_U16 *pData)
 
 	if (gHisSpiMutex.fpgaUpdateEna == 1)
 	{
-		WV_ERROR("fpga is updating !!");
+		//WV_ERROR("fpga is updating !!");
 		return WV_SOK;
 	}
 
@@ -160,7 +160,7 @@ WV_S32 HIS_SPI_FpgaRdNum(WV_U16 addr, WV_U16 *pData, WV_U32 dataNum)
 
 	if (gHisSpiMutex.fpgaUpdateEna == 1)
 	{
-		WV_ERROR("fpga is updating !!");
+		//WV_ERROR("fpga is updating !!");
 		return WV_SOK;
 	}
 

@@ -52,6 +52,7 @@ typedef struct FPGA_IGMP_DEV
     WV_U32 times;                                         //组播报文发送当恰能等待时间 单位秒
     WV_S32 autoSendIgmpEna;                               //自动发送组播使能，默认为字段发送 1
     WV_S32 ena[_D_ETH_NUM_][_D_SRC_NUM_];                 //组播是否使能
+    
     _S_FPGA_IGMP_DATA igmpData[_D_ETH_NUM_][_D_SRC_NUM_]; //4个网卡，每个网卡4个报文
 
 } FPGA_IGMP_DEV;
@@ -312,7 +313,9 @@ static void fpga_igmp_sendIGMPData(WV_S32 ethID, WV_S32 srcID)
     do
     {
         HIS_SPI_FpgaRd(regAddr, &data);
+        //WV_printf("his spi rd %X = %X \n");
         usleep(10000);
+        //sleep(2);
     } while ((data & (1 << (srcID + 4))) == 0);
     data = 1 << srcID;
 
@@ -327,18 +330,19 @@ static void fpga_igmp_Send()
 {
 
     pthread_mutex_lock(&_g_igmp_mutex);
-    WV_S32 i, j;
+    WV_S32 i, j,k;
     WV_U16 reg, data = 0;
 
     for (i = 0; i < _D_ETH_NUM_; i++)
     {
         data = 0;
         reg = 0x82 | ((i + 1) << 8);
-        do
-        {
+        for(k=0;k<100;k++){
             HIS_SPI_FpgaRd(reg, &data);
+            if((data & 0xf0 ) == 0xf0) break;
             usleep(10000);
-        } while ((data & 0xf0 ) != 0xf0);
+        }
+        if(k==100) continue;
         data = 0;
         for (j = 0; j < _D_SRC_NUM_; j++)
         {

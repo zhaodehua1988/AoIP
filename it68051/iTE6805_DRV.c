@@ -590,6 +590,7 @@ iTE_u8 iTE6805_Check_Single_Dual_Mode(){
 		return MODE_SINGLE;
 	}
 }
+
 iTE_u8 iTE6805_Check_4K_Resolution()
 {
 
@@ -615,6 +616,8 @@ iTE_u8 iTE6805_Check_4K_Resolution()
 		return TRUE;
 	}
 	HDMIRX_DEBUG_PRINT(("iTE6805_Check_4K_Resolution = FALSE!!!\n"));
+	HDMIRX_DEBUG_PRINT(("but chenheng force to 4K\n"));
+    //chenheng 强制返回TRUE，为了实现DDR模式
 	return TRUE;
 	return FALSE;
 }

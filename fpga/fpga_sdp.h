@@ -88,10 +88,15 @@ typedef struct FPGA_SDP_Info{
     unsigned short video_width;  //图像宽度
     unsigned short video_height; //图像高度
     unsigned short video_pt;     //视频载荷类型
+    char video_desIp[64];        //目标地址
+    char video_srcIp[64];        //源地址
     unsigned short audio_pt;     //音频载荷类型
+    char audio_framerate[24];    //音频帧率
     unsigned short audio_depth;  //音频位宽
     char audio_channel[128];
     unsigned short audio_chl_num;//音频通道数
+    char audio_desIp[64];       //目标地址，可能是组播也可能是单播
+    char audio_srcIp[64];        //源地址
 
 }FPGA_SDP_Info;
 struct sdp_payload *sdp_parse(const char *payload);

@@ -461,7 +461,9 @@ WV_S32  HIS_DIS_SetCustomTiming(WV_U32 mode)
 	WV_S32 ret=-1;
 	memset(&custTiming,0,sizeof(HI_UNF_DISP_TIMING_S));
 
-    ret = HI_UNF_DISP_SetVirtualScreen(HI_UNF_DISPLAY1, HIS_FB_VITURE_SCEEN_W, HIS_FB_VITURE_SCEEN_H);      
+    ret = HI_UNF_DISP_SetVirtualScreen(HI_UNF_DISPLAY1, HIS_FB_VITURE_SCEEN_W, HIS_FB_VITURE_SCEEN_H);
+	usleep(1); 
+	ret = HI_UNF_DISP_SetVirtualScreen(HI_UNF_DISPLAY1, HIS_FB_VITURE_SCEEN_W, HIS_FB_VITURE_SCEEN_H);     
 	if(ret != HI_SUCCESS){
 		  WV_printf("HI_UNF_DISP_SetVirtualScreen, Ret=%#x.\n", ret); 
 	}

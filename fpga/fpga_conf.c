@@ -11,7 +11,6 @@
 #include "fpga_igmp.h"
 #include "fpga_update.h"
 #include "fpga_volume.h"
-#include "fpga_check.h"
 #include "fpga_arp.h"
 #define _FPGA_MUTEX_ENA_D (1)
 #if _FPGA_MUTEX_ENA_D
@@ -27,19 +26,77 @@ typedef struct _S_FPGA_CONF_WIN_INFO
     FPGA_CONF_WIN_T win;
 } _S_FPGA_CONF_WIN_INFO;
 
-
 static _S_FPGA_CONF_WIN_INFO gEthWinInfo[FPGA_CONF_ETHNUM_D][FPGA_CONF_SRCNUM_D];
 static _S_FPGA_CONF_WIN_INFO gEthWinInfoNew[FPGA_CONF_ETHNUM_D][FPGA_CONF_SRCNUM_D];
 
+/***************************************************************
+ * void FPGA_CONF_SetInfoCntColor(WV_U16 r,WV_U16 g,WV_U16 b)
+ * //设置窗口信息字体颜色
+ * *************************************************************/
+void FPGA_CONF_SetInfoCntColor(WV_U16 r,WV_U16 g,WV_U16 b)
+{
+    //WV_printf("\n设置窗口字体颜色 r=0x%X,g=0x%X,b=0x%X\n",r,g,b);
+    HIS_SPI_FpgaWd(0x60d,r<<2);
+    HIS_SPI_FpgaWd(0x60e,g<<2);
+    HIS_SPI_FpgaWd(0x60b,b<<2);
+}
+/**************************************************************
+ * void FPGA_CONF_SetInfoCntPos(WV_U16 winID,WV_U16 startX,WV_U16 startY,WV_U16 endX,WV_U16 endY)
+ * //设置窗口字体的坐标值
+ * ************************************************************/
+void FPGA_CONF_SetInfoCntPos(WV_U16 winID,WV_U16 startX,WV_U16 startY,WV_U16 endX,WV_U16 endY)
+{
+    WV_S32 i,j;
+    for(i=0;i<FPGA_CONF_ETHNUM_D;i++)
+    {
+        for(j=0;j<FPGA_CONF_SRCNUM_D;j++)
+        {
+            if (gEthWinInfo[i][j].winID == winID)
+            {
+                WV_U16 regAddr= 0x610 + (i*4+j)*4;
+                //WV_printf("\nset [%d][%d]win[%d] info cnt pos reg=0x%X,x1=%d,y1=%d,x2=%d,y2=%d\n",i,j,winID,regAddr,startX,startY,endX,endY);
+
+                HIS_SPI_FpgaWd(regAddr,startX);
+                HIS_SPI_FpgaWd(regAddr+1,startY);
+                HIS_SPI_FpgaWd(regAddr+2,endX);
+                HIS_SPI_FpgaWd(regAddr+3,endY);
+                return;
+            }
+        }
+    }
+}
+/**************************************************************
+ * void FPGA_CONF_GetSdpInfo(WV_U16 winID,FPGA_SDP_Info *pSdpInfo)
+ * 函数说明：发送arp请求
+ * ************************************************************/
+void FPGA_CONF_GetSdpInfo(WV_U16 winID,FPGA_SDP_Info *pSdpInfo)
+{
+
+    WV_S32 i,j;
+    for(i=0;i<FPGA_CONF_ETHNUM_D;i++)
+    {
+        for(j=0;j<FPGA_CONF_SRCNUM_D;j++)
+        {
+            if (gEthWinInfo[i][j].winID == winID)
+            {
+                sprintf(gEthWinInfo[i][j].win.sdpInfo.audio_framerate,"48");
+                gEthWinInfo[i][j].win.sdpInfo.audio_depth = 16;
+                memcpy(pSdpInfo,&gEthWinInfo[i][j].win.sdpInfo,sizeof(FPGA_SDP_Info));
+
+                return ;
+            }
+        }
+    }
+}
 
 /**************************************************************
  * void FPGA_CONF_SendArpRequest(WV_U16 ethID,WV_S8 *targetIp)
  * 函数说明：发送arp请求
  * ************************************************************/
-void FPGA_CONF_SendArpRequest(WV_U16 ethID,WV_S8 *targetIp)
+void FPGA_CONF_SendArpRequest(WV_U16 ethID, WV_S8 *targetIp)
 {
     FPGA_IGMP_Lock();
-    FPGA_ARP_Request(ethID,targetIp);
+    FPGA_ARP_Request(ethID, targetIp);
     FPGA_IGMP_UnLock();
     FPGA_IGMP_Reset();
 }
@@ -82,6 +139,7 @@ WV_S32 fpga_conf_setIgmp(_S_FPGA_CONF_WIN_INFO (*newAddr)[FPGA_CONF_SRCNUM_D])
             if (newAddr[i][j].win.win_ena == 0)
                 continue;
             FPGA_COMMON_getIpInt(newAddr[i][j].win.video_ip, multicastAddrInt);
+            FPGA_COMMON_getIpInt(gEthWinInfo[i][j].win.video_igmpSrc, srcAddrInt);
             FPGA_printf("eth[%d][%d]加入组播地址%s\n", i, j, newAddr[i][j].win.video_ip);
             FPGA_IGMP_join(i, j, multicastAddrInt, srcAddrInt);
         }
@@ -99,13 +157,125 @@ void FPGA_CONF_SetIgmpSendSecond(WV_U32 sec)
     FPGA_IGMP_SetSecondOfIgmpSend(sec);
 }
 
-/***************************************************
- * void FPGA_CONF_SetCheckTimeValue(WV_U32 time)
- * 设置检测静帧的时间,单位 秒
- * ************************************************/
-void FPGA_CONF_SetCheckTimeValue(WV_U32 time_s)
+
+
+/****************************************************
+ * void FPGA_CONF_SetCheckAudioToHightParams(WV_U32 winID, float threshold, WV_U32 time_s)
+ * 函数说明：设置检测窗口音量过高
+ * *************************************************/
+void FPGA_CONF_SetCheckVolumeToHightParams(WV_U32 winID, float threshold, WV_U32 time_s)
 {
-    //FPGA_CHECK_SetCheckTimeValue(time_s);
+    if (winID > 15)
+        return;
+    //WV_printf("set hight(%f dB) times=%d s\n",threshold,time_s);
+    WV_S32 i, j;
+    for (i = 0; i < FPGA_CONF_ETHNUM_D; i++)
+    {
+        for (j = 0; j < FPGA_CONF_SRCNUM_D; j++)
+        {
+            if (gEthWinInfo[i][j].winID == winID)
+            {
+                //音量过高
+                FPGA_CHECK_SetAudioHightCheck(i,j,threshold,time_s);
+                return;
+            }
+        }
+    }
+}
+/****************************************************
+ * void FPGA_CONF_SetCheckVolumeToLowParams(WV_U32 winID, float threshold, WV_U32 time_s)
+ * 函数说明：设置检测窗口音量过低
+ * *************************************************/
+void FPGA_CONF_SetCheckVolumeToLowParams(WV_U32 winID, float threshold, WV_U32 time_s)
+{
+    if (winID > 15)
+        return;
+    
+    //WV_printf("set low(%f dB) times=%d s\n",threshold,time_s);
+    WV_S32 i, j;
+    for (i = 0; i < FPGA_CONF_ETHNUM_D; i++)
+    {
+        for (j = 0; j < FPGA_CONF_SRCNUM_D; j++)
+        {
+            if (gEthWinInfo[i][j].winID == winID)
+            {
+                //音量过低
+                FPGA_CHECK_SetAudioLowCheck(i,j,threshold,time_s);
+                return;
+            }
+        }
+    }
+}
+/****************************************************
+ * void FPGA_CONF_SetCheckVolumeMuteParams(WV_U32 winID, float threshold, WV_U32 time_s)
+ * 函数说明：设置检测窗口音频丢失的参数
+ * *************************************************/
+void FPGA_CONF_SetCheckVolumeMuteParams(WV_U32 winID, float threshold, WV_U32 time_s)
+{
+    if (winID > 15)
+        return;
+
+    //WV_printf("set Mute(%f dB) times=%d s\n",threshold,time_s);
+    WV_S32 i, j;
+    for (i = 0; i < FPGA_CONF_ETHNUM_D; i++)
+    {
+        for (j = 0; j < FPGA_CONF_SRCNUM_D; j++)
+        {
+            if (gEthWinInfo[i][j].winID == winID)
+            {
+                
+                FPGA_CHECK_SetAudioMuteCheck(i,j,threshold,time_s);
+                return;
+            }
+        }
+    }
+}
+
+/****************************************************
+ * void FPGA_CONF_SetCheckWinFreezeParams(WV_U32 winID,WV_U16 thousandth,WV_U32 time_s,WV_U16 mutltiple)
+ * 函数说明：设置窗口静帧参数
+ * *************************************************/
+void FPGA_CONF_SetCheckWinFreezeParams(WV_U32 winID, WV_U16 thousandth, WV_U32 time_s, WV_U16 mutltiple)
+{
+    if (winID > 15)
+        return;
+
+    WV_S32 i, j;
+    for (i = 0; i < FPGA_CONF_ETHNUM_D; i++)
+    {
+        for (j = 0; j < FPGA_CONF_SRCNUM_D; j++)
+        {
+            if (gEthWinInfo[i][j].winID == winID)
+            {
+                FPGA_CHECK_SetCheckFreezeTimeValue(i, j, thousandth, time_s, mutltiple);
+                return;
+            }
+        }
+    }
+}
+
+/****************************************************
+ * WV_U16 FPGA_CONF_GetWinAudioStatus(WV_U32 winID)
+ * 函数说明：查询当前窗口的音频状态
+ * *************************************************/
+WV_U16 FPGA_CONF_GetWinAudioStatus(WV_U32 winID)
+{
+    if (winID > 15)
+        return -1;
+
+    WV_S32 i, j;
+    for (i = 0; i < FPGA_CONF_ETHNUM_D; i++)
+    {
+        for (j = 0; j < FPGA_CONF_SRCNUM_D; j++)
+        {
+            if (gEthWinInfo[i][j].winID == winID)
+            {
+                //WV_printf("get audio status win[%d]\n",winID);
+                return FPGA_CHECK_AudioStatus(i, j);
+            }
+        }
+    }
+    return 0;
 }
 
 /****************************************************
@@ -127,7 +297,7 @@ WV_U32 FPGA_CONF_GetWinFreezeVal(WV_U32 winID)
         {
             if (gEthWinInfo[i][j].winID == winID)
             {
-                return FPGA_CHECK_GetWinFreeze(i,j);
+                return FPGA_CHECK_GetWinFreeze(i, j);
             }
         }
     }
@@ -153,7 +323,7 @@ WV_S32 FPGA_CONF_CheckNoSignal(WV_U32 winID)
         {
             if (gEthWinInfo[i][j].winID == winID)
             {
-                return FPGA_Check_NoSignal(i,j);
+                return FPGA_Check_NoSignal(i, j);
             }
         }
     }
@@ -222,7 +392,6 @@ WV_S32 FPGA_SDP_ReadFromFpga(WV_U16 eth, WV_U16 chl, FPGA_SDP_Info *pGetInfo)
 
     //通过fgpa获取sdp报文
     //TODO
-
 
     //通过获取的的sdp数据，获取sdp信息 FPGA_SDP_Info
     FPGA_SDP_Info info;
@@ -486,13 +655,13 @@ int FPGA_CONF_SetSdpInfo(FPGA_SDP_Info *pSetInfo, WV_U16 eth, WV_U16 ipSel)
     /****************video width /hight***********************************************/
     videoWidth = pSetInfo->video_width;
     videoHight = pSetInfo->video_height;
-    // if(pSetInfo->video_interlace == 1){
+    //if(pSetInfo->video_interlace == 1){
     //     //如果时隔行发送，则设置视频高度为原始高度的一半
     //     WV_printf("设置网卡");
     //     videoHight = pSetInfo->video_height/2;
-    // }else{
+    //}else{
     //     videoHight = pSetInfo->video_height;
-    // }
+    //}
 
     //avPt
     avPt = (pSetInfo->video_pt << 8) | (pSetInfo->audio_pt & 0xff);
@@ -599,7 +768,7 @@ WV_S32 fpga_conf_SetWinIpAndSdp(FPGA_CONF_WIN_T pWin[])
                 memset(ip, 0, sizeof(ip));
                 FPGA_COMMON_getIpInt(gEthWinInfoNew[i][j].win.video_ip, ip);
                 //ip
-                FPGA_printf("设置eth_ip[%d][%d] = %d.%d.%d.%d port=%d[0x04x] \n", i, j, ip[0], ip[1], ip[2], ip[3], gEthWinInfoNew[i][j].win.video_port);
+                //FPGA_printf("设置eth_ip[%d][%d] = %d.%d.%d.%d port=%d[0x04x] \n", i, j, ip[0], ip[1], ip[2], ip[3], gEthWinInfoNew[i][j].win.video_port);
                 ret += HIS_SPI_FpgaWd(regAddr + 0x20 + j * 9, (ip[2] << 8) | ip[3]);
                 //FPGA_printf("reg[0x%04x] = [0x%04x] \n",regAddr + 0x20 + j * 9,(ip[2] << 8) | ip[3]);
                 ret += HIS_SPI_FpgaWd(regAddr + 0x21 + j * 9, (ip[0] << 8) | ip[1]);
@@ -624,7 +793,7 @@ WV_S32 fpga_conf_SetWinIpAndSdp(FPGA_CONF_WIN_T pWin[])
                 continue;
 
             //设置视频sdp信息
-            FPGA_printf("sdp:eth[%d]ip[%d],window[%d]\n", i, j, gEthWinInfoNew[i][j].winID);
+            //FPGA_printf("sdp:eth[%d]ip[%d],window[%d]\n", i, j, gEthWinInfoNew[i][j].winID);
             ret = FPGA_CONF_SetSdpInfo(&gEthWinInfoNew[i][j].win.sdpInfo, (WV_U16)i, (WV_U16)j);
             if (ret != 0)
             {
@@ -861,7 +1030,7 @@ WV_S32 FPGA_CONF_Resolution(WV_S32 resolution)
         HIS_SPI_FpgaWd(0x15, 0xf0f0);
         HIS_SPI_FpgaWd(0x12, 0x0b);
         break;
-    case 4:                   //1920*1080 i60
+    case 4: //1920*1080 i60
         data = data & 0xff;
         data = data | 0x900; //60HZ
         HIS_SPI_FpgaWd(0x600, data);
@@ -933,22 +1102,22 @@ void FPGA_CONF_GetVolume(WV_U16 winID,WV_U8 volume[])
     winID：窗口id
     volume：获取到的音量值，8字节数组，代表8个声道
 ****************************************************************************/
-void FPGA_CONF_GetVolume(WV_U16 winID,WV_U16 volume[])
-{   
+void FPGA_CONF_GetVolume(WV_U16 winID, WV_U16 volume[])
+{
     //WV_printf("get volume\n");
-    WV_S32 i, j,k;
+    WV_S32 i, j, k;
     WV_U32 sum;
     for (i = 0; i < FPGA_CONF_ETHNUM_D; i++)
     {
         for (j = 0; j < FPGA_CONF_SRCNUM_D; j++)
         {
-            
+
             if (gEthWinInfo[i][j].winID == winID)
             {
 
-                FPGA_VOLUME_Get(i,j,volume);
+                FPGA_VOLUME_Get(i, j, volume);
                 sum = 0;
-                for(k=0;k<8;k++)
+                for (k = 0; k < 8; k++)
                 {
                     sum += volume[i];
                 }
@@ -956,7 +1125,6 @@ void FPGA_CONF_GetVolume(WV_U16 winID,WV_U16 volume[])
             }
         }
     }
-
 }
 /*******************************************************************
 WV_S32 FPGA_CONF_Reset();
@@ -1007,7 +1175,7 @@ WV_S32 FPGA_CONF_SetCmd(WV_S32 argc, WV_S8 **argv, WV_S8 *prfBuff)
     WV_S32 ret = 0;
     if (argc < 1)
     {
-        prfBuff += sprintf(prfBuff, "set fpga <cmd>;//cmd like: wincfg/win/dis/alpha/reset/vol/volchl/getvol\r\n");
+        prfBuff += sprintf(prfBuff, "set fpga <cmd>;//cmd like: wincfg/win/dis/alpha/reset/vol/volchl/cnt\r\n");
         return 0;
     }
 
@@ -1030,7 +1198,8 @@ WV_S32 FPGA_CONF_SetCmd(WV_S32 argc, WV_S8 **argv, WV_S8 *prfBuff)
         if (FPGA_CONF_WinAnalysisJson(argv[1], win) == 0)
         {
             WV_S32 i;
-            for(i=0;i<16;i++){
+            for (i = 0; i < 16; i++)
+            {
                 win[i].sdpInfo.audio_chl_num = 2;
             }
             FPGA_CONF_SetWin(win);
@@ -1158,19 +1327,67 @@ WV_S32 FPGA_CONF_SetCmd(WV_S32 argc, WV_S8 **argv, WV_S8 *prfBuff)
         if (argc < 2)
         {
 
-            prfBuff += sprintf(prfBuff, "set fpga vol <val>//val取值范围0～15,设置音量输出放大倍数\r\n");
+            prfBuff += sprintf(prfBuff, "set fpga vol <data>;/val/mute/min/max/\r\n");
             return WV_SOK;
         }
-        WV_U32 multiple;
-        ret = WV_STR_S2v(argv[1], &multiple);
-        if (ret != WV_SOK)
+        if(strcmp(argv[1], "val") == 0)
         {
-            prfBuff += sprintf(prfBuff, "\r\ninput erro!set fpga vol <val>//val取值范围0～15,设置音量输出放大倍数\r\n");
-            return WV_SOK;
-        }
+            WV_U32 multiple;
+            ret = WV_STR_S2v(argv[2], &multiple);
+            if (ret != WV_SOK)
+            {
+                prfBuff += sprintf(prfBuff, "\r\ninput erro!set fpga vol <val>//val取值范围0～15,设置音量输出放大倍数\r\n");
+                return WV_SOK;
+            }
 
-        FPGA_CONF_SetOutPutVolumeMultiple(multiple);
-        prfBuff += sprintf(prfBuff, "设置音量输出放大倍数 %d 倍\r\n", multiple);
+            FPGA_CONF_SetOutPutVolumeMultiple(multiple);
+            prfBuff += sprintf(prfBuff, "设置音量输出放大倍数 %d 倍\r\n", multiple);
+        }
+        else  if(strcmp(argv[1], "mute") == 0)
+        {
+            if (argc < 5)
+            {
+                prfBuff += sprintf(prfBuff, "set fpga vol mute <winID> <dB> <times>//\r\n");
+                return WV_SOK;
+            }
+            WV_U32 winID,sec;
+            WV_STR_S2v(argv[2], &winID);
+            float parma=0.0;
+            parma= atof(argv[3]);
+            WV_STR_S2v(argv[4], &sec);
+
+            FPGA_CONF_SetCheckVolumeMuteParams(winID,parma,sec);
+        }
+        else  if(strcmp(argv[1], "min") == 0)
+        {
+            if (argc < 5)
+            {
+                prfBuff += sprintf(prfBuff, "set fpga vol min <winID> <dB> <times>//\r\n");
+                return WV_SOK;
+            }
+            WV_U32 winID,sec;
+            WV_STR_S2v(argv[2], &winID);
+            float parma=0.0;
+            parma= atof(argv[3]);
+            WV_STR_S2v(argv[4], &sec);
+
+            FPGA_CONF_SetCheckVolumeToLowParams(winID,parma,sec);
+        }
+        else  if(strcmp(argv[1], "max") == 0)
+        {
+            if (argc < 5)
+            {
+                prfBuff += sprintf(prfBuff, "set fpga vol max <winID> <dB> <times>//\r\n");
+                return WV_SOK;
+            }
+            WV_U32 winID,sec;
+            WV_STR_S2v(argv[2], &winID);
+            float parma=0.0;
+            parma= atof(argv[3]);
+            WV_STR_S2v(argv[4], &sec);
+
+            FPGA_CONF_SetCheckVolumeToHightParams(winID,parma,sec);
+        }
     }
     else if (strcmp(argv[0], "volchl") == 0)
     {
@@ -1195,11 +1412,59 @@ WV_S32 FPGA_CONF_SetCmd(WV_S32 argc, WV_S8 **argv, WV_S8 *prfBuff)
             return WV_SOK;
         }
         FPGA_CONF_SetOutPutAudioSel((WV_U16)winID, (WV_U16)chl);
-    }
+    }else if (strcmp(argv[0], "check") == 0)
+    {
 
+        if (argc < 3)
+        {
+
+            prfBuff += sprintf(prfBuff, "set fpga check <winID> <chl> \r\n");
+            return WV_SOK;
+        }
+    }else if (strcmp(argv[0], "cnt") == 0)
+    {
+        if(argc < 2)
+        {
+
+            prfBuff += sprintf(prfBuff, "set fpga cnt <cmd> ;//cmd like:color/pos\r\n");
+            return WV_SOK;
+        }
+        if(strcmp(argv[1],"color") == 0){
+            if(argc < 5)
+            {
+                prfBuff += sprintf(prfBuff, "set fpga cnt color <r>  <g> <b>;//cmd like:set fpga cnt color 0 0xff 0\r\n");
+                return WV_SOK;
+            }
+            WV_U32 r,g,b;
+            WV_STR_S2v(argv[2], &r);
+            WV_STR_S2v(argv[3], &g);
+            WV_STR_S2v(argv[4], &b);
+
+            FPGA_CONF_SetInfoCntColor((WV_U16)r,(WV_U16)g,(WV_U16)b);
+            
+        }else if(strcmp(argv[1],"pos") == 0){
+            if(argc < 7)
+            {
+                prfBuff += sprintf(prfBuff, "set fpga cnt pos <winID>  <startX> <startY> <endX> <endY>;//cmd like:set fpga cnt pos 0 100 100 300 300 \r\n");
+                return WV_SOK;               
+            }
+            WV_U32 id,x1,y1,x2,y2;
+
+            WV_STR_S2v(argv[2],&id);
+            WV_STR_S2v(argv[3],&x1);
+            WV_STR_S2v(argv[4],&y1);
+            WV_STR_S2v(argv[5],&x2);
+            WV_STR_S2v(argv[6],&y2);
+
+            FPGA_CONF_SetInfoCntPos(id,x1,y1,x2,y2);            
+        }else{
+            prfBuff += sprintf(prfBuff, "set fpga cnt <cmd> ;//cmd like:color/pos\r\n");
+            return WV_SOK;
+        }
+    }
     else
     {
-        prfBuff += sprintf(prfBuff, "set fpga <cmd>;//cmd like: wincfg/win/dis/alpha/reset/vol/volchl\r\n");
+        prfBuff += sprintf(prfBuff, "set fpga <cmd>;//cmd like: wincfg/win/dis/alpha/reset/vol/volchl/check\r\n");
         return 0;
     }
 
@@ -1228,7 +1493,7 @@ WV_S32 FPGA_CONF_GetCmd(WV_S32 argc, WV_S8 **argv, WV_S8 *prfBuff)
         if (argc < 2)
         {
 
-            prfBuff += sprintf(prfBuff, "get fpga win <cmd>;//cmd like:stream/\r\n");
+            prfBuff += sprintf(prfBuff, "get fpga win <cmd>;//cmd like:stream/freeze/vol\r\n");
             return 0;
         }
 
@@ -1270,16 +1535,45 @@ WV_S32 FPGA_CONF_GetCmd(WV_S32 argc, WV_S8 **argv, WV_S8 *prfBuff)
                 prfBuff += sprintf(prfBuff, "\r\ninput erro!! get fpga win freeze <winID>;\r\n");
                 return WV_SOK;
             }
-            
+
             ret = FPGA_CONF_GetWinFreezeVal(winID);
-            if(ret == 1){
+            if (ret == 1)
+            {
                 prfBuff += sprintf(prfBuff, "\r\n窗口[%d]静帧 \r\n", winID);
-            }else{
+            }
+            else
+            {
                 prfBuff += sprintf(prfBuff, "\r\n窗口[%d]没有静帧 \r\n", winID);
             }
 
             return WV_SOK;
+        }
+        else if (strcmp(argv[1], "vol") == 0)
+        {
+            if (argc < 3)
+            {
+
+                prfBuff += sprintf(prfBuff, "get fpga win vol <winID>;\r\n");
+                return 0;
+            }
+            ret = WV_STR_S2v(argv[2], &winID);
+            if (ret != WV_SOK)
+            {
+                prfBuff += sprintf(prfBuff, "\r\ninput erro!! get fpga win vol <winID>;\r\n");
+                return WV_SOK;
+            }
+            ret = FPGA_CONF_GetWinAudioStatus(winID);
+            if(ret == 0){
+                prfBuff += sprintf(prfBuff, "\r\n当前窗口音量正常\r\n");
+            }else if (ret == 1){
+                prfBuff += sprintf(prfBuff, "\r\n当前窗口音量 静音\r\n");
+            }else if(ret == 2){
+                prfBuff += sprintf(prfBuff, "\r\n当前窗口音量 过低\r\n");
+            }else if(ret == 3){
+                prfBuff += sprintf(prfBuff, "\r\n当前窗口音量 过高\r\n");
+            }
             
+            return WV_SOK;            
         }
     }
     else if (strcmp(argv[0], "vol") == 0)
@@ -1291,10 +1585,10 @@ WV_S32 FPGA_CONF_GetCmd(WV_S32 argc, WV_S8 **argv, WV_S8 *prfBuff)
             return WV_SOK;
         }
         ret = WV_STR_S2v(argv[1], &winID);
-        WV_U16 vol[8]={0};
-        FPGA_CONF_GetVolume(winID,vol);
-        prfBuff += sprintf(prfBuff, "get fpga vol win[%d] vol %d %d %d %d %d %d %d %d  \r\n",winID,vol[0],vol[1],vol[2],vol[3],vol[4],vol[5],vol[6],vol[7]);
-        return WV_SOK;        
+        WV_U16 vol[8] = {0};
+        FPGA_CONF_GetVolume(winID, vol);
+        prfBuff += sprintf(prfBuff, "get fpga vol win[%d] vol %d %d %d %d %d %d %d %d  \r\n", winID, vol[0], vol[1], vol[2], vol[3], vol[4], vol[5], vol[6], vol[7]);
+        return WV_SOK;
     }
     else
     {
@@ -1313,7 +1607,7 @@ void FPGA_CONF_Init()
 
     pthread_mutex_init(&gMutexSetWin, NULL);
     pthread_mutex_init(&gMutexUpdateSdpInfo, NULL);
-    
+
 #endif
     FPGA_CONF_Reset();
     gpFpgaConfDev = (FPGA_CONF_DEV *)malloc(sizeof(FPGA_CONF_DEV));
@@ -1332,7 +1626,7 @@ void FPGA_CONF_Init()
     FPGA_IGMP_Open();
     FPGA_VOLUME_Open();
     FGPA_CHECK_Open();
-    
+
 #ifdef FPGA_DEBUG
     int i;
     FPGA_CONF_ETH_T ethCfg;

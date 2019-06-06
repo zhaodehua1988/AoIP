@@ -572,10 +572,23 @@ int FPGA_SDP_AnalysisSdpInfo(char *pSdpData, FPGA_SDP_Info *pGetInfo)
     for (i = 0; i < sdp->medias_count; i++)
     {
 
+        
         struct sdp_media *m = &sdp->medias[i];
         struct sdp_info *info = &m->info;
         if (strcmp(info->type, "video") == 0)
         {
+            sprintf(pGetInfo->video_srcIp,"%s",sdp->origin.addr);
+            if(sdp->conn.nettype && sdp->conn.addrtype && sdp->conn.address)
+            {
+                //sprintf(pGetInfo->video_desIp,"%s",sdp->conn.address);
+                for(j=0;j<64;j++)
+                {
+                    if(sdp->conn.address[j] == 0 || sdp->conn.address[j] == '/') break;
+                    pGetInfo->video_desIp[j] = sdp->conn.address[j];
+                }
+
+            }
+            
             for (j = 0; j < m->attributes_count; j++)
             {
 
@@ -666,6 +679,18 @@ int FPGA_SDP_AnalysisSdpInfo(char *pSdpData, FPGA_SDP_Info *pGetInfo)
         }
         else if (strcmp(info->type, "audio"))
         {
+            sprintf(pGetInfo->audio_srcIp,"%s",sdp->origin.addr);
+            //sprintf(pGetInfo->audio_desIp,"%s",sdp->conn.address);
+            if(sdp->conn.nettype && sdp->conn.addrtype && sdp->conn.address)
+            {
+                //sprintf(pGetInfo->video_desIp,"%s",sdp->conn.address);
+                for(j=0;j<64;j++)
+                {
+                    if(sdp->conn.address[j] == 0 || sdp->conn.address[j] == '/') break;
+                    pGetInfo->audio_desIp[j] = sdp->conn.address[j];
+                }
+
+            }
             for (j = 0; j < m->attributes_count; j++)
             {
                 //get ST2110
@@ -704,12 +729,11 @@ int FPGA_SDP_AnalysisSdpInfo(char *pSdpData, FPGA_SDP_Info *pGetInfo)
                             p++;
                         }
                     }
-                    WV_printf("\naudio_chl=%s\n", pGetInfo->audio_channel);
+                    //WV_printf("\naudio_chl=%s\n", pGetInfo->audio_channel);
                 }
             }
         }
     }
-
     sdp_destroy(sdp);
     if (audioST2110 != 1 && videoST2110 != 1)
     {

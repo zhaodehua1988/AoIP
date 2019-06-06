@@ -3,7 +3,7 @@
 
 #include "wv_common.h"
 #include "fpga_sdp.h"
-
+#include "fpga_check.h"
 #define FPGA_CONF_WIN_VIDEO_ETH (0)
 #define FPGA_CONF_WIN_VIDEO_SDI (1)
 #define FPGA_CONF_WIN_VIDEO_HDMI (2)
@@ -23,6 +23,7 @@ typedef struct FPGA_CONF_WIN
     WV_U16 h;
     WV_S8 type[16];  //"eth" /"sdi" /"hdmi" //暂时没用
     WV_U16 channel;  //代表第几路输入
+    WV_U16 IGMPVersion;    //IGMP版本
     WV_U16 video_ipv6_ena;  //0 ipv4;  1 ipv6;
     WV_S8  video_ip[FPGA_CONF_IPLEN];
     WV_S8  video_igmpSrc[FPGA_CONF_IPLEN]; //如果是组播地址，则需要设置源ip地址(如果没有设置源地址，则默认为0)
@@ -122,11 +123,6 @@ void FPGA_CONF_SetOutPutVolume(WV_S32 volume);
  * ***************************************************************/
 void FPGA_CONF_SetDisAlpha(WV_S32 alpha);
 
-/***************************************************
- * void FPGA_CONF_SetCheckTimeValue(WV_U32 time)
- * 设置检测静帧的时间,单位 秒
- * ************************************************/
-void FPGA_CONF_SetCheckTimeValue(WV_U32 time_s);
 
 /****************************************************
  * WV_S32 FPGA_CONF_GetWinFreezeVal(WV_U32 winID)
@@ -145,6 +141,39 @@ WV_U32 FPGA_CONF_GetWinFreezeVal(WV_U32 winID);
  *      -1:查询错误，包括输入窗口id超出范围，id范围[0~15]
  * *************************************************/
 WV_S32 FPGA_CONF_CheckNoSignal(WV_U32 winID);
+
+/****************************************************
+ * WV_U16 FPGA_CONF_GetWinAudioStatus(WV_U32 winID)
+ * 函数说明：查询当前窗口的音频状态
+ * *************************************************/
+WV_U16 FPGA_CONF_GetWinAudioStatus(WV_U32 winID);
+
+/****************************************************
+ * void FPGA_CONF_SetCheckWinFreezeParams(WV_U32 winID,WV_U16 thousandth,WV_U32 time_s,WV_U16 mutltiple)
+ * 函数说明：设置窗口静帧参数
+ * 参数说明：thousandth r_sum变化千分比  ，time_s 警告时间，结合音频加倍的倍数
+ * *************************************************/
+void FPGA_CONF_SetCheckWinFreezeParams(WV_U32 winID, WV_U16 thousandth, WV_U32 time_s, WV_U16 mutltiple);
+
+
+/****************************************************
+ * void FPGA_CONF_SetCheckVolumeToLowParams(WV_U32 winID, float threshold, WV_U32 time_s)
+ * 函数说明：设置检测窗口音量过低
+ * *************************************************/
+void FPGA_CONF_SetCheckVolumeToLowParams(WV_U32 winID, float threshold, WV_U32 time_s);
+
+/****************************************************
+ * void FPGA_CONF_SetCheckAudioToHightParams(WV_U32 winID, float threshold, WV_U32 time_s)
+ * 函数说明：设置检测窗口音量过高
+ * *************************************************/
+void FPGA_CONF_SetCheckVolumeToHightParams(WV_U32 winID, float threshold, WV_U32 time_s);
+
+/****************************************************
+ * void FPGA_CONF_SetCheckVolumeMuteParams(WV_U32 winID, float threshold, WV_U32 time_s)
+ * 函数说明：设置检测窗口音频丢失的参数
+ * 参数说明：threshold 门限值 单位dB,time_s 警告时间 秒
+ * *************************************************/
+void FPGA_CONF_SetCheckVolumeMuteParams(WV_U32 winID, float threshold, WV_U32 time_s);
 
 /*******************************************************************
 WV_S32 FPGA_CONF_UpdateFpga(WV_S8 *pFpgaBin);
@@ -181,6 +210,24 @@ void FPGA_CONF_GetVolume(WV_U16 winID,WV_U16 volume[]);
  * ************************************************************/
 void FPGA_CONF_SendArpRequest(WV_U16 ethID,WV_S8 *targetIp);
 
+
+/**************************************************************
+ * void FPGA_CONF_GetSdpInfo(WV_U16 winID,FPGA_SDP_Info *pSdpInfo)
+ * 函数说明：发送arp请求
+ * ************************************************************/
+void FPGA_CONF_GetSdpInfo(WV_U16 winID,FPGA_SDP_Info *pSdpInfo);
+
+/***************************************************************
+ * void FPGA_CONF_SetInfoCntColor(WV_U16 r,WV_U16 g,WV_U16 b)
+ * //设置窗口信息字体颜色
+ * *************************************************************/
+void FPGA_CONF_SetInfoCntColor(WV_U16 r,WV_U16 g,WV_U16 b);
+
+/**************************************************************
+ * void FPGA_CONF_SetInfoCntPos(WV_U16 winID,WV_U16 startX,WV_U16 startY,WV_U16 endX,WV_U16 endY)
+ * //设置窗口字体的坐标值
+ * ************************************************************/
+void FPGA_CONF_SetInfoCntPos(WV_U16 winID,WV_U16 startX,WV_U16 startY,WV_U16 endX,WV_U16 endY);
 
 void FPGA_CONF_Init();
 void FPGA_CONF_DeInit();
